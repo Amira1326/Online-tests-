@@ -7,7 +7,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
         * { font-family: 'Cairo', sans-serif; box-sizing: border-box; }
         
@@ -18,7 +17,6 @@
             --accent: #CD853F;
             --gold: #DAA520;
             --bg: #FAF7F2;
-            --surface: #FFFFFF;
         }
 
         body {
@@ -173,26 +171,14 @@
             cursor: pointer;
             background: white;
             border-radius: 16px;
+            padding: 0.75rem;
         }
 
         .option-btn:hover { border-color: #8B4513; background: #FFF8F0; }
-        .option-btn.selected { border-color: #8B4513; background: #FFF8F0; }
+        .option-btn.selected { border-color: #8B4513; background: #FFF8F0; box-shadow: 0 0 0 3px rgba(139, 69, 19, 0.2); }
         
-        /* لا تظهر الألوان إلا بعد التسليم */
         .option-btn.correct-final { border-color: #10B981; background: #D1FAE5; }
         .option-btn.wrong-final { border-color: #EF4444; background: #FEE2E2; }
-
-        .matching-item {
-            border: 3px solid #E5E7EB;
-            cursor: pointer;
-            transition: all 0.3s;
-            border-radius: 12px;
-            background: white;
-        }
-
-        .matching-item:hover { border-color: #8B4513; background: #FFF8F0; }
-        .matching-item.selected { border-color: #8B4513; background: #FFF8F0; }
-        .matching-item.matched { border-color: #10B981; background: #D1FAE5; }
 
         .upload-zone {
             border: 3px dashed #8B4513;
@@ -218,13 +204,58 @@
             transition: width 0.5s ease;
         }
 
-        .score-badge {
+        .subject-tab {
+            padding: 0.5rem 1.5rem;
+            border-radius: 9999px;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .subject-tab.active {
+            background: linear-gradient(135deg, #8B4513, #D2691E);
+            color: white;
+        }
+
+        .subject-tab.inactive {
+            background: #E5E7EB;
+            color: #6B7280;
+        }
+
+        .subject-tab.completed {
+            background: #10B981;
+            color: white;
+        }
+
+        .question-block {
+            background: white;
+            border: 2px solid #E5E7EB;
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .question-block.correct-final {
+            border-color: #10B981;
+            background: #F0FDF4;
+        }
+
+        .question-block.wrong-final {
+            border-color: #EF4444;
+            background: #FEF2F2;
+        }
+
+        .score-indicator {
             display: inline-block;
             padding: 0.25rem 0.75rem;
             border-radius: 9999px;
             font-weight: bold;
             font-size: 0.875rem;
+            margin-top: 0.5rem;
         }
+
+        .score-correct { background: #D1FAE5; color: #065F46; }
+        .score-wrong { background: #FEE2E2; color: #991B1B; }
+        .score-pending { background: #FEF3C7; color: #92400E; }
 
         @media (max-width: 640px) {
             .glass-card { border-radius: 16px; padding: 1rem !important; }
@@ -411,20 +442,25 @@
                     </label>
                     <select id="s-nationality" class="input-field w-full p-4 rounded-xl text-lg" onchange="handleNationalityChange()">
                         <option value="">-- اختر الجنسية --</option>
-                        <optgroup label="🌍 الجنسيات العربية (تختبر العربية)">
-                            <option value="saudi">🇸🇦 سعودي</option>
+                        <optgroup label="🌍 الجنسيات العربية (تختبر: إنجليزي + رياضيات + عربي)">
+                            <option value="saudi">🇸 سعودي</option>
                             <option value="yemeni">🇾🇪 يمني</option>
-                            <option value="egyptian">🇪 مصري</option>
-                            <option value="jordanian">🇯🇴 أردني</option>
+                            <option value="egyptian">🇪🇬 مصري</option>
+                            <option value="jordanian">🇯 أردني</option>
                             <option value="other-arab">عربي آخر</option>
                         </optgroup>
-                        <optgroup label="🌏 الجنسيات غير العربية (لا تختبر العربية)">
-                            <option value="indian">🇮 هندي</option>
-                            <option value="pakistani">🇵 باكستاني</option>
-                            <option value="filipino">🇵🇭 فلبيني</option>
+                        <optgroup label="🌏 الجنسيات غير العربية (تختبر: إنجليزي + رياضيات فقط)">
+                            <option value="indian">🇮🇳 هندي</option>
+                            <option value="pakistani">🇵🇰 باكستاني</option>
+                            <option value="filipino">🇭 فلبيني</option>
                             <option value="other-non-arab">أخرى</option>
                         </optgroup>
                     </select>
+                </div>
+
+                <div id="subjects-notice" class="hidden bg-amber-50 border-2 border-amber-300 rounded-xl p-4 text-center">
+                    <i class="fas fa-info-circle text-amber-700 text-2xl mb-2"></i>
+                    <p id="subjects-notice-text" class="text-amber-900 font-bold"></p>
                 </div>
 
                 <div>
@@ -488,7 +524,7 @@
                 <div class="flex justify-between items-center flex-wrap gap-4">
                     <div>
                         <h2 class="text-3xl font-black text-gray-800">
-                            <span class="text-4xl ml-3">👨‍🏫</span>
+                            <span class="text-4xl ml-3">👨‍</span>
                             لوحة المعلم
                         </h2>
                         <p class="text-gray-600 mt-1">متابعة وتصحيح نتائج الطلاب</p>
@@ -516,7 +552,7 @@
 
             <div class="glass-card p-6 overflow-x-auto">
                 <h3 class="text-2xl font-bold text-gray-800 mb-4">
-                    <span class="text-3xl ml-2">📋</span>قائمة الطلاب
+                    <span class="text-3xl ml-2"></span>قائمة الطلاب
                 </h3>
                 <table class="w-full">
                     <thead class="bg-amber-50 border-b-2 border-amber-200">
@@ -655,6 +691,13 @@
                 </div>
             </div>
 
+            <!-- Subject Tabs -->
+            <div class="glass-card p-3 mb-4">
+                <div class="flex justify-center gap-3 flex-wrap" id="subject-tabs">
+                    <!-- يُملأ ديناميكياً -->
+                </div>
+            </div>
+
             <!-- Progress Bar -->
             <div class="glass-card p-3 mb-4">
                 <div class="progress-container">
@@ -730,7 +773,9 @@
         let answers = {};
         let subjectScores = { english: 0, math: 0, arabic: 0 };
         let allStudents = JSON.parse(localStorage.getItem('exam_students')) || [];
-        let examSubmitted = false;
+
+        // المواد التي سيختبرها الطالب
+        let examSubjects = [];
 
         const gradeOptions = {
             'child-gate': [
@@ -759,14 +804,346 @@
             ]
         };
 
-        const nationalityLabels = {
-            'saudi': '🇸 سعودي', 'yemeni': '🇾🇪 يمني', 'egyptian': '🇪🇬 مصري',
-            'jordanian': '🇯🇴 أردني', 'other-arab': 'عربي', 
-            'indian': '🇮 هندي', 'pakistani': '🇵 باكستاني',
-            'filipino': '🇵 فلبيني', 'other-non-arab': 'أخرى'
-        };
-
         const arabicNationalities = ['saudi', 'yemeni', 'egyptian', 'jordanian', 'other-arab'];
+
+        // ============ بنك الأسئلة الكامل ============
+        const questionBank = {
+            G1: {
+                english: {
+                    modelA: [
+                        {
+                            id: "g1_en_a_q1",
+                            type: "image_choice",
+                            question: "Choose the correct name for the given pictures:",
+                            marks: 12,
+                            items: [
+                                { image: "https://cdn-icons-png.flaticon.com/512/616/616408.png", options: ["Cat", "Cot"], correct: 0 },
+                                { image: "https://cdn-icons-png.flaticon.com/512/2917/2917995.png", options: ["Pan", "Pen"], correct: 0 },
+                                { image: "https://cdn-icons-png.flaticon.com/512/616/616430.png", options: ["Dog", "Dug"], correct: 0 },
+                                { image: "https://cdn-icons-png.flaticon.com/512/616/616567.png", options: ["Big", "Bag"], correct: 0 }
+                            ],
+                            needs_manual: false
+                        },
+                        {
+                            id: "g1_en_a_q2",
+                            type: "mcq",
+                            question: "Choose the correct ending sound:",
+                            marks: 10,
+                            subQuestions: [
+                                { question: "Man - Pan - Rot - Pit", options: ["Man", "Pan", "Rot", "Pit"], correct: 0 },
+                                { question: "Sun - Hub - Sip - Fun", options: ["Sun", "Hub", "Sip", "Fun"], correct: 3 },
+                                { question: "Rat - Tin - Hat - Put", options: ["Rat", "Tin", "Hat", "Put"], correct: 2 },
+                                { question: "Cod - Cut - Fit - Rod", options: ["Cod", "Cut", "Fit", "Rod"], correct: 3 },
+                                { question: "Pin - Sin - Lip - Tag", options: ["Pin", "Sin", "Lip", "Tag"], correct: 2 }
+                            ],
+                            needs_manual: false
+                        },
+                        {
+                            id: "g1_en_a_q3",
+                            type: "mcq",
+                            question: "Choose the correct answers:",
+                            marks: 8,
+                            subQuestions: [
+                                { question: "___ is my rabbit.", options: ["This", "That"], correct: 0 },
+                                { question: "___ tree is big.", options: ["This", "That"], correct: 1 }
+                            ],
+                            needs_manual: false
+                        }
+                    ],
+                    modelB: [
+                        {
+                            id: "g1_en_b_q1",
+                            type: "image_choice",
+                            question: "Choose the correct name for the given pictures:",
+                            marks: 12,
+                            items: [
+                                { image: "https://cdn-icons-png.flaticon.com/512/2917/2917995.png", options: ["Pin", "Sip"], correct: 0 },
+                                { image: "https://cdn-icons-png.flaticon.com/512/888/888847.png", options: ["Sun", "Tan"], correct: 0 },
+                                { image: "https://cdn-icons-png.flaticon.com/512/616/616430.png", options: ["Pit", "Hen"], correct: 1 },
+                                { image: "https://cdn-icons-png.flaticon.com/512/2917/2917995.png", options: ["Rot", "Pot"], correct: 1 }
+                            ],
+                            needs_manual: false
+                        },
+                        {
+                            id: "g1_en_b_q2",
+                            type: "mcq",
+                            question: "Choose the correct ending sound:",
+                            marks: 10,
+                            subQuestions: [
+                                { question: "Sat - Pan - Rot - Pat", options: ["Sat", "Pan", "Rot", "Pat"], correct: 0 },
+                                { question: "Hug - Pug - Sip - Fun", options: ["Hug", "Pug", "Sip", "Fun"], correct: 1 },
+                                { question: "Fin - Tin - Hat - Put", options: ["Fin", "Tin", "Hat", "Put"], correct: 1 },
+                                { question: "Cut - Tap - Hut - Rod", options: ["Cut", "Tap", "Hut", "Rod"], correct: 2 },
+                                { question: "Bag - Sin - Lip - Tag", options: ["Bag", "Sin", "Lip", "Tag"], correct: 3 }
+                            ],
+                            needs_manual: false
+                        },
+                        {
+                            id: "g1_en_b_q3",
+                            type: "mcq",
+                            question: "Choose the correct answers:",
+                            marks: 8,
+                            subQuestions: [
+                                { question: "___ is a yellow duck.", options: ["This", "That"], correct: 0 },
+                                { question: "___ is a big aero plane.", options: ["This", "That"], correct: 1 }
+                            ],
+                            needs_manual: false
+                        }
+                    ]
+                }
+            },
+            G2: {
+                english: {
+                    modelA: [
+                        {
+                            id: "g2_en_a_q1",
+                            type: "upload",
+                            question: "Read the given passage and answer the following questions.",
+                            passage: "One misty morning, Jane was looking around her garden. She sat on the grass. She saw a rock with little plants on it. There were flowers. They looked pretty.",
+                            subQuestions: [
+                                "Who sat on the grass?",
+                                "___ were looking pretty."
+                            ],
+                            marks: 10,
+                            needs_manual: true
+                        },
+                        {
+                            id: "g2_en_a_q2",
+                            type: "mcq",
+                            question: "Use (is - am - are):",
+                            marks: 10,
+                            subQuestions: [
+                                { question: "They ___ happy to see us.", options: ["am", "are"], correct: 1 },
+                                { question: "The dog ___ in the backyard.", options: ["are", "is"], correct: 1 },
+                                { question: "We ___ ready.", options: ["are", "am"], correct: 0 },
+                                { question: "You ___ intelligent.", options: ["are", "is"], correct: 0 },
+                                { question: "I ___ writing.", options: ["is", "am"], correct: 1 }
+                            ],
+                            needs_manual: false
+                        },
+                        {
+                            id: "g2_en_a_q3",
+                            type: "mcq",
+                            question: "Use (have / has):",
+                            marks: 10,
+                            subQuestions: [
+                                { question: "I ___ many toys.", options: ["have", "has"], correct: 0 },
+                                { question: "You ___ an extra pen.", options: ["have", "has"], correct: 0 },
+                                { question: "She ___ one sister.", options: ["have", "has"], correct: 1 },
+                                { question: "They ___ a test today.", options: ["have", "has"], correct: 0 },
+                                { question: "The rainbow ___ seven colors.", options: ["have", "has"], correct: 1 }
+                            ],
+                            needs_manual: false
+                        }
+                    ],
+                    modelB: [
+                        {
+                            id: "g2_en_b_q1",
+                            type: "upload",
+                            question: "Read the given passage and answer the following questions.",
+                            passage: "Jane wants to build a birdhouse. She gets some wood, nails and paint. She draws her birdhouse. They hang it up in a tree. A bird goes into it.",
+                            subQuestions: [
+                                "Who wants to build a birdhouse?",
+                                "___ goes into the birdhouse."
+                            ],
+                            marks: 10,
+                            needs_manual: true
+                        },
+                        {
+                            id: "g2_en_b_q2",
+                            type: "mcq",
+                            question: "Use (is - am - are):",
+                            marks: 10,
+                            subQuestions: [
+                                { question: "I ___ a teacher.", options: ["am", "are"], correct: 0 },
+                                { question: "The dress ___ beautiful.", options: ["are", "is"], correct: 1 },
+                                { question: "We ___ happy.", options: ["are", "am"], correct: 0 },
+                                { question: "She ___ tall.", options: ["am", "is"], correct: 1 },
+                                { question: "They ___ learning.", options: ["is", "are"], correct: 1 }
+                            ],
+                            needs_manual: false
+                        },
+                        {
+                            id: "g2_en_b_q3",
+                            type: "mcq",
+                            question: "Use (have / has):",
+                            marks: 10,
+                            subQuestions: [
+                                { question: "She ___ a blue bag.", options: ["have", "has"], correct: 1 },
+                                { question: "We ___ a big house.", options: ["have", "has"], correct: 0 },
+                                { question: "I ___ some cookies.", options: ["have", "has"], correct: 0 },
+                                { question: "They ___ a ball.", options: ["have", "has"], correct: 0 },
+                                { question: "You ___ a bicycle.", options: ["have", "has"], correct: 0 }
+                            ],
+                            needs_manual: false
+                        }
+                    ]
+                }
+            },
+            G3: {
+                english: {
+                    modelA: [
+                        {
+                            id: "g3_en_a_q1",
+                            type: "mcq",
+                            question: "Read the given passage and answer the questions.",
+                            passage: "Jana and Ali are going for a trip to Taif. They are waiting for the bus at the bus stop. Jana has a small pink bag and Ali has a big blue backpack. They are taking their dog, Max with them. They are excited for the trip.",
+                            marks: 14,
+                            subQuestions: [
+                                { question: "Where is Ali going?", options: ["Trip", "School"], correct: 0 },
+                                { question: "Who is going with him?", options: ["Jana", "Friends"], correct: 0 },
+                                { question: "What are they waiting for?", options: ["Bus", "Car"], correct: 0 },
+                                { question: "Max:", options: ["Common Noun", "Proper Noun"], correct: 1 },
+                                { question: "Bus:", options: ["Common Noun", "Proper Noun"], correct: 0 },
+                                { question: "Taif:", options: ["Common Noun", "Proper Noun"], correct: 1 },
+                                { question: "Backpack:", options: ["Common Noun", "Proper Noun"], correct: 0 }
+                            ],
+                            needs_manual: false
+                        },
+                        {
+                            id: "g3_en_a_q2",
+                            type: "mcq",
+                            question: "Choose the correct answer:",
+                            marks: 16,
+                            subQuestions: [
+                                { question: "The elephant ___ a long trunk.", options: ["has", "have"], correct: 0 },
+                                { question: "You ___ a beautiful dress.", options: ["has", "have"], correct: 1 },
+                                { question: "She ___ in the hospital yesterday.", options: ["was", "were"], correct: 0 },
+                                { question: "They ___ many trees in their backyard.", options: ["has", "have"], correct: 1 },
+                                { question: "You ___ a tall boy.", options: ["is", "are"], correct: 1 },
+                                { question: "___ she baking a cake?", options: ["Is", "Are"], correct: 0 },
+                                { question: "I ___ eating apples but they ___ eating popcorns.", options: ["am/are", "is/are", "am/is"], correct: 0 }
+                            ],
+                            needs_manual: false
+                        }
+                    ],
+                    modelB: [
+                        {
+                            id: "g3_en_b_q1",
+                            type: "mcq",
+                            question: "Read the given passage and answer the questions.",
+                            passage: "Alma and her friend Reem are in Hyde Park. They are wearing red dresses. They are looking beautiful. They are eating ice cream. There is a white kitten near the ice cream truck. Alma is playing with it. She is throwing the ball and the kitten is running after it.",
+                            marks: 14,
+                            subQuestions: [
+                                { question: "Where is Alma?", options: ["School", "Park"], correct: 1 },
+                                { question: "What is she wearing?", options: ["Dress", "T-shirt"], correct: 0 },
+                                { question: "What is the kitten running after?", options: ["Bug", "Ball"], correct: 1 },
+                                { question: "Truck:", options: ["Common Noun", "Proper Noun"], correct: 0 },
+                                { question: "Reem:", options: ["Common Noun", "Proper Noun"], correct: 1 },
+                                { question: "Kitten:", options: ["Common Noun", "Proper Noun"], correct: 0 },
+                                { question: "Hyde Park:", options: ["Common Noun", "Proper Noun"], correct: 1 }
+                            ],
+                            needs_manual: false
+                        },
+                        {
+                            id: "g3_en_b_q2",
+                            type: "mcq",
+                            question: "Choose the correct answer:",
+                            marks: 16,
+                            subQuestions: [
+                                { question: "You ___ driving a car.", options: ["was", "were"], correct: 1 },
+                                { question: "He ___ playing with me.", options: ["was", "were"], correct: 0 },
+                                { question: "Monkeys ___ long tails.", options: ["has", "have"], correct: 1 },
+                                { question: "My mother ___ an expensive ring.", options: ["has", "have"], correct: 0 },
+                                { question: "You ___ my best friend.", options: ["is", "are"], correct: 1 },
+                                { question: "___ he sleeping in the room?", options: ["Is", "Are"], correct: 0 },
+                                { question: "I ___ going to Abha but she ___ going to Jeddah.", options: ["am/is", "am/are", "is/are"], correct: 0 }
+                            ],
+                            needs_manual: false
+                        }
+                    ]
+                }
+            },
+            G4: {
+                english: {
+                    modelA: [
+                        {
+                            id: "g4_en_a_q1",
+                            type: "mcq",
+                            question: "Read the passage and answer the questions.",
+                            passage: "Tina saw a hidden path and decided to follow it. The path led her to a lovely garden filled with colorful flowers and friendly animals. Tina spent the whole day playing and laughing with her newfound friends. When it was time to go home, she promised to return to the garden whenever she could.",
+                            marks: 12,
+                            subQuestions: [
+                                { question: "What did Tina find when she followed the hidden path?", options: ["Garden", "Park"], correct: 0 },
+                                { question: "What did Tina do with her newfound friends?", options: ["Eat and drink", "Play and laugh"], correct: 1 },
+                                { question: "Tina promised that she will never come back.", options: ["True", "False"], correct: 1 },
+                                { question: "Choose the proper noun:", options: ["Tina", "Garden"], correct: 0 },
+                                { question: "What part of speech is: Spent", options: ["Adverb", "Verb"], correct: 1 },
+                                { question: "Which word is an adjective?", options: ["Friendly", "Follow"], correct: 0 }
+                            ],
+                            needs_manual: false
+                        },
+                        {
+                            id: "g4_en_a_q2",
+                            type: "mcq",
+                            question: "Choose the correct answer:",
+                            marks: 8,
+                            subQuestions: [
+                                { question: "I ___ going to Japan and you ___ going to China.", options: ["am/are", "are/is", "am/is"], correct: 0 },
+                                { question: "A monkey ___ a long tail but rabbits ___ short tails.", options: ["has/have", "have/has", "has/has"], correct: 0 }
+                            ],
+                            needs_manual: false
+                        },
+                        {
+                            id: "g4_en_a_q3",
+                            type: "mcq",
+                            question: "Identify the tense:",
+                            marks: 8,
+                            subQuestions: [
+                                { question: "She likes to drink coffee in the morning.", options: ["Simple Present", "Present Continuous"], correct: 0 },
+                                { question: "My dad is playing football with me.", options: ["Simple Present", "Present Continuous"], correct: 1 },
+                                { question: "They were in Canada last year.", options: ["Simple Present", "Simple Past"], correct: 1 },
+                                { question: "Who is sitting on the couch?", options: ["Simple Present", "Present Continuous"], correct: 1 }
+                            ],
+                            needs_manual: false
+                        }
+                    ],
+                    modelB: [
+                        {
+                            id: "g4_en_b_q1",
+                            type: "mcq",
+                            question: "Read the passage and answer the questions.",
+                            passage: "Lily loved plants and flowers. She had a beautiful garden in her backyard. One day, some people visited Lily's garden. They were amazed by the colorful flowers. They wanted to make their own gardens and share the joy of gardening with others.",
+                            marks: 12,
+                            subQuestions: [
+                                { question: "What did Lily like to do?", options: ["Gardening", "Cooking"], correct: 0 },
+                                { question: "What did the visitors like about Lily's garden?", options: ["Flowers", "Bugs"], correct: 0 },
+                                { question: "What did the visitors want to do?", options: ["Make gardens and share the joy", "Cook food and share it"], correct: 0 },
+                                { question: "Choose the proper noun:", options: ["Lily", "Backyard"], correct: 0 },
+                                { question: "What part of speech is: Visited", options: ["Adverb", "Verb"], correct: 1 },
+                                { question: "Which word is an adjective?", options: ["Colorful", "Share"], correct: 0 }
+                            ],
+                            needs_manual: false
+                        },
+                        {
+                            id: "g4_en_b_q2",
+                            type: "mcq",
+                            question: "Choose the correct answer:",
+                            marks: 10,
+                            subQuestions: [
+                                { question: "We ___ received a letter from the college.", options: ["has", "have"], correct: 1 },
+                                { question: "Jana and I ___ eating a pizza. Jana ___ drinking juice too.", options: ["am/are", "are/is", "are/are"], correct: 1 },
+                                { question: "You ___ a cat and I ___ a hamster.", options: ["has/have", "have/has", "have/have"], correct: 1 }
+                            ],
+                            needs_manual: false
+                        },
+                        {
+                            id: "g4_en_b_q3",
+                            type: "mcq",
+                            question: "Identify the tense:",
+                            marks: 8,
+                            subQuestions: [
+                                { question: "Ahmad is going on a camping trip.", options: ["Simple Present", "Present Continuous"], correct: 1 },
+                                { question: "Sam is an old friend of mine.", options: ["Simple Present", "Simple Past"], correct: 0 },
+                                { question: "He was in Abha last week.", options: ["Simple Present", "Simple Past"], correct: 1 },
+                                { question: "Why are you crying?", options: ["Simple Present", "Present Continuous"], correct: 1 }
+                            ],
+                            needs_manual: false
+                        }
+                    ]
+                }
+            }
+        };
 
         // ============ شاشة الترحيب ============
         window.addEventListener('load', () => {
@@ -847,6 +1224,20 @@
             const nationality = document.getElementById('s-nationality').value;
             const testsArabic = arabicNationalities.includes(nationality);
             currentStudent.testsArabic = testsArabic;
+            
+            const notice = document.getElementById('subjects-notice');
+            const noticeText = document.getElementById('subjects-notice-text');
+            
+            if (nationality) {
+                notice.classList.remove('hidden');
+                if (testsArabic) {
+                    noticeText.textContent = '📚 سيختبر الطالب: الإنجليزية + الرياضيات + العربية';
+                } else {
+                    noticeText.textContent = '📚 سيختبر الطالب: الإنجليزية + الرياضيات فقط';
+                }
+            } else {
+                notice.classList.add('hidden');
+            }
         }
 
         // ============ بدء اختبار الطالب ============
@@ -875,6 +1266,13 @@
 
             localStorage.setItem('current_student', JSON.stringify(currentStudent));
             
+            // تحديد المواد حسب الجنسية
+            if (currentStudent.testsArabic) {
+                examSubjects = ['english', 'math', 'arabic'];
+            } else {
+                examSubjects = ['english', 'math'];
+            }
+
             document.getElementById('student-form-screen').classList.add('hidden-screen');
             document.getElementById('exam-screen').classList.remove('hidden-screen');
             document.getElementById('exam-student-name').textContent = currentStudent.name;
@@ -887,14 +1285,35 @@
             currentSubject = subject;
             currentQIndex = 0;
             answers = {};
-            examSubmitted = false;
             
             const subjectNames = { english: 'اللغة الإنجليزية', math: 'الرياضيات', arabic: 'اللغة العربية' };
             document.getElementById('exam-subject').textContent = subjectNames[subject];
-            document.getElementById('q-total').textContent = 5;
             
+            // تحديث tabs المواد
+            updateSubjectTabs();
+            
+            // تحميل الأسئلة
             loadQuestions(subject);
+            
+            document.getElementById('q-total').textContent = questions.length;
             renderQuestion();
+        }
+
+        function updateSubjectTabs() {
+            const tabsContainer = document.getElementById('subject-tabs');
+            const subjectNames = { english: '🇬🇧 الإنجليزي', math: '🔢 الرياضيات', arabic: '🇦 العربي' };
+            
+            tabsContainer.innerHTML = examSubjects.map(subj => {
+                let className = 'subject-tab ';
+                if (subj === currentSubject) {
+                    className += 'active';
+                } else if (subjectScores[subj] > 0) {
+                    className += 'completed';
+                } else {
+                    className += 'inactive';
+                }
+                return `<div class="${className}">${subjectNames[subj]}</div>`;
+            }).join('');
         }
 
         function loadQuestions(subject) {
@@ -903,12 +1322,76 @@
                 const randomModel = models[Math.floor(Math.random() * models.length)];
                 questions = [...questionBank[currentStudent.grade].english[randomModel]];
                 questions = questions.sort(() => Math.random() - 0.5);
-                document.getElementById('q-total').textContent = questions.length;
-            } else {
+            } else if (subject === 'math') {
+                // Placeholder للرياضيات - يمكن استبداله بأسئلة حقيقية
                 questions = [
-                    { id: `${subject}_placeholder`, type: 'mcq', question: `سؤال تجريبي في ${subject}`, marks: 30, subQuestions: [{ question: 'سؤال 1', options: ['خيار 1', 'خيار 2'], correct: 0 }], needs_manual: false }
+                    {
+                        id: "math_placeholder_1",
+                        type: "mcq",
+                        question: "ما ناتج 2 + 3؟",
+                        marks: 10,
+                        subQuestions: [
+                            { question: "2 + 3 = ?", options: ["4", "5", "6"], correct: 1 }
+                        ],
+                        needs_manual: false
+                    },
+                    {
+                        id: "math_placeholder_2",
+                        type: "mcq",
+                        question: "ما ناتج 7 - 2؟",
+                        marks: 10,
+                        subQuestions: [
+                            { question: "7 - 2 = ?", options: ["4", "5", "6"], correct: 1 }
+                        ],
+                        needs_manual: false
+                    },
+                    {
+                        id: "math_placeholder_3",
+                        type: "mcq",
+                        question: "أي عدد أكبر؟",
+                        marks: 10,
+                        subQuestions: [
+                            { question: "اختر العدد الأكبر:", options: ["5", "8", "3"], correct: 1 }
+                        ],
+                        needs_manual: false
+                    }
                 ];
-                document.getElementById('q-total').textContent = questions.length;
+            } else if (subject === 'arabic') {
+                // Placeholder للعربي
+                questions = [
+                    {
+                        id: "arabic_placeholder_1",
+                        type: "mcq",
+                        question: "ما الحرف الأول من كلمة 'تفاحة'؟",
+                        marks: 10,
+                        subQuestions: [
+                            { question: "الحرف الأول من 'تفاحة':", options: ["ت", "ف", "ا"], correct: 0 }
+                        ],
+                        needs_manual: false
+                    },
+                    {
+                        id: "arabic_placeholder_2",
+                        type: "mcq",
+                        question: "اختر الحرف المشابه لـ 'م':",
+                        marks: 10,
+                        subQuestions: [
+                            { question: "الحرف المشابه لـ 'م':", options: ["ن", "م", "هـ"], correct: 1 }
+                        ],
+                        needs_manual: false
+                    },
+                    {
+                        id: "arabic_placeholder_3",
+                        type: "mcq",
+                        question: "ما الحرف الأول من كلمة 'عنب'؟",
+                        marks: 10,
+                        subQuestions: [
+                            { question: "الحرف الأول من 'عنب':", options: ["ن", "ب", "ع"], correct: 2 }
+                        ],
+                        needs_manual: false
+                    }
+                ];
+            } else {
+                questions = [];
             }
         }
 
@@ -945,7 +1428,7 @@
         }
 
         function renderMCQQuestion(q) {
-            let html = `<div class="space-y-6">`;
+            let html = `<div class="space-y-4">`;
             html += `<div class="bg-amber-50 p-4 rounded-xl border-2 border-amber-200">
                 <p class="text-lg font-bold text-gray-800">${q.question}</p>
             </div>`;
@@ -959,13 +1442,13 @@
             
             q.subQuestions.forEach((sq, sqIdx) => {
                 const qKey = `${currentQIndex}_${sqIdx}`;
-                html += `<div class="bg-white p-4 rounded-xl border-2 border-gray-100">
+                html += `<div class="question-block">
                     <p class="font-bold text-gray-800 mb-3">${sqIdx + 1}. ${sq.question}</p>
                     <div class="grid grid-cols-2 gap-3">`;
                 
                 sq.options.forEach((opt, optIdx) => {
                     const selected = answers[qKey] === optIdx ? 'selected' : '';
-                    html += `<button onclick="selectMCQ('${qKey}', ${optIdx})" class="option-btn p-3 rounded-xl font-bold text-center ${selected}">
+                    html += `<button onclick="selectMCQ('${qKey}', ${optIdx})" class="option-btn font-bold text-center ${selected}">
                         ${opt}
                     </button>`;
                 });
@@ -978,7 +1461,7 @@
         }
 
         function renderImageChoiceQuestion(q) {
-            let html = `<div class="space-y-6">`;
+            let html = `<div class="space-y-4">`;
             html += `<div class="bg-amber-50 p-4 rounded-xl border-2 border-amber-200">
                 <p class="text-lg font-bold text-gray-800">${q.question}</p>
             </div>`;
@@ -992,7 +1475,7 @@
                 
                 item.options.forEach((opt, optIdx) => {
                     const selected = answers[qKey] === optIdx ? 'selected' : '';
-                    html += `<button onclick="selectMCQ('${qKey}', ${optIdx})" class="option-btn w-full p-2 rounded-lg font-bold text-sm ${selected}">
+                    html += `<button onclick="selectMCQ('${qKey}', ${optIdx})" class="option-btn w-full font-bold text-sm ${selected}">
                         ${opt}
                     </button>`;
                 });
@@ -1005,7 +1488,7 @@
         }
 
         function renderUploadQuestion(q) {
-            let html = `<div class="space-y-6">`;
+            let html = `<div class="space-y-4">`;
             html += `<div class="bg-amber-50 p-4 rounded-xl border-2 border-amber-200">
                 <p class="text-lg font-bold text-gray-800">${q.question}</p>
             </div>`;
@@ -1085,11 +1568,9 @@
         }
 
         function submitExam() {
-            if (!confirm('هل أنت متأكد من إنهاء الاختبار؟')) {
+            if (!confirm('هل أنت متأكد من إنهاء هذا الاختبار؟')) {
                 return;
             }
-            
-            examSubmitted = true;
             
             // حساب النتيجة
             let score = 0;
@@ -1118,12 +1599,11 @@
             subjectScores[currentSubject] = finalScore;
             
             // الانتقال للمادة التالية أو إنهاء
-            const subjects = currentStudent.testsArabic ? ['english', 'math', 'arabic'] : ['english', 'math'];
-            const currentIdx = subjects.indexOf(currentSubject);
+            const currentIdx = examSubjects.indexOf(currentSubject);
             
-            if (currentIdx < subjects.length - 1) {
+            if (currentIdx < examSubjects.length - 1) {
                 alert(`أنهيت ${currentSubject === 'english' ? 'الإنجليزية' : currentSubject === 'math' ? 'الرياضيات' : 'العربية'} بدرجة ${finalScore}/30\nالانتقال للمادة التالية...`);
-                startSubject(subjects[currentIdx + 1]);
+                startSubject(examSubjects[currentIdx + 1]);
             } else {
                 saveStudentResult();
             }
@@ -1296,30 +1776,6 @@
                 location.reload();
             }
         }
-
-        // ============ بنك الأسئلة (نفس الكود السابق) ============
-        const questionBank = {
-            G1: {
-                english: {
-                    modelA: [
-                        {
-                            id: "g1_en_a_q1",
-                            type: "image_choice",
-                            question: "Choose the correct name for the given pictures:",
-                            marks: 12,
-                            items: [
-                                { image: "https://cdn-icons-png.flaticon.com/512/616/616408.png", options: ["Cat", "Cot"], correct: 0 },
-                                { image: "https://cdn-icons-png.flaticon.com/512/2917/2917995.png", options: ["Pan", "Pen"], correct: 0 },
-                                { image: "https://cdn-icons-png.flaticon.com/512/616/616408.png", options: ["Dog", "Dug"], correct: 0 },
-                                { image: "https://cdn-icons-png.flaticon.com/512/616/616567.png", options: ["Big", "Bag"], correct: 0 }
-                            ],
-                            needs_manual: false
-                        }
-                    ],
-                    modelB: []
-                }
-            }
-        };
     </script>
 </body>
 </html>
