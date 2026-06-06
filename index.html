@@ -16,7 +16,6 @@
             --secondary: #D2691E;
             --accent: #CD853F;
             --gold: #DAA520;
-            --bg: #FAF7F2;
         }
 
         body {
@@ -234,29 +233,6 @@
             margin-bottom: 1rem;
         }
 
-        .question-block.correct-final {
-            border-color: #10B981;
-            background: #F0FDF4;
-        }
-
-        .question-block.wrong-final {
-            border-color: #EF4444;
-            background: #FEF2F2;
-        }
-
-        .score-indicator {
-            display: inline-block;
-            padding: 0.25rem 0.75rem;
-            border-radius: 9999px;
-            font-weight: bold;
-            font-size: 0.875rem;
-            margin-top: 0.5rem;
-        }
-
-        .score-correct { background: #D1FAE5; color: #065F46; }
-        .score-wrong { background: #FEE2E2; color: #991B1B; }
-        .score-pending { background: #FEF3C7; color: #92400E; }
-
         @media (max-width: 640px) {
             .glass-card { border-radius: 16px; padding: 1rem !important; }
             .welcome-title { font-size: 2rem; }
@@ -443,16 +419,16 @@
                     <select id="s-nationality" class="input-field w-full p-4 rounded-xl text-lg" onchange="handleNationalityChange()">
                         <option value="">-- اختر الجنسية --</option>
                         <optgroup label="🌍 الجنسيات العربية (تختبر: إنجليزي + رياضيات + عربي)">
-                            <option value="saudi">🇸 سعودي</option>
-                            <option value="yemeni">🇾🇪 يمني</option>
+                            <option value="saudi">🇦 سعودي</option>
+                            <option value="yemeni">🇾 يمني</option>
                             <option value="egyptian">🇪🇬 مصري</option>
-                            <option value="jordanian">🇯 أردني</option>
+                            <option value="jordanian">🇯🇴 أردني</option>
                             <option value="other-arab">عربي آخر</option>
                         </optgroup>
                         <optgroup label="🌏 الجنسيات غير العربية (تختبر: إنجليزي + رياضيات فقط)">
                             <option value="indian">🇮🇳 هندي</option>
                             <option value="pakistani">🇵🇰 باكستاني</option>
-                            <option value="filipino">🇭 فلبيني</option>
+                            <option value="filipino">🇵🇭 فلبيني</option>
                             <option value="other-non-arab">أخرى</option>
                         </optgroup>
                     </select>
@@ -489,7 +465,7 @@
         <div class="glass-card p-8 max-w-md w-full fade-in">
             <div class="text-center mb-6">
                 <div class="w-24 h-24 bg-gradient-to-br from-green-500 to-green-700 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg text-5xl">
-                    👨‍🏫
+                    👨‍
                 </div>
                 <h2 class="text-3xl font-black text-gray-800 mb-2">دخول المعلم</h2>
                 <p class="text-gray-600">أدخل بياناتك للمتابعة</p>
@@ -524,7 +500,7 @@
                 <div class="flex justify-between items-center flex-wrap gap-4">
                     <div>
                         <h2 class="text-3xl font-black text-gray-800">
-                            <span class="text-4xl ml-3">👨‍</span>
+                            <span class="text-4xl ml-3">👨‍🏫</span>
                             لوحة المعلم
                         </h2>
                         <p class="text-gray-600 mt-1">متابعة وتصحيح نتائج الطلاب</p>
@@ -552,7 +528,7 @@
 
             <div class="glass-card p-6 overflow-x-auto">
                 <h3 class="text-2xl font-bold text-gray-800 mb-4">
-                    <span class="text-3xl ml-2"></span>قائمة الطلاب
+                    <span class="text-3xl ml-2">📋</span>قائمة الطلاب
                 </h3>
                 <table class="w-full">
                     <thead class="bg-amber-50 border-b-2 border-amber-200">
@@ -773,8 +749,6 @@
         let answers = {};
         let subjectScores = { english: 0, math: 0, arabic: 0 };
         let allStudents = JSON.parse(localStorage.getItem('exam_students')) || [];
-
-        // المواد التي سيختبرها الطالب
         let examSubjects = [];
 
         const gradeOptions = {
@@ -1142,6 +1116,315 @@
                         }
                     ]
                 }
+            },
+            G5: {
+                english: {
+                    modelA: [
+                        {
+                            id: "g5_en_a_q1",
+                            type: "mcq",
+                            question: "Read the passage and answer the questions.",
+                            passage: "Alex and his friends were thrilled about their upcoming summer trip to the beach. They packed their swimsuits, sunscreen, and beach towels, ready for days of fun in the sun. As they arrived at the sandy shores, they couldn't wait to dive into the refreshing ocean waves. They spent their days building sandcastles, playing beach volleyball, and enjoying ice cream by the shore. In the evenings, they gathered around a bonfire, roasting marshmallows and sharing stories. It was a memorable summer trip.",
+                            marks: 12,
+                            subQuestions: [
+                                { question: "Where did Alex and his friends go on their summer trip?", options: ["Beach", "Mountains"], correct: 0 },
+                                { question: "What items did they pack for their trip?", options: ["Boats", "Sunscreen"], correct: 1 },
+                                { question: "What did they do in the evening?", options: ["shared stories", "ate ice cream"], correct: 0 },
+                                { question: "What part of speech is: Gathered", options: ["Verb", "Adjective"], correct: 0 },
+                                { question: "Refreshing is used as an adjective.", options: ["True", "False"], correct: 0 },
+                                { question: "Marshmallow is a proper noun.", options: ["True", "False"], correct: 1 }
+                            ],
+                            needs_manual: false
+                        },
+                        {
+                            id: "g5_en_a_q2",
+                            type: "mcq",
+                            question: "Identify the tense.",
+                            marks: 10,
+                            subQuestions: [
+                                { question: "My dog slept on the couch.", options: ["Simple past", "Simple Present"], correct: 0 },
+                                { question: "I read one book every week.", options: ["Simple past", "Simple Present"], correct: 1 },
+                                { question: "They are taking an exam.", options: ["Simple present", "Present Continuous"], correct: 1 },
+                                { question: "Are you going to Paris?", options: ["Simple Past", "Present Continuous"], correct: 1 },
+                                { question: "James bought a new phone.", options: ["Simple Past", "Simple Present"], correct: 0 }
+                            ],
+                            needs_manual: false
+                        },
+                        {
+                            id: "g5_en_a_q3",
+                            type: "mcq",
+                            question: "Choose the correct answer.",
+                            marks: 8,
+                            subQuestions: [
+                                { question: "Nelly is a nurse. She ___ at the hospital.", options: ["works", "working"], correct: 0 },
+                                { question: "Ali ___ his breakfast in the kitchen.", options: ["is eats", "is eating"], correct: 1 },
+                                { question: "Does your mom ___ her car to the hospital everyday?", options: ["drive", "drives"], correct: 0 },
+                                { question: "Tina ___ her room yesterday.", options: ["cleans", "cleaned"], correct: 1 }
+                            ],
+                            needs_manual: false
+                        }
+                    ],
+                    modelB: [
+                        {
+                            id: "g5_en_b_q1",
+                            type: "mcq",
+                            question: "Read the passage and answer the questions.",
+                            passage: "Maya was excited about using her new pink backpack. First, Maya put her crayons in the backpack. She would use the crayons to draw pictures for her new teacher, Mrs. Smith. Next, she put her scissors in the backpack. She could use the scissors to cut out hearts for her best friend. Next, Maya put in her new princess pencils. She thought of all the stories she would write with them. Finally, Maya put a bottle of glitter glue in her backpack. It would make everything she made sparkle.",
+                            marks: 12,
+                            subQuestions: [
+                                { question: "What did Maya put in her backpack right before she put her glitter glue in?", options: ["pencils", "crayons"], correct: 0 },
+                                { question: "What did Maya plan on using her scissors for?", options: ["writing stories", "making hearts"], correct: 1 },
+                                { question: "What is the name of Maya's new teacher?", options: ["Ms. Jones", "Mrs. Smith"], correct: 1 },
+                                { question: "What part of speech is Pink?", options: ["Noun", "Adjective"], correct: 1 },
+                                { question: "Excited is used a verb.", options: ["True", "False"], correct: 1 },
+                                { question: "Glitter is a noun.", options: ["True", "False"], correct: 0 }
+                            ],
+                            needs_manual: false
+                        },
+                        {
+                            id: "g5_en_b_q2",
+                            type: "mcq",
+                            question: "Identify the tense.",
+                            marks: 8,
+                            subQuestions: [
+                                { question: "She eats lunch in the afternoon.", options: ["Simple Past", "Simple present"], correct: 1 },
+                                { question: "We are watching a movie.", options: ["Present Continuous", "Past Continuous"], correct: 0 },
+                                { question: "He played volleyball on the beach.", options: ["Simple Past", "Simple Present"], correct: 0 },
+                                { question: "Is he cleaning the room?", options: ["Present Continuous", "Simple Present"], correct: 0 }
+                            ],
+                            needs_manual: false
+                        },
+                        {
+                            id: "g5_en_b_q3",
+                            type: "mcq",
+                            question: "Choose the correct answer.",
+                            marks: 10,
+                            subQuestions: [
+                                { question: "We ___ in the library every night.", options: ["studying", "study"], correct: 1 },
+                                { question: "Does she ___ football regularly?", options: ["play", "plays"], correct: 0 },
+                                { question: "He ___ movie with his friends.", options: ["is watching", "watch"], correct: 0 },
+                                { question: "He ___ his grandma yesterday.", options: ["visits", "visited"], correct: 1 },
+                                { question: "The rabbit ___ in the garden.", options: ["is hops", "is hopping"], correct: 1 }
+                            ],
+                            needs_manual: false
+                        }
+                    ]
+                }
+            },
+            G6: {
+                english: {
+                    modelA: [
+                        {
+                            id: "g6_en_a_q1",
+                            type: "mcq",
+                            question: "Read the passage and choose the correct answer.",
+                            passage: "The library was unusually quiet, even for a Thursday afternoon. Sarah sat in the far corner, surrounded by towering shelves. The soft hum of the ceiling fan and the occasional rustle of a turning page were the only sounds. She wasn't reading, though the book lay open in her lap. Instead, she was watching the sunlight pour through the window, drawing golden patterns on the floor. In that quiet moment, Sarah felt a calmness she hadn't known in days. The silence was not empty—it was comforting, full of thought and presence. It was as if the library itself was breathing gently around her.",
+                            marks: 10,
+                            subQuestions: [
+                                { question: "What mood does the writer create in this passage?", options: ["Tense", "Calm and reflective", "Confusing"], correct: 1 },
+                                { question: "Where was Sara?", options: ["in a garden", "her room", "library"], correct: 2 },
+                                { question: "Choose the correct part of speech for the word 'quiet' in the sentence: 'The library was unusually quiet.'", options: ["Noun", "Verb", "Adjective"], correct: 2 },
+                                { question: "Why wasn't Sarah reading the book in her lap?", options: ["She was waiting for someone", "She was daydreaming", "She fell asleep"], correct: 1 },
+                                { question: "What does the author suggest about silence in this passage?", options: ["It is boring and uncomfortable", "It is dangerous", "It can bring peace and awareness"], correct: 2 }
+                            ],
+                            needs_manual: false
+                        },
+                        {
+                            id: "g6_en_a_q2",
+                            type: "mcq",
+                            question: "Choose the correct answer for each sentence.",
+                            marks: 10,
+                            subQuestions: [
+                                { question: "Change the tense to present progressive: 'They build roads'", options: ["They built roads.", "They were building roads.", "They are building roads."], correct: 2 },
+                                { question: "Identify the tense of this sentence: 'They have been studying for hours.'", options: ["Simple present", "Present perfect continuous", "Past continuous"], correct: 1 },
+                                { question: "What tense is used in this sentence: She travelled to Japan last month.", options: ["Past progressive", "Past simple", "Present perfect"], correct: 1 },
+                                { question: "What is the part of speech of the word 'myself'?", options: ["noun", "pronoun", "adverb"], correct: 1 },
+                                { question: "Which sentence is positive?", options: ["He didn't come to school today.", "They never eat vegetables.", "She always completes her homework."], correct: 2 },
+                                { question: "What is the part of speech of the word 'happiness' in this sentence: 'Happiness is important for a healthy life.'", options: ["Verb", "Adjective", "Noun"], correct: 2 }
+                            ],
+                            needs_manual: false
+                        },
+                        {
+                            id: "g6_en_a_q3",
+                            type: "upload",
+                            question: "Write a paragraph in about 100 words on: Importance of Reading Books.",
+                            marks: 10,
+                            needs_manual: true
+                        }
+                    ],
+                    modelB: [
+                        {
+                            id: "g6_en_b_q1",
+                            type: "mcq",
+                            question: "Read the passage and choose the correct answer.",
+                            passage: "It was a regular Tuesday morning at Greenhill Middle School. The students were bustling around, preparing for their classes. Among them was Maya, a curious and bright seventh grader who always carried her lunch in a bright red lunchbox. But today, something was wrong. When the lunch bell rang, Maya rushed to her locker, only to find that her lunchbox was missing! Confused and a little upset, she asked her friends if they had seen it. No one had. That's when Maya decided to investigate. She started by checking around her locker for any clues. To her surprise, she noticed a small trail of cookie crumbs leading down the hallway. 'That's strange,' she thought. She followed the crumbs until they ended near the gymnasium. There, she found Max, the class hamster, outside his cage with a half-eaten sandwich next to him. The janitor, Mr. Benson, explained that Max had escaped earlier that day when someone accidentally left his cage open. Maya smiled. It seemed that Max had gone on a mini adventure—and her lunch had been a part of it. From that day on, Maya made sure to keep her lunchbox extra secure—and brought Max an extra treat just in case.",
+                            marks: 10,
+                            subQuestions: [
+                                { question: "Which of the following describe Maya?", options: ["Curious", "Lazy", "Responsible"], correct: 0 },
+                                { question: "What clues helped Maya in solving the mystery?", options: ["A trail of cookie crumbs", "A torn note", "Max found outside his cage"], correct: 0 },
+                                { question: "What do we know about Max the hamster?", options: ["He escaped from his cage", "He ate some of Maya's lunch", "He always stays in his cage"], correct: 0 },
+                                { question: "What actions show Maya's problem-solving skills?", options: ["Asking her friends", "Following the crumbs", "Going home early"], correct: 1 },
+                                { question: "What lessons can be learned from the story?", options: ["Small clues can solve big mysteries", "Hamsters should not be kept in schools", "It's good to stay calm and think"], correct: 0 }
+                            ],
+                            needs_manual: false
+                        },
+                        {
+                            id: "g6_en_b_q2",
+                            type: "mcq",
+                            question: "Identify the part of speech and tense.",
+                            marks: 10,
+                            subQuestions: [
+                                { question: "Identify the part of speech of the word in bold: She quickly finished her homework before dinner.", options: ["Verb", "Adverb", "Adjective"], correct: 1 },
+                                { question: "Which sentence is in the present perfect tense?", options: ["She writes a letter every week.", "She wrote a letter yesterday.", "She has written a letter to her friend."], correct: 2 },
+                                { question: "Identify the type of present tense used: He is reading a novel in his room.", options: ["Present simple", "Present perfect continuous", "Present continuous"], correct: 2 },
+                                { question: "Which sentence is in the past perfect tense?", options: ["They had left before the rain started.", "They left early in the morning.", "They were leaving when I arrived."], correct: 0 },
+                                { question: "What is the part of speech of the word in bold: The blue butterfly landed on the flower.", options: ["Noun", "Verb", "Adjective"], correct: 2 }
+                            ],
+                            needs_manual: false
+                        },
+                        {
+                            id: "g6_en_b_q3",
+                            type: "upload",
+                            question: "Write a paragraph in about 100 words on: 'The Activity I like to do in my Freetime'",
+                            marks: 10,
+                            needs_manual: true
+                        }
+                    ]
+                }
+            },
+            G7: {
+                english: {
+                    modelA: [
+                        {
+                            id: "g7_en_a_q1",
+                            type: "mcq",
+                            question: "Read the passage and choose the correct answer.",
+                            passage: "In life, setbacks are inevitable. Whether it's failing a test, losing a game, or facing personal challenges, it's easy to become discouraged. However, the difference between those who succeed and those who give up is resilience—the ability to bounce back after facing difficulties. Resilience isn't about avoiding challenges; it's about facing them head-on and learning from them. Take Thomas Edison, for example. He failed countless times before finally inventing the light bulb. In fact, he famously said, 'I have not failed. I've just found 10,000 ways that won't work.' His resilience allowed him to keep going, no matter how many times he failed. Similarly, in sports, athletes who persist through tough losses or injuries often come back stronger. Resilience allows individuals to not only overcome adversity but to grow from it. The key is maintaining a positive attitude, being patient with oneself, and continuing to move forward, no matter how difficult the journey may seem.",
+                            marks: 10,
+                            subQuestions: [
+                                { question: "What is the main idea of the passage?", options: ["Success is only for those who don't face challenges.", "Resilience helps people overcome challenges and succeed.", "Failure should be avoided at all costs."], correct: 1 },
+                                { question: "What does the author mean by 'resilience'?", options: ["The ability to ignore challenges.", "The ability to face difficulties and recover from them.", "The ability to avoid setbacks."], correct: 1 },
+                                { question: "Which of the following best describes Thomas Edison's attitude toward failure?", options: ["He saw failure as a reason to quit.", "He believed that failure was part of the process of success.", "He didn't care about failure."], correct: 1 },
+                                { question: "According to the passage, what is necessary to build resilience?", options: ["Giving up when things get difficult.", "Avoiding challenges altogether.", "Maintaining a positive attitude and being patient."], correct: 2 },
+                                { question: "Which of the following is a synonym for 'resilience' as used in the passage?", options: ["Weakness", "mental strength or Persistence", "Stubbornness"], correct: 1 }
+                            ],
+                            needs_manual: false
+                        },
+                        {
+                            id: "g7_en_a_q2",
+                            type: "mcq",
+                            question: "Do as directed:",
+                            marks: 10,
+                            subQuestions: [
+                                { question: "Identify the part of speech of the bold word: The students listened carefully during the science experiment.", options: ["Adjective", "Verb", "Adverb"], correct: 2 },
+                                { question: "Which of the following sentences contains a coordinating conjunction?", options: ["She stayed home because she was sick.", "I will call you after I arrive.", "He wanted to go to the park, but it started to rain."], correct: 2 },
+                                { question: "Identify the part of speech of the bold word: The dog barked at the stranger outside the house.", options: ["Verb", "Adverb", "Preposition"], correct: 0 },
+                                { question: "Which of the following is a sentence in the present continuous tense?", options: ["He will be studying at 7 p.m.", "He studied all night for the test.", "He is studying for his exams right now."], correct: 2 },
+                                { question: "Choose the sentence with a coordinating conjunction used correctly:", options: ["She was tired, so she went to bed early.", "He left early because he had a meeting.", "We will go to the mall although it is raining."], correct: 0 },
+                                { question: "Identify the tenses used in the sentence: By the time we arrived, the concert had already started.", options: ["Present perfect", "Past perfect", "Past simple"], correct: 1 },
+                                { question: "Fill in the blank with the correct preposition: She divided the cake equally ___ her three children.", options: ["Among", "Between", "With"], correct: 0 }
+                            ],
+                            needs_manual: false
+                        },
+                        {
+                            id: "g7_en_a_q3",
+                            type: "upload",
+                            question: "Write a paragraph in about 100 words on: Advantages of School Uniform.",
+                            marks: 10,
+                            needs_manual: true
+                        }
+                    ],
+                    modelB: [
+                        {
+                            id: "g7_en_b_q1",
+                            type: "mcq",
+                            question: "Read the passage and choose the correct answer.",
+                            passage: "Teamwork is often considered the key to success in both personal and professional life. It brings together people with different skills, experiences, and perspectives, allowing them to accomplish things they could never achieve alone. In a team, each person plays a unique role, and when everyone contributes their strengths, the team as a whole becomes much stronger. Take sports teams, for example. A football team cannot win a match if every player tries to do everything on their own. The players must work together, relying on each other's strengths and trusting each other to perform their roles. When one player scores a goal, it is the result of many actions that led up to it, from passing the ball to setting up the right strategy. The same is true in the workplace. Whether it's a group project at school or a collaborative task at work, teamwork allows for a diversity of ideas, which often leads to more creative solutions. However, teamwork also requires communication, respect, and cooperation. When members of a team respect one another and listen to each other's ideas, they create a positive environment that encourages innovation and productivity.",
+                            marks: 10,
+                            subQuestions: [
+                                { question: "What is the main idea of the passage?", options: ["Teamwork is essential for success in various aspects of life.", "Working alone is more effective than working in a team.", "Teamwork only matters in sports."], correct: 0 },
+                                { question: "According to the passage, why is teamwork important in sports?", options: ["Because individual players can always win on their own.", "Because teamwork leads to more goals and success in the game.", "Because players don't need to work together to win."], correct: 1 },
+                                { question: "What is one essential component of effective teamwork mentioned in the passage?", options: ["Ignoring each other's ideas.", "Communication and respect.", "Keeping ideas to oneself."], correct: 1 },
+                                { question: "What does the author mean by 'a diversity of ideas' in teamwork?", options: ["Only one person's idea should be considered.", "Everyone has the same idea.", "Each person brings unique ideas that contribute to the success of the team."], correct: 2 },
+                                { question: "What does the word 'cooperation' in the passage most closely mean?", options: ["Working independently", "Working together with others", "Avoiding others' ideas"], correct: 1 }
+                            ],
+                            needs_manual: false
+                        },
+                        {
+                            id: "g7_en_b_q2",
+                            type: "mcq",
+                            question: "Do as directed:",
+                            marks: 10,
+                            subQuestions: [
+                                { question: "Identify the part of speech of the bold word: She was feeling extremely tired after the long journey.", options: ["Adverb", "Noun", "Verb"], correct: 0 },
+                                { question: "Choose the correct preposition to complete the sentence: The book is lying ___ the table.", options: ["Under", "Between", "With"], correct: 0 },
+                                { question: "Which sentence is in the present perfect tense?", options: ["I have seen that movie before.", "I will watch that movie tomorrow.", "I watched that movie last night."], correct: 0 },
+                                { question: "Choose the sentence with past perfect tense:", options: ["They were walking to school.", "They would have walked to school every day.", "They had walked to school."], correct: 2 },
+                                { question: "Identify the tense used in the sentence: By next summer, I will have visited five countries.", options: ["Present perfect", "Past continuous", "Future perfect"], correct: 2 }
+                            ],
+                            needs_manual: false
+                        },
+                        {
+                            id: "g7_en_b_q3",
+                            type: "upload",
+                            question: "Write a paragraph in about 100 words on: 'The most exciting day of my life.'",
+                            marks: 10,
+                            needs_manual: true
+                        }
+                    ]
+                }
+            },
+            G8: {
+                english: {
+                    modelA: [
+                        {
+                            id: "g8_en_a_q1",
+                            type: "mcq",
+                            question: "Read the following passage and choose the correct answer.",
+                            passage: "Garbage is a great environment hazard. It comes from various sources—used paper, tiffin packing's, plastic bags, ice-cream wrappers, bottle caps, fallen leaves from trees and many more. Garbage makes the premises ugly, unkempt and breeds diseases. A lot of trash that is thrown away contain material that can be recycled and reused such as paper, metals and glass which can be sent to the nearest recycling center or disposed of to the junk dealer. It also contains organic matter such as leaves which can enrich soil fertility. A compost pit can be made at a convenient location where the refuse can be placed with layers of soil and an occasional sprinkling of water. This would help decomposition to make valuable fertilizer. This would also prevent pollution that is usually caused by burning such organic waste.",
+                            marks: 10,
+                            subQuestions: [
+                                { question: "Garbage originates from", options: ["used paper, tiffin, packings, plastic bags and fallen leaves from trees", "leftovers of food", "fallen branches from trees", "building materials."], correct: 0 },
+                                { question: "Garbage can create havoc to the mankind by", options: ["spreading foul smell", "slowing our vehicles on the road", "spreading several diseases", "all the above."], correct: 2 },
+                                { question: "What happens to the disposed material at the recycling center?", options: ["It is thrown away", "It is recycled for reuse", "It is sold to the rag pickers", "It is dumped into the ground."], correct: 1 },
+                                { question: "Fallen leaves from trees are useful because they", options: ["solve the problem of fuel wood in village households", "enrich water quality", "enrich soil fertility", "beautify landscape."], correct: 2 },
+                                { question: "Which of these is correct with reference to a composite pit?", options: ["The refuge is placed with layers of soil with an occasional sprinkling of water", "It contributes to the manufacture of useful fertilizer", "It prevents pollution", "All the above."], correct: 3 }
+                            ],
+                            needs_manual: false
+                        },
+                        {
+                            id: "g8_en_a_q2",
+                            type: "upload",
+                            question: "Write an essay in 130 words on: An achievement that filled me with pride.",
+                            marks: 20,
+                            needs_manual: true
+                        }
+                    ],
+                    modelB: [
+                        {
+                            id: "g8_en_b_q1",
+                            type: "mcq",
+                            question: "Read the article by a journalist about some ancient rock paintings that were found in a cave in France, and then choose the correct answer.",
+                            passage: "Ancient cave art - In December 1994, three climbers were climbing a cliff in southern France when they came across a small opening. They made the opening wider, and then crawled along a narrow passage into a large cave. To their amazement, they saw hundreds of beautiful images of animals on the cave walls. As they walked through the cave, they realised they were stepping on animal bones. Later tests showed that these were thousands of years old. The climbers told the local authorities about the cave, and experts were sent to study it. The experts realised it was a very important discovery. They identified more than 400 drawings and paintings of 15 different animal species. Some were between 28000 and 31000 years old. The majority, however, dated back 35000 years. Experts also worked out that there had been a 4000-year interval when no art was created in the cave. They also concluded there had been a rock fall about 27000 years ago. The entrance became blocked and remained so until 1994. The cave was therefore frozen in time, which helped to preserve the images, and as a result, they look fresher than prehistoric cave paintings found elsewhere. Exposing the rock paintings to normal air and people for any length of time would damage them. So since the cave was discovered, very few people have been allowed inside, and only for a limited time. Various studies have been carried out, however. Scientists established that the walls had been cleaned before they were painted, meaning that the background colour is lighter than in other caves. They also identified the materials the artists used: pieces of iron, brushes created from horsehair and pointed stones for scratching lines.",
+                            marks: 10,
+                            subQuestions: [
+                                { question: "What did the climbers notice on the floor of the cave?", options: ["Images of animals", "narrow passage", "animal bones"], correct: 2 },
+                                { question: "How many years ago was most of the art in the cave made?", options: ["28000", "35000", "31000"], correct: 1 },
+                                { question: "Why were people unable to enter the cave for thousands of years?", options: ["Rock fall", "no art", "cave was damaged"], correct: 0 },
+                                { question: "What material did the cave artists use to make their brushes?", options: ["Wood", "horsehair", "hair"], correct: 1 },
+                                { question: "Who was sent to study about the cave?", options: ["Climbers", "local authorities", "experts"], correct: 2 }
+                            ],
+                            needs_manual: false
+                        },
+                        {
+                            id: "g8_en_b_q2",
+                            type: "upload",
+                            question: "Write an essay in about 130 words on: Importance of Sports.",
+                            marks: 20,
+                            needs_manual: true
+                        }
+                    ]
+                }
             }
         };
 
@@ -1231,7 +1514,7 @@
             if (nationality) {
                 notice.classList.remove('hidden');
                 if (testsArabic) {
-                    noticeText.textContent = '📚 سيختبر الطالب: الإنجليزية + الرياضيات + العربية';
+                    noticeText.textContent = ' سيختبر الطالب: الإنجليزية + الرياضيات + العربية';
                 } else {
                     noticeText.textContent = '📚 سيختبر الطالب: الإنجليزية + الرياضيات فقط';
                 }
@@ -1266,7 +1549,6 @@
 
             localStorage.setItem('current_student', JSON.stringify(currentStudent));
             
-            // تحديد المواد حسب الجنسية
             if (currentStudent.testsArabic) {
                 examSubjects = ['english', 'math', 'arabic'];
             } else {
@@ -1289,10 +1571,7 @@
             const subjectNames = { english: 'اللغة الإنجليزية', math: 'الرياضيات', arabic: 'اللغة العربية' };
             document.getElementById('exam-subject').textContent = subjectNames[subject];
             
-            // تحديث tabs المواد
             updateSubjectTabs();
-            
-            // تحميل الأسئلة
             loadQuestions(subject);
             
             document.getElementById('q-total').textContent = questions.length;
@@ -1323,7 +1602,6 @@
                 questions = [...questionBank[currentStudent.grade].english[randomModel]];
                 questions = questions.sort(() => Math.random() - 0.5);
             } else if (subject === 'math') {
-                // Placeholder للرياضيات - يمكن استبداله بأسئلة حقيقية
                 questions = [
                     {
                         id: "math_placeholder_1",
@@ -1357,7 +1635,6 @@
                     }
                 ];
             } else if (subject === 'arabic') {
-                // Placeholder للعربي
                 questions = [
                     {
                         id: "arabic_placeholder_1",
@@ -1435,7 +1712,7 @@
             
             if (q.passage) {
                 html += `<div class="bg-blue-50 p-4 rounded-xl border-2 border-blue-200">
-                    <p class="text-sm text-blue-600 font-bold mb-2">📖 Passage:</p>
+                    <p class="text-sm text-blue-600 font-bold mb-2"> Passage:</p>
                     <p class="text-gray-700 italic">${q.passage}</p>
                 </div>`;
             }
@@ -1525,7 +1802,6 @@
         function selectMCQ(qKey, optIdx) {
             answers[qKey] = optIdx;
             
-            // تحديث الواجهة - بدون إظهار إذا كانت صحيحة أو غلط
             const buttons = document.querySelectorAll(`button[onclick^="selectMCQ('${qKey}'"]`);
             buttons.forEach((btn, idx) => {
                 btn.classList.remove('selected');
@@ -1572,7 +1848,6 @@
                 return;
             }
             
-            // حساب النتيجة
             let score = 0;
             let totalMarks = 0;
             
@@ -1598,7 +1873,6 @@
             const finalScore = Math.round((score / totalMarks) * 30);
             subjectScores[currentSubject] = finalScore;
             
-            // الانتقال للمادة التالية أو إنهاء
             const currentIdx = examSubjects.indexOf(currentSubject);
             
             if (currentIdx < examSubjects.length - 1) {
