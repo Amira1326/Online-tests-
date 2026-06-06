@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة الاختبارات الإلكترونية</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #8B4513;
+            --primary-light: #A0522D;
+            --secondary: #2D6A4F;
+            --accent: #F4A261;
+            --background: #FAF7F2;
+            --surface: #FFFFFF;
+            --text: #2B2D42;
+            --success: #52B788;
+            --error: #E63946;
+        }
+
+        * { font-family: 'Cairo', 'Inter', sans-serif; }
+        [dir="ltr"] * { font-family: 'Inter', 'Cairo', sans-serif; }
+
+        body { background: var(--background); min-height: 100vh; color: var(--text); }
+
+        .glass-card {
+            background: var(--surface);
+            backdrop-filter: blur(20px);
+            border-radius: 1.5rem;
+            box-shadow: 0 10px 40px rgba(139, 69, 19, 0.08);
+            border: 1px solid rgba(139, 69, 19, 0.1);
+        }
+
+        .school-option {
+            transition: all 0.4s;
+            cursor: pointer;
+            border: 3px solid transparent;
+        }
+        .school-option:hover { transform: translateY(-8px); box-shadow: 0 20px 40px rgba(139, 69, 19, 0.15); }
+        .school-option.selected {
+            border-color: var(--primary);
+            background: linear-gradient(135deg, #FFF8F0 0%, #FFEED5 100%);
+            box-shadow: 0 0 0 4px rgba(139, 69, 19, 0.15);
+        }
+
+        .input-field { transition: all 0.3s; border: 2px solid #E5E7EB; background: white; }
+        .input-field:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(139, 69, 19, 0.1); }
+        .input-field.error { border-color: var(--error); background: #FEF2F2; }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            transition: all 0.3s;
+        }
+        .btn-primary:hover:not(:disabled) { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(139, 69, 19, 0.3); }
+        .btn-primary:disabled { background: #D4D4D4; cursor: not-allowed; }
+
+        .subject-card { transition: all 0.3s; cursor: pointer; border: 2px solid transparent; }
+        .subject-card:hover { transform: translateY(-6px); box-shadow: 0 15px 35px rgba(139, 69, 19, 0.15); }
+        .subject-card.completed { border-color: var(--success); background: linear-gradient(135deg, #F0FDF4 0%, #DCFCE7 100%); }
+
+        .mcq-option { transition: all 0.2s; border: 3px solid #E5E7EB; background: white; }
+        .mcq-option:hover { border-color: var(--primary); background: #FFF8F0; }
+        .mcq-option.selected { border-color: var(--success); background: #F0FDF4; box-shadow: 0 0 0 3px rgba(82, 183, 136, 0.2); }
+
+        .tf-btn { transition: all 0.3s; border: 4px solid #E5E7EB; background: white; }
+        .tf-btn.true-btn:hover, .tf-btn.true-btn.selected { border-color: #10B981; background: #D1FAE5; }
+        .tf-btn.false-btn:hover, .tf-btn.false-btn.selected { border-color: #EF4444; background: #FEE2E2; }
+
+        .matching-item { transition: all 0.2s; border: 3px solid #E5E7EB; cursor: pointer; }
+        .matching-item:hover { border-color: var(--primary); background: #FFF8F0; }
+        .matching-item.selected { border-color: var(--accent); background: #FEF3C7; }
+        .matching-item.matched { border-color: var(--success); background: #D1FAE5; }
+
+        .upload-zone { border: 3px dashed #D4D4D4; transition: all 0.3s; background: white; cursor: pointer; }
+        .upload-zone:hover, .upload-zone.dragover { border-color: var(--primary); background: #FFF8F0; }
+
+        .hidden-section { display: none !important; }
+        .fade-in { animation: fadeIn 0.6s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        .slide-in { animation: slideIn 0.5s ease-out; }
+        @keyframes slideIn { from { opacity: 0; transform: translateX(50px); } to { opacity: 1; transform: translateX(0); } }
+
+        .progress-bar { background: linear-gradient(90deg, var(--primary), var(--accent)); transition: width 0.5s ease; }
+
+        .question-type-badge { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; border-radius: 9999px; font-weight: bold; font-size: 0.875rem; }
+        .badge-mcq { background: #DBEAFE; color: #1E40AF; }
+        .badge-tf { background: #D1FAE5; color: #065F46; }
+        .badge-matching { background: #FEF3C7; color: #92400E; }
+        .badge-fill { background: #E0E7FF; color: #3730A3; }
+        .badge-upload { background: #FEE2E2; color: #991B1B; }
+
+        .required-star { color: var(--error); font-weight: bold; }
+
+        .lang-toggle {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;            background: white;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(139, 69, 19, 0.15);
+        }
+        [dir="ltr"] .lang-toggle { left: auto; right: 20px; }
+        .lang-toggle:hover { background: var(--primary); color: white; }
+
+        .text-primary { color: var(--primary); }
+        .text-secondary { color: var(--secondary); }
+        .bg-primary-light { background-color: #FFF8F0; }
+        .border-primary { border-color: var(--primary); }
+
+        @media (max-width: 768px) {
+            .glass-card { padding: 1rem; border-radius: 1rem; }
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4">
+
+    <!-- زر تبديل اللغة -->
+    <button onclick="toggleLanguage()" class="lang-toggle">
+        <i class="fas fa-globe ml-2"></i>
+        <span id="lang-text">English</span>
+    </button>
+
+    <!-- الشاشة 1: اختيار المدرسة -->
+    <div id="school-screen" class="glass-card p-8 md:p-12 max-w-5xl w-full fade-in">
+        <div class="text-center mb-8">
+            <div class="flex justify-center items-center gap-8 mb-6 flex-wrap">
+                <div class="text-center">
+                    <div class="w-24 h-24 bg-gradient-to-br from-amber-100 to-orange-100 rounded-full flex items-center justify-center mx-auto mb-2 border-4 border-amber-200">
+                        <span class="text-4xl">🚪</span>
+                    </div>
+                    <p class="text-sm font-bold text-gray-700" data-i18n="school1_short">بوابة الطفل</p>
+                </div>
+                <div class="text-3xl text-primary font-bold">&</div>
+                <div class="text-center">
+                    <div class="w-24 h-24 bg-gradient-to-br from-amber-100 to-orange-100 rounded-full flex items-center justify-center mx-auto mb-2 border-4 border-amber-200">
+                        <span class="text-4xl">✨</span>
+                    </div>
+                    <p class="text-sm font-bold text-gray-700" data-i18n="school2_short">أجيال المعرفة</p>
+                </div>
+            </div>
+            <h1 class="text-3xl md:text-4xl font-black text-gray-800 mb-2" data-i18n="platform_title">منصة الاختبارات الإلكترونية</h1>            <p class="text-lg text-gray-600" data-i18n="select_school">اختر مدرستك للبدء</p>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-6 mb-8">
+            <div onclick="selectSchool('child-gate')" id="school-child-gate" class="school-option bg-white p-6 md:p-8 rounded-2xl text-center shadow-lg">
+                <div class="w-20 h-20 bg-gradient-to-br from-orange-100 to-amber-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span class="text-5xl">🚪</span>
+                </div>
+                <h2 class="text-2xl md:text-3xl font-bold text-gray-800 mb-2" data-i18n="school1_name">بوابة الطفل</h2>
+                <p class="text-gray-600 mb-4" data-i18n="school1_slogan">للتعليم المبكر المتميز</p>
+                <div class="bg-orange-50 border-2 border-orange-200 rounded-xl p-3">
+                    <p class="text-orange-800 font-bold text-sm">
+                        <i class="fas fa-graduation-cap ml-1"></i>
+                        <span data-i18n="school1_range">من KG2 إلى الصف السادس (VI)</span>
+                    </p>
+                </div>
+            </div>
+
+            <div onclick="selectSchool('knowledge-gen')" id="school-knowledge-gen" class="school-option bg-white p-6 md:p-8 rounded-2xl text-center shadow-lg">
+                <div class="w-20 h-20 bg-gradient-to-br from-amber-100 to-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span class="text-5xl">✨</span>
+                </div>
+                <h2 class="text-2xl md:text-3xl font-bold text-gray-800 mb-2" data-i18n="school2_name">أجيال المعرفة</h2>
+                <p class="text-gray-600 mb-4" data-i18n="school2_slogan">نبني مستقبل أفضل</p>
+                <div class="bg-amber-50 border-2 border-amber-200 rounded-xl p-3">
+                    <p class="text-amber-800 font-bold text-sm">
+                        <i class="fas fa-graduation-cap ml-1"></i>
+                        <span data-i18n="school2_range">من KG2 إلى الصف الثاني عشر (XII)</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <button onclick="goToRegistration()" id="continue-btn" disabled class="w-full btn-primary text-white font-bold py-4 rounded-2xl text-lg shadow-lg disabled:opacity-50">
+            <span data-i18n="continue">متابعة</span> <i class="fas fa-arrow-left mr-2"></i>
+        </button>
+    </div>
+
+    <!-- الشاشة 2: بيانات الطالب -->
+    <div id="registration-screen" class="glass-card p-8 md:p-10 max-w-3xl w-full hidden-section slide-in">
+        <div class="text-center mb-8">
+            <div class="inline-block btn-primary text-white px-8 py-3 rounded-full text-lg font-bold mb-4 shadow-lg">
+                <i class="fas fa-user-edit ml-2"></i>
+                <span data-i18n="student_data">بيانات الطالب</span>
+            </div>
+            <h2 class="text-2xl md:text-3xl font-bold text-gray-800 mb-2" data-i18n="enter_info">أدخل معلوماتك</h2>
+            <p class="text-gray-600 mt-2">
+                <span data-i18n="selected_school">المدرسة المختارة:</span> 
+                <span id="selected-school-name" class="font-bold text-primary"></span>
+            </p>        </div>
+
+        <div class="space-y-5">
+            <div>
+                <label class="block text-gray-800 font-bold mb-2 text-base">
+                    <i class="fas fa-user text-primary ml-2"></i>
+                    <span data-i18n="student_name">اسم الطالب الرباعي</span>
+                    <span class="required-star">*</span>
+                </label>
+                <input type="text" id="student-name" class="input-field w-full p-4 rounded-xl text-lg focus:outline-none" data-i18n-placeholder="student_name_placeholder">
+                <p class="text-red-600 text-sm mt-1 hidden" id="name-error">
+                    <i class="fas fa-exclamation-circle ml-1"></i>
+                    <span data-i18n="name_required">هذا الحقل إلزامي</span>
+                </p>
+            </div>
+
+            <div>
+                <label class="block text-gray-800 font-bold mb-2 text-base">
+                    <i class="fas fa-graduation-cap text-primary ml-2"></i>
+                    <span data-i18n="grade_level">المرحلة الدراسية</span>
+                </label>
+                <select id="grade-select" class="input-field w-full p-4 rounded-xl text-lg focus:outline-none"></select>
+            </div>
+
+            <div>
+                <label class="block text-gray-800 font-bold mb-2 text-base">
+                    <i class="fas fa-id-card text-secondary ml-2"></i>
+                    <span data-i18n="id_number">رقم الهوية / الإقامة</span>
+                </label>
+                <input type="text" id="student-id" placeholder="10xxxxxxxxx" class="input-field w-full p-4 rounded-xl text-lg focus:outline-none">
+            </div>
+
+            <div>
+                <label class="block text-gray-800 font-bold mb-2 text-base">
+                    <i class="fas fa-phone text-accent ml-2"></i>
+                    <span data-i18n="parent_phone">رقم جوال ولي الأمر</span>
+                </label>
+                <input type="tel" id="parent-phone" placeholder="05xxxxxxxx" class="input-field w-full p-4 rounded-xl text-lg focus:outline-none">
+            </div>
+
+            <div class="flex gap-4 pt-4">
+                <button onclick="backToSchool()" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-4 rounded-xl text-lg transition-all">
+                    <i class="fas fa-arrow-right ml-2"></i>
+                    <span data-i18n="back">رجوع</span>
+                </button>
+                <button onclick="showDashboard()" class="btn-primary text-white font-bold py-4 rounded-xl text-lg shadow-lg" style="flex: 2;">
+                    <span data-i18n="enter_exam">دخول الاختبار</span> <i class="fas fa-arrow-left mr-2"></i>
+                </button>
+            </div>
+        </div>    </div>
+
+    <!-- الشاشة 3: لوحة المواد -->
+    <div id="dashboard-screen" class="glass-card p-6 md:p-8 max-w-5xl w-full hidden-section fade-in">
+        <div class="flex justify-between items-center mb-8 border-b-2 border-primary pb-6 flex-wrap gap-4">
+            <div>
+                <h2 class="text-2xl md:text-3xl font-bold text-gray-800 mb-2">
+                    <span data-i18n="welcome">أهلاً بك يا</span> <span id="dash-name" class="text-primary"></span>
+                </h2>
+                <p class="text-gray-600 text-lg">
+                    <span id="dash-school" class="font-bold text-primary"></span> | 
+                    <span id="dash-grade" class="font-bold text-secondary"></span>
+                </p>
+            </div>
+            <button onclick="logout()" class="bg-red-100 hover:bg-red-200 text-red-700 px-4 py-2 rounded-xl font-bold transition-colors">
+                <i class="fas fa-sign-out-alt ml-2"></i>
+                <span data-i18n="logout">خروج</span>
+            </button>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-6 mb-8">
+            <div onclick="startSubject('english')" class="subject-card bg-white p-6 rounded-2xl text-center shadow-lg">
+                <div class="w-20 h-20 bg-gradient-to-br from-red-100 to-pink-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span class="text-4xl">🇧</span>
+                </div>
+                <h3 class="text-xl md:text-2xl font-bold text-gray-800 mb-3" data-i18n="subject_english">اللغة الإنجليزية</h3>
+                <div class="bg-gradient-to-r from-green-600 to-emerald-600 text-white px-4 py-2 rounded-full font-bold mb-3 inline-block">
+                    30 <span data-i18n="marks">درجة</span>
+                </div>
+                <div id="status-english" class="text-gray-500 font-medium mt-2">
+                    <i class="fas fa-clock ml-2"></i>
+                    <span data-i18n="not_started">لم يبدأ بعد</span>
+                </div>
+            </div>
+
+            <div onclick="startSubject('arabic')" class="subject-card bg-white p-6 rounded-2xl text-center shadow-lg">
+                <div class="w-20 h-20 bg-gradient-to-br from-green-100 to-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span class="text-4xl">🇸🇦</span>
+                </div>
+                <h3 class="text-xl md:text-2xl font-bold text-gray-800 mb-3" data-i18n="subject_arabic">اللغة العربية</h3>
+                <div class="bg-gradient-to-r from-green-600 to-emerald-600 text-white px-4 py-2 rounded-full font-bold mb-3 inline-block">
+                    30 <span data-i18n="marks">درجة</span>
+                </div>
+                <div id="status-arabic" class="text-gray-500 font-medium mt-2">
+                    <i class="fas fa-clock ml-2"></i>
+                    <span data-i18n="not_started">لم يبدأ بعد</span>
+                </div>
+            </div>
+
+            <div onclick="startSubject('math')" class="subject-card bg-white p-6 rounded-2xl text-center shadow-lg">                <div class="w-20 h-20 bg-gradient-to-br from-purple-100 to-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span class="text-4xl"></span>
+                </div>
+                <h3 class="text-xl md:text-2xl font-bold text-gray-800 mb-3" data-i18n="subject_math">الرياضيات</h3>
+                <div class="bg-gradient-to-r from-green-600 to-emerald-600 text-white px-4 py-2 rounded-full font-bold mb-3 inline-block">
+                    30 <span data-i18n="marks">درجة</span>
+                </div>
+                <div id="status-math" class="text-gray-500 font-medium mt-2">
+                    <i class="fas fa-clock ml-2"></i>
+                    <span data-i18n="not_started">لم يبدأ بعد</span>
+                </div>
+            </div>
+        </div>
+
+        <div id="score-summary" class="hidden-section bg-primary-light p-6 rounded-2xl border-2 border-primary">
+            <h3 class="text-2xl font-bold text-center mb-4 text-primary">
+                <i class="fas fa-chart-bar ml-2"></i>
+                <span data-i18n="score_summary">ملخص الدرجات</span>
+            </h3>
+            <div class="grid md:grid-cols-3 gap-4 text-center">
+                <div class="bg-white p-4 rounded-xl shadow">
+                    <div class="text-gray-600 mb-1" data-i18n="subject_english">الإنجليزية</div>
+                    <div id="score-english" class="text-3xl font-black text-red-600">-</div>
+                </div>
+                <div class="bg-white p-4 rounded-xl shadow">
+                    <div class="text-gray-600 mb-1" data-i18n="subject_arabic">العربية</div>
+                    <div id="score-arabic" class="text-3xl font-black text-green-600">-</div>
+                </div>
+                <div class="bg-white p-4 rounded-xl shadow">
+                    <div class="text-gray-600 mb-1" data-i18n="subject_math">الرياضيات</div>
+                    <div id="score-math" class="text-3xl font-black text-primary">-</div>
+                </div>
+            </div>
+            <div class="mt-4 text-center">
+                <div class="text-gray-800 text-lg">
+                    <span data-i18n="total_score">المجموع الكلي:</span> 
+                    <span id="total-score" class="text-4xl font-black text-primary mx-2">0</span>
+                    <span data-i18n="out_of_90">من 90</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- الشاشة 4: الاختبار -->
+    <div id="exam-screen" class="glass-card p-6 max-w-5xl w-full hidden-section fade-in">
+        <div class="flex justify-between items-center mb-6 bg-primary-light p-4 rounded-2xl border-2 border-primary flex-wrap gap-4">
+            <div class="flex items-center gap-4">
+                <div id="subject-icon" class="text-4xl"></div>
+                <div>
+                    <h3 id="exam-subject-name" class="text-xl md:text-2xl font-bold text-gray-800"></h3>                    <p class="text-gray-600">
+                        <span data-i18n="question">السؤال</span> 
+                        <span id="current-q-num">1</span> 
+                        <span data-i18n="of">من</span> 
+                        <span id="total-q-num">10</span>
+                    </p>
+                </div>
+            </div>
+            <button onclick="backToDashboard()" class="bg-red-100 hover:bg-red-200 text-red-700 px-4 py-2 rounded-xl font-bold transition-colors">
+                <i class="fas fa-times ml-2"></i>
+                <span data-i18n="exit">خروج</span>
+            </button>
+        </div>
+
+        <div class="w-full bg-gray-200 rounded-full h-3 mb-6 overflow-hidden">
+            <div id="progress-bar" class="progress-bar h-3 rounded-full" style="width: 0%"></div>
+        </div>
+
+        <div id="question-container" class="mb-6">
+            <h2 id="question-text" class="text-xl md:text-2xl font-bold text-gray-800 mb-6 leading-relaxed"></h2>
+            <div id="answer-container"></div>
+        </div>
+
+        <div class="flex justify-between mt-6 pt-6 border-t-2 border-gray-200 flex-wrap gap-4">
+            <button onclick="prevQuestion()" id="prev-btn" disabled class="bg-gray-200 hover:bg-gray-300 disabled:opacity-50 text-gray-800 font-bold py-3 px-6 rounded-xl">
+                <i class="fas fa-arrow-right ml-2"></i>
+                <span data-i18n="previous">السابق</span>
+            </button>
+            <button onclick="nextQuestion()" id="next-btn" class="btn-primary text-white font-bold py-3 px-6 rounded-xl shadow-lg">
+                <span data-i18n="next">التالي</span>
+                <i class="fas fa-arrow-left mr-2"></i>
+            </button>
+            <button onclick="finishSubject()" id="finish-btn" class="hidden bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-xl shadow-lg">
+                <span data-i18n="finish_subject">إنهاء المادة</span>
+                <i class="fas fa-check-circle mr-2"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- الشاشة 5: نتيجة المادة -->
+    <div id="subject-result-screen" class="glass-card p-8 md:p-12 max-w-2xl w-full text-center hidden-section fade-in">
+        <div class="w-32 h-32 bg-gradient-to-br from-green-400 to-emerald-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl">
+            <i class="fas fa-trophy text-6xl text-white"></i>
+        </div>
+        <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4" data-i18n="well_done">أحسنت يا بطل! 🎉</h2>
+        <div class="bg-primary-light rounded-2xl p-8 mb-6 border-2 border-primary">
+            <p class="text-gray-800 text-lg md:text-xl mb-2">
+                <span data-i18n="your_score_in">نتيجتك في</span> 
+                <span id="result-subject-name" class="font-bold text-primary"></span>
+            </p>            <div class="text-5xl md:text-6xl font-black text-primary my-4">
+                <span id="result-score">0</span>
+                <span class="text-2xl md:text-3xl text-gray-500">
+                    <span data-i18n="out_of">من</span> 30
+                </span>
+            </div>
+        </div>
+        <button onclick="backToDashboard()" class="btn-primary text-white font-bold py-4 px-10 rounded-xl text-lg shadow-lg">
+            <span data-i18n="back_to_subjects">العودة لاختيار المادة التالية</span>
+            <i class="fas fa-arrow-left mr-2"></i>
+        </button>
+    </div>
+
+    <script>
+        // === نظام الترجمة ===
+        const translations = {
+            ar: {
+                school1_short: 'بوابة الطفل', school2_short: 'أجيال المعرفة',
+                platform_title: 'منصة الاختبارات الإلكترونية', select_school: 'اختر مدرستك للبدء',
+                school1_name: 'بوابة الطفل', school1_slogan: 'للتعليم المبكر المتميز', school1_range: 'من KG2 إلى الصف السادس (VI)',
+                school2_name: 'أجيال المعرفة', school2_slogan: 'نبني مستقبل أفضل', school2_range: 'من KG2 إلى الصف الثاني عشر (XII)',
+                continue: 'متابعة', student_data: 'بيانات الطالب', enter_info: 'أدخل معلوماتك',
+                selected_school: 'المدرسة المختارة:', student_name: 'اسم الطالب الرباعي',
+                student_name_placeholder: 'اكتب الاسم الكامل هنا...', name_required: 'هذا الحقل إلزامي',
+                grade_level: 'المرحلة الدراسية', id_number: 'رقم الهوية / الإقامة', parent_phone: 'رقم جوال ولي الأمر',
+                back: 'رجوع', enter_exam: 'دخول الاختبار', welcome: 'أهلاً بك يا', logout: 'خروج',
+                subject_english: 'اللغة الإنجليزية', subject_arabic: 'اللغة العربية', subject_math: 'الرياضيات',
+                marks: 'درجة', not_started: 'لم يبدأ بعد', score_summary: 'ملخص الدرجات',
+                total_score: 'المجموع الكلي:', out_of_90: 'من 90', question: 'السؤال', of: 'من',
+                exit: 'خروج', previous: 'السابق', next: 'التالي', finish_subject: 'إنهاء المادة',
+                well_done: 'أحسنت يا بطل! 🎉', your_score_in: 'نتيجتك في', out_of: 'من',
+                back_to_subjects: 'العودة لاختيار المادة التالية',
+                select_school_first: 'الرجاء اختيار المدرسة أولاً',
+                upload_warning: '⚠️ يوجد أسئلة تحتاج رفع ملف! هل تريد المتابعة بدون رفع؟',
+                logout_confirm: 'هل تريد تسجيل الخروج؟', lang_button: 'English',
+                click_upload: 'اضغط هنا لالتقاط صورة أو اختيار ملف',
+                supported_formats: 'يدعم: صور (JPG, PNG) أو PDF',
+                upload_instruction: 'تعليمات:'
+            },
+            en: {
+                school1_short: 'Kids Gate', school2_short: 'Ajyal Al Marefaah',
+                platform_title: 'Electronic Exam Platform', select_school: 'Select your school to begin',
+                school1_name: 'Kids Gate', school1_slogan: 'Excellence in Early Education', school1_range: 'From KG2 to Grade 6 (VI)',
+                school2_name: 'Ajyal Al Marefaah', school2_slogan: 'Building a Better Future', school2_range: 'From KG2 to Grade 12 (XII)',
+                continue: 'Continue', student_data: 'Student Information', enter_info: 'Enter Your Information',
+                selected_school: 'Selected School:', student_name: 'Student Full Name',
+                student_name_placeholder: 'Enter full name here...', name_required: 'This field is required',
+                grade_level: 'Grade Level', id_number: 'ID / Iqama Number', parent_phone: 'Parent Phone Number',
+                back: 'Back', enter_exam: 'Enter Exam', welcome: 'Welcome', logout: 'Logout',
+                subject_english: 'English Language', subject_arabic: 'Arabic Language', subject_math: 'Mathematics',                marks: 'marks', not_started: 'Not started yet', score_summary: 'Score Summary',
+                total_score: 'Total Score:', out_of_90: 'out of 90', question: 'Question', of: 'of',
+                exit: 'Exit', previous: 'Previous', next: 'Next', finish_subject: 'Finish Subject',
+                well_done: 'Well Done! 🎉', your_score_in: 'Your score in', out_of: 'out of',
+                back_to_subjects: 'Back to Subject Selection',
+                select_school_first: 'Please select a school first',
+                upload_warning: '⚠️ There are questions requiring file upload! Continue without uploading?',
+                logout_confirm: 'Do you want to logout?', lang_button: 'العربية',
+                click_upload: 'Click here to take a photo or select a file',
+                supported_formats: 'Supports: Images (JPG, PNG) or PDF',
+                upload_instruction: 'Instructions:'
+            }
+        };
+
+        let currentLang = 'ar';
+        let selectedSchool = '';
+        let studentName = '', studentGrade = '', studentId = '', parentPhone = '';
+        let currentSubject = '', currentQIndex = 0, currentQuestions = [];
+        let studentAnswers = {};
+        let subjectScores = { english: null, arabic: null, math: null };
+
+        const schoolNames = {
+            'child-gate': { ar: 'بوابة الطفل', en: 'Kids Gate' },
+            'knowledge-gen': { ar: 'أجيال المعرفة', en: 'Ajyal Al Marefaah' }
+        };
+
+        const gradeOptions = {
+            'child-gate': [
+                { value: 'KG2', label: { ar: 'رياض أطفال 2 (KG2)', en: 'Kindergarten 2 (KG2)' } },
+                { value: 'G1', label: { ar: 'الصف الأول الابتدائي (I)', en: 'Grade 1 (I)' } },
+                { value: 'G2', label: { ar: 'الصف الثاني الابتدائي (II)', en: 'Grade 2 (II)' } },
+                { value: 'G3', label: { ar: 'الصف الثالث الابتدائي (III)', en: 'Grade 3 (III)' } },
+                { value: 'G4', label: { ar: 'الصف الرابع الابتدائي (IV)', en: 'Grade 4 (IV)' } },
+                { value: 'G5', label: { ar: 'الصف الخامس الابتدائي (V)', en: 'Grade 5 (V)' } },
+                { value: 'G6', label: { ar: 'الصف السادس الابتدائي (VI)', en: 'Grade 6 (VI)' } }
+            ],
+            'knowledge-gen': [
+                { value: 'KG2', label: { ar: 'رياض أطفال 2 (KG2)', en: 'Kindergarten 2 (KG2)' } },
+                { value: 'G1', label: { ar: 'الصف الأول الابتدائي (I)', en: 'Grade 1 (I)' } },
+                { value: 'G2', label: { ar: 'الصف الثاني الابتدائي (II)', en: 'Grade 2 (II)' } },
+                { value: 'G3', label: { ar: 'الصف الثالث الابتدائي (III)', en: 'Grade 3 (III)' } },
+                { value: 'G4', label: { ar: 'الصف الرابع الابتدائي (IV)', en: 'Grade 4 (IV)' } },
+                { value: 'G5', label: { ar: 'الصف الخامس الابتدائي (V)', en: 'Grade 5 (V)' } },
+                { value: 'G6', label: { ar: 'الصف السادس الابتدائي (VI)', en: 'Grade 6 (VI)' } },
+                { value: 'G7', label: { ar: 'الصف الأول المتوسط (VII)', en: 'Grade 7 (VII)' } },
+                { value: 'G8', label: { ar: 'الصف الثاني المتوسط (VIII)', en: 'Grade 8 (VIII)' } },
+                { value: 'G9', label: { ar: 'الصف الثالث المتوسط (IX)', en: 'Grade 9 (IX)' } },
+                { value: 'G10', label: { ar: 'الصف الأول الثانوي (X)', en: 'Grade 10 (X)' } },
+                { value: 'G11', label: { ar: 'الصف الثاني الثانوي (XI)', en: 'Grade 11 (XI)' } },
+                { value: 'G12', label: { ar: 'الصف الثالث الثانوي (XII)', en: 'Grade 12 (XII)' } }            ]
+        };
+
+        const subjectNames = {
+            english: { ar: 'اللغة الإنجليزية', en: 'English Language' },
+            arabic: { ar: 'اللغة العربية', en: 'Arabic Language' },
+            math: { ar: 'الرياضيات', en: 'Mathematics' }
+        };
+
+        const subjectIcons = { english: '🇧', arabic: '🇦', math: '🔢' };
+
+        // === بنك الأسئلة الكامل ===
+        const questionBank = {
+            english: {
+                model1: [
+                    { type: 'upload', question: { ar: 'أكمل الحروف الناقصة: e, _, _, _, i, _, _, _, _', en: 'Complete the missing letters: e, _, _, _, i, _, _, _, _' }, instruction: { ar: 'اكتب الحروف: f, g, h, j, k, l, m', en: 'Write the letters: f, g, h, j, k, l, m' }, marks: 10 },
+                    { type: 'upload', question: { ar: 'اكتب الحرف الأول من كل صورة: ✈️ 🐵 🌳 🐰 ⭐', en: 'Write the first letter of each picture: ✈️ 🐵 🌳 🐰 ⭐' }, instruction: { ar: 'اكتب: A, M, T, R, S', en: 'Write: A, M, T, R, S' }, marks: 10 },
+                    { type: 'matching', question: { ar: 'وصّل الحرف الكبير بالحرف الصغير:', en: 'Match each capital letter with its small letter:' }, leftItems: ['M', 'Q', 'K', 'D', 'R'], rightItems: ['h', 'm', 'n', 'g', 'o', 'q', 'k', 'p', 'c', 'b', 'd', 's', 'j', 'r'], correctMatches: { 0: 1, 1: 5, 2: 6, 3: 9, 4: 13 }, marks: 10 }
+                ],
+                model2: [
+                    { type: 'upload', question: { ar: 'اكتب الحرف الأول من كل صورة:  🌸 🐴  🦆', en: 'Write the first letter of each picture: 🍌 🌸  🍇 🦆' }, instruction: { ar: 'اكتب: B, F, H, G, D', en: 'Write: B, F, H, G, D' }, marks: 10 },
+                    { type: 'matching', question: { ar: 'وصّل الحرف الكبير بالحرف الصغير:', en: 'Match each capital letter with its small letter:' }, leftItems: ['E', 'J', 'W', 'P', 'B'], rightItems: ['e', 'f', 'c', 'z', 'j', 'y', 'h', 'v', 'w', 'r', 'p', 'q', 'd', 'a', 'b'], correctMatches: { 0: 0, 1: 4, 2: 8, 3: 10, 4: 14 }, marks: 10 },
+                    { type: 'upload', question: { ar: 'أكمل الحروف الناقصة: o, _, _, _, s, _, _', en: 'Complete the missing letters: o, _, _, _, s, _, _' }, instruction: { ar: 'اكتب: p, q, r, t, u', en: 'Write: p, q, r, t, u' }, marks: 10 }
+                ]
+            },
+            math: {
+                model1: [
+                    { type: 'upload', question: { ar: 'أكمل الأعداد الناقصة من 1 إلى 15 (بطاريق): 1, _, 3, _, 5, _, 7, _, 9, _, 11, 12, _, _, 15', en: 'Write the missing numbers 1-15 (Penguins): 1, _, 3, _, 5, _, 7, _, 9, _, 11, 12, _, _, 15' }, instruction: { ar: 'اكتب: 2, 4, 6, 8, 10, 13, 14', en: 'Write: 2, 4, 6, 8, 10, 13, 14' }, marks: 15 },
+                    { type: 'mcq', question: { ar: 'عدّ التفاح 🍎🍎 واختر الرقم الصحيح:', en: 'Count the apples 🍎🍎 and select:' }, options: ['1', '2', '3', '4'], correct: 1, marks: 3 },
+                    { type: 'mcq', question: { ar: 'عدّ البرطمانات 🫙🫙 واختر الرقم الصحيح:', en: 'Count the jars 🫙🫙 and select:' }, options: ['1', '2', '3', '4'], correct: 1, marks: 3 },
+                    { type: 'mcq', question: { ar: 'عدّ قطرات الماء 💧💧💧💧💧 واختر الرقم الصحيح:', en: 'Count the drops 💧💧💧💧💧 and select:' }, options: ['3', '4', '5', '6'], correct: 2, marks: 3 },
+                    { type: 'mcq', question: { ar: 'عدّ الفطيرة  واختر الرقم الصحيح:', en: 'Count the pie 🥧 and select:' }, options: ['1', '2', '3', '4'], correct: 0, marks: 3 },
+                    { type: 'mcq', question: { ar: 'عدّ التفاح 🍏🍏🍏 واختر الرقم الصحيح:', en: 'Count the apples 🍏🍏🍏 and select:' }, options: ['2', '3', '4', '5'], correct: 2, marks: 3 }
+                ],
+                model2: [
+                    { type: 'upload', question: { ar: 'أكمل الأعداد الناقصة من 1 إلى 15 (أكواب): 1, _, 3, _, 5, _, 7, _, 9, 10, _, 12, _, 14, _', en: 'Write the missing numbers 1-15 (Cups): 1, _, 3, _, 5, _, 7, _, 9, 10, _, 12, _, 14, _' }, instruction: { ar: 'اكتب: 2, 4, 6, 8, 11, 13, 15', en: 'Write: 2, 4, 6, 8, 11, 13, 15' }, marks: 15 },
+                    { type: 'mcq', question: { ar: 'عدّ الزهرة  واختر الرقم الصحيح:', en: 'Count the flower 🌼 and select:' }, options: ['1', '2', '3', '4'], correct: 0, marks: 3 },
+                    { type: 'mcq', question: { ar: 'عدّ الطائرات الورقية 🪁🪁🪁 واختر الرقم الصحيح:', en: 'Count the kites 🪁🪁🪁🪁 and select:' }, options: ['3', '4', '5', '6'], correct: 1, marks: 3 },
+                    { type: 'mcq', question: { ar: 'عدّ الضفادع 🐸🐸 واختر الرقم الصحيح:', en: 'Count the frogs 🐸 and select:' }, options: ['1', '2', '3', '4'], correct: 1, marks: 3 },
+                    { type: 'mcq', question: { ar: 'عدّ الزهور 🌼🌼🌼🌼 واختر الرقم الصحيح:', en: 'Count the flowers 🌼🌼🌼🌼 and select:' }, options: ['3', '4', '5', '6'], correct: 2, marks: 3 },
+                    { type: 'mcq', question: { ar: 'عدّ الطائرات الورقية 🪁🪁🪁 واختر الرقم الصحيح:', en: 'Count the kites 🪁🪁 and select:' }, options: ['1', '2', '3', '4'], correct: 2, marks: 3 }
+                ]
+            },
+            arabic: {
+                model1: [
+                    { type: 'upload', question: { ar: 'اكتب الحروف الناقصة في الجدول', en: 'Write the missing letters in the table' }, instruction: { ar: 'أكمل الحروف العربية في ورقة ثم ارفع الصورة', en: 'Complete Arabic letters on paper then upload' }, marks: 10 },
+                    { type: 'upload', question: { ar: 'اكتب الحرف الأول من كل صورة: ✏️  🍎 ⛺ ', en: 'Write the first letter of each picture: ✏️ 🍇 🍎 ⛺ 📚' }, instruction: { ar: 'اكتب: ق، ع، ت، خ، ك', en: 'Write: ق، ع، ت، خ، ك' }, marks: 10 },
+                    { type: 'mcq', question: { ar: 'اختر الحرف المشابه لـ "م":', en: 'Choose the similar letter to "م":' }, options: ['ن', 'م', 'هـ', 'ي'], correct: 1, marks: 2 },
+                    { type: 'mcq', question: { ar: 'اختر الحرف المشابه لـ "ع":', en: 'Choose the similar letter to "ع":' }, options: ['غ', 'ف', 'ق', 'ع'], correct: 3, marks: 2 },
+                    { type: 'mcq', question: { ar: 'اختر الحرف المشابه لـ "ت":', en: 'Choose the similar letter to "ت":' }, options: ['ث', 'ب', 'ت', 'ن'], correct: 2, marks: 2 },                    { type: 'mcq', question: { ar: 'اختر الحرف المشابه لـ "ف":', en: 'Choose the similar letter to "ف":' }, options: ['ق', 'ف', 'ك', 'ل'], correct: 1, marks: 2 },
+                    { type: 'mcq', question: { ar: 'اختر الحرف المشابه لـ "س":', en: 'Choose the similar letter to "س":' }, options: ['ش', 'ص', 'س', 'ز'], correct: 2, marks: 2 }
+                ]
+            }
+        };
+
+        // === دوال الترجمة ===
+        function toggleLanguage() {
+            currentLang = currentLang === 'ar' ? 'en' : 'ar';
+            document.documentElement.lang = currentLang;
+            document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
+            document.getElementById('lang-text').textContent = translations[currentLang].lang_button;
+            updateTranslations();
+            if (!document.getElementById('registration-screen').classList.contains('hidden-section')) {
+                populateGradeOptions();
+            }
+        }
+
+        function updateTranslations() {
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (translations[currentLang][key]) el.textContent = translations[currentLang][key];
+            });
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                const key = el.getAttribute('data-i18n-placeholder');
+                if (translations[currentLang][key]) el.placeholder = translations[currentLang][key];
+            });
+        }
+
+        function t(key) { return translations[currentLang][key] || key; }
+
+        // === دوال المدرسة ===
+        function selectSchool(school) {
+            selectedSchool = school;
+            document.querySelectorAll('.school-option').forEach(card => card.classList.remove('selected'));
+            document.getElementById(`school-${school}`).classList.add('selected');
+            document.getElementById('continue-btn').disabled = false;
+        }
+
+        function populateGradeOptions() {
+            const gradeSelect = document.getElementById('grade-select');
+            gradeSelect.innerHTML = '';
+            gradeOptions[selectedSchool].forEach(opt => {
+                const option = document.createElement('option');
+                option.value = opt.value;
+                option.textContent = opt.label[currentLang];
+                gradeSelect.appendChild(option);
+            });
+        }
+        function goToRegistration() {
+            if (!selectedSchool) { alert(t('select_school_first')); return; }
+            populateGradeOptions();
+            document.getElementById('selected-school-name').textContent = schoolNames[selectedSchool][currentLang];
+            document.getElementById('school-screen').classList.add('hidden-section');
+            document.getElementById('registration-screen').classList.remove('hidden-section');
+        }
+
+        function backToSchool() {
+            document.getElementById('registration-screen').classList.add('hidden-section');
+            document.getElementById('school-screen').classList.remove('hidden-section');
+        }
+
+        function showDashboard() {
+            studentName = document.getElementById('student-name').value.trim();
+            studentGrade = document.getElementById('grade-select').value;
+            studentId = document.getElementById('student-id').value.trim();
+            parentPhone = document.getElementById('parent-phone').value.trim();
+
+            if (!studentName) {
+                document.getElementById('student-name').classList.add('error');
+                document.getElementById('name-error').classList.remove('hidden');
+                document.getElementById('student-name').focus();
+                return;
+            }
+            document.getElementById('student-name').classList.remove('error');
+            document.getElementById('name-error').classList.add('hidden');
+
+            document.getElementById('dash-name').textContent = studentName;
+            document.getElementById('dash-school').textContent = schoolNames[selectedSchool][currentLang];
+            document.getElementById('dash-grade').textContent = studentGrade;
+
+            document.getElementById('registration-screen').classList.add('hidden-section');
+            document.getElementById('dashboard-screen').classList.remove('hidden-section');
+        }
+
+        function logout() {
+            if (confirm(t('logout_confirm'))) location.reload();
+        }
+
+        // === دوال الاختبار ===
+        function startSubject(subject) {
+            currentSubject = subject;
+            currentQIndex = 0;
+            studentAnswers = {};
+
+            // 🔥 النقطة المهمة: اختيار النموذج عشوائياً (الطالب ما يعرف)
+            const availableModels = Object.keys(questionBank[subject]);
+            const randomModel = availableModels[Math.floor(Math.random() * availableModels.length)];
+            const questions = questionBank[subject][randomModel];
+            // 🔥 خلط ترتيب الأسئلة
+            currentQuestions = [...questions].sort(() => Math.random() - 0.5);
+
+            // 🔥 خلط خيارات MCQ مع الحفاظ على الإجابة الصحيحة
+            currentQuestions = currentQuestions.map(q => {
+                if (q.type === 'mcq') {
+                    const indexed = q.options.map((opt, idx) => ({ opt, isCorrect: idx === q.correct }));
+                    const shuffled = indexed.sort(() => Math.random() - 0.5);
+                    return {
+                        ...q,
+                        options: shuffled.map(x => x.opt),
+                        correct: shuffled.findIndex(x => x.isCorrect)
+                    };
+                }
+                if (q.type === 'matching') {
+                    // خلط الجانب الأيمن
+                    const rightIndexed = q.rightItems.map((item, idx) => ({ item, origIdx: idx }));
+                    const shuffledRight = rightIndexed.sort(() => Math.random() - 0.5);
+                    const newCorrectMatches = {};
+                    Object.entries(q.correctMatches).forEach(([left, right]) => {
+                        const newRightIdx = shuffledRight.findIndex(x => x.origIdx === right);
+                        newCorrectMatches[left] = newRightIdx;
+                    });
+                    return {
+                        ...q,
+                        rightItems: shuffledRight.map(x => x.item),
+                        correctMatches: newCorrectMatches
+                    };
+                }
+                return q;
+            });
+
+            document.getElementById('exam-subject-name').textContent = subjectNames[subject][currentLang];
+            document.getElementById('subject-icon').textContent = subjectIcons[subject];
+            document.getElementById('total-q-num').textContent = currentQuestions.length;
+
+            document.getElementById('dashboard-screen').classList.add('hidden-section');
+            document.getElementById('exam-screen').classList.remove('hidden-section');
+
+            renderQuestion();
+        }
+
+        function renderQuestion() {
+            const q = currentQuestions[currentQIndex];
+            document.getElementById('current-q-num').textContent = currentQIndex + 1;
+            document.getElementById('question-text').textContent = q.question[currentLang];
+
+            const progress = ((currentQIndex + 1) / currentQuestions.length) * 100;
+            document.getElementById('progress-bar').style.width = `${progress}%`;
+            updateQuestionTypeBadge(q.type);
+
+            const answerContainer = document.getElementById('answer-container');
+            answerContainer.innerHTML = '';
+
+            switch(q.type) {
+                case 'mcq': renderMCQ(q, answerContainer); break;
+                case 'matching': renderMatching(q, answerContainer); break;
+                case 'upload': renderUpload(q, answerContainer); break;
+            }
+
+            document.getElementById('prev-btn').disabled = currentQIndex === 0;
+            if (currentQIndex === currentQuestions.length - 1) {
+                document.getElementById('next-btn').classList.add('hidden');
+                document.getElementById('finish-btn').classList.remove('hidden');
+            } else {
+                document.getElementById('next-btn').classList.remove('hidden');
+                document.getElementById('finish-btn').classList.add('hidden');
+            }
+        }
+
+        function updateQuestionTypeBadge(type) {
+            const badge = document.getElementById('question-type-badge');
+            const types = {
+                mcq: { class: 'badge-mcq', icon: 'fa-list-ul', text: currentLang === 'ar' ? 'اختيار من متعدد' : 'Multiple Choice' },
+                matching: { class: 'badge-matching', icon: 'fa-link', text: currentLang === 'ar' ? 'توصيل' : 'Matching' },
+                upload: { class: 'badge-upload', icon: 'fa-upload', text: currentLang === 'ar' ? 'رفع صورة' : 'Upload Image' }
+            };
+            const t = types[type];
+            badge.className = `question-type-badge ${t.class}`;
+            badge.innerHTML = `<i class="fas ${t.icon}"></i><span>${t.text}</span>`;
+        }
+
+        function renderMCQ(q, container) {
+            const div = document.createElement('div');
+            div.className = 'space-y-3';
+            q.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'mcq-option w-full text-right p-5 rounded-xl font-bold text-lg flex items-center gap-3';
+                if (currentLang === 'ltr') btn.classList.remove('text-right');
+                btn.innerHTML = `<span class="w-12 h-12 rounded-full bg-amber-100 text-primary text-center font-black flex-shrink-0 flex items-center justify-center">${String.fromCharCode(65 + idx)}</span><span>${opt}</span>`;
+                btn.onclick = () => selectMCQ(idx, btn);
+                if (studentAnswers[currentQIndex] === idx) btn.classList.add('selected');
+                div.appendChild(btn);
+            });
+            container.appendChild(div);
+        }
+
+        function selectMCQ(idx, btn) {            document.querySelectorAll('.mcq-option').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            studentAnswers[currentQIndex] = idx;
+        }
+
+        function renderMatching(q, container) {
+            const div = document.createElement('div');
+            div.className = 'grid grid-cols-2 gap-4';
+            const leftCol = document.createElement('div');
+            leftCol.className = 'space-y-3';
+            const rightCol = document.createElement('div');
+            rightCol.className = 'space-y-3';
+
+            q.leftItems.forEach((item, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'matching-item w-full p-4 rounded-xl font-bold text-lg text-center';
+                btn.textContent = item;
+                btn.dataset.side = 'left';
+                btn.dataset.index = idx;
+                btn.onclick = () => handleMatchingClick(btn, 'left', idx);
+                leftCol.appendChild(btn);
+            });
+
+            q.rightItems.forEach((item, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'matching-item w-full p-4 rounded-xl font-bold text-lg text-center';
+                btn.textContent = item;
+                btn.dataset.side = 'right';
+                btn.dataset.index = idx;
+                btn.onclick = () => handleMatchingClick(btn, 'right', idx);
+                rightCol.appendChild(btn);
+            });
+
+            div.appendChild(leftCol);
+            div.appendChild(rightCol);
+            container.appendChild(div);
+        }
+
+        let matchingSelection = { left: null, right: null };
+
+        function handleMatchingClick(btn, side, idx) {
+            if (!studentAnswers[currentQIndex]) studentAnswers[currentQIndex] = { matches: {} };
+            matchingSelection[side] = idx;
+            document.querySelectorAll(`.matching-item[data-side="${side}"]`).forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+
+            if (matchingSelection.left !== null && matchingSelection.right !== null) {
+                studentAnswers[currentQIndex].matches[matchingSelection.left] = matchingSelection.right;
+                document.querySelectorAll(`.matching-item[data-side="left"][data-index="${matchingSelection.left}"]`).forEach(b => { b.classList.remove('selected'); b.classList.add('matched'); });
+                document.querySelectorAll(`.matching-item[data-side="right"][data-index="${matchingSelection.right}"]`).forEach(b => { b.classList.remove('selected'); b.classList.add('matched'); });                matchingSelection = { left: null, right: null };
+            }
+        }
+
+        function renderUpload(q, container) {
+            const div = document.createElement('div');
+            div.className = 'space-y-6';
+
+            const instruction = document.createElement('div');
+            instruction.className = 'bg-amber-50 border-2 border-amber-200 rounded-xl p-4';
+            instruction.innerHTML = `<div class="flex items-start gap-3"><i class="fas fa-info-circle text-amber-600 text-2xl mt-1"></i><div><p class="font-bold text-amber-900 mb-1">${t('upload_instruction')}</p><p class="text-amber-800">${q.instruction[currentLang]}</p></div></div>`;
+            div.appendChild(instruction);
+
+            const fileInput = document.createElement('input');
+            fileInput.type = 'file';
+            fileInput.accept = 'image/*';
+            fileInput.className = 'hidden';
+            fileInput.onchange = (e) => handleFileUpload(e.target.files[0]);
+            div.appendChild(fileInput);
+
+            const uploadZone = document.createElement('div');
+            uploadZone.className = 'upload-zone rounded-2xl p-8 text-center';
+            uploadZone.innerHTML = `<i class="fas fa-cloud-upload-alt text-6xl text-gray-400 mb-4"></i><p class="text-gray-700 font-bold text-lg mb-2">${t('click_upload')}</p><p class="text-gray-500">${t('supported_formats')}</p>`;
+            uploadZone.onclick = () => fileInput.click();
+            div.appendChild(uploadZone);
+
+            const previewArea = document.createElement('div');
+            previewArea.id = 'upload-preview-area';
+            previewArea.className = 'grid grid-cols-2 gap-4';
+            div.appendChild(previewArea);
+
+            if (studentAnswers[currentQIndex]?.image) {
+                addImagePreview(studentAnswers[currentQIndex].image);
+            }
+
+            container.appendChild(div);
+        }
+
+        function handleFileUpload(file) {
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                studentAnswers[currentQIndex] = { image: e.target.result };
+                document.getElementById('upload-preview-area').innerHTML = '';
+                addImagePreview(e.target.result);
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function addImagePreview(imageData) {            const previewArea = document.getElementById('upload-preview-area');
+            const card = document.createElement('div');
+            card.className = 'relative border-3 border-green-500 rounded-xl overflow-hidden';
+            card.innerHTML = `<img src="${imageData}" class="w-full h-48 object-cover"><div class="absolute top-2 right-2 bg-green-500 text-white w-8 h-8 rounded-full flex items-center justify-center"><i class="fas fa-check"></i></div>`;
+            previewArea.appendChild(card);
+        }
+
+        function nextQuestion() {
+            if (currentQIndex < currentQuestions.length - 1) { currentQIndex++; renderQuestion(); }
+        }
+
+        function prevQuestion() {
+            if (currentQIndex > 0) { currentQIndex--; renderQuestion(); }
+        }
+
+        function finishSubject() {
+            let score = 0;
+            let hasUpload = false;
+
+            currentQuestions.forEach((q, idx) => {
+                if (q.type === 'mcq') {
+                    if (studentAnswers[idx] === q.correct) score += q.marks;
+                } else if (q.type === 'matching') {
+                    if (studentAnswers[idx]?.matches) {
+                        let correct = 0;
+                        Object.entries(q.correctMatches).forEach(([left, right]) => {
+                            if (studentAnswers[idx].matches[left] == right) correct++;
+                        });
+                        score += (correct / Object.keys(q.correctMatches).length) * q.marks;
+                    }
+                } else if (q.type === 'upload') {
+                    if (studentAnswers[idx]?.image) { hasUpload = true; score += q.marks; }
+                }
+            });
+
+            if (!hasUpload && currentQuestions.some(q => q.type === 'upload')) {
+                if (!confirm(t('upload_warning'))) return;
+            }
+
+            subjectScores[currentSubject] = Math.round(score);
+
+            document.getElementById('result-subject-name').textContent = subjectNames[currentSubject][currentLang];
+            document.getElementById('result-score').textContent = subjectScores[currentSubject];
+
+            document.getElementById('exam-screen').classList.add('hidden-section');
+            document.getElementById('subject-result-screen').classList.remove('hidden-section');
+
+            updateSubjectStatus(currentSubject, subjectScores[currentSubject]);
+        }
+        function updateSubjectStatus(subject, score) {
+            const statusEl = document.getElementById(`status-${subject}`);
+            statusEl.innerHTML = `<i class="fas fa-check-circle text-green-600 ml-2"></i>${score}/30`;
+            statusEl.parentElement.classList.add('completed');
+            document.getElementById(`score-${subject}`).textContent = `${score}/30`;
+
+            let total = 0;
+            Object.values(subjectScores).forEach(s => { if (s !== null) total += s; });
+            document.getElementById('total-score').textContent = total;
+            document.getElementById('score-summary').classList.remove('hidden-section');
+        }
+
+        function backToDashboard() {
+            document.getElementById('subject-result-screen').classList.add('hidden-section');
+            document.getElementById('exam-screen').classList.add('hidden-section');
+            document.getElementById('dashboard-screen').classList.remove('hidden-section');
+        }
+
+        document.getElementById('student-name').addEventListener('input', function() {
+            if (this.value.trim()) { this.classList.remove('error'); document.getElementById('name-error').classList.add('hidden'); }
+        });
+
+        updateTranslations();
+    </script>
+</body>
+</html>
