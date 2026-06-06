@@ -3,399 +3,893 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة الاختبارات الإلكترونية المتقدمة</title>
+    <title>منصة الاختبارات الإلكترونية - بوابة الطفل وأجيال المعرفة</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        * { font-family: 'Cairo', sans-serif; }
+        * { font-family: 'Cairo', sans-serif; box-sizing: border-box; }
         
+        :root {
+            --primary: #8B4513;
+            --primary-light: #A0522D;
+            --secondary: #2D6A4F;
+            --accent: #F4A261;
+            --bg: #FAF7F2;
+            --success: #10B981;
+            --danger: #EF4444;
+        }
+
         body {
-            background: linear-gradient(135deg, #f5f0e8 0%, #faf7f2 100%);
+            background: linear-gradient(135deg, #FAF7F2 0%, #F5EDE0 100%);
             min-height: 100vh;
+            margin: 0;
+            padding: 0;
         }
 
-        .exam-card {
+        .glass-card {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(139, 69, 19, 0.15);
+            border: 1px solid rgba(139, 69, 19, 0.1);
+        }
+
+        /* شاشة البداية */
+        #splash-screen {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(135deg, #8B4513 0%, #A0522D 50%, #F4A261 100%);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.8s ease, visibility 0.8s;
+        }        #splash-screen.hide {
+            opacity: 0;
+            visibility: hidden;
+        }
+        .splash-logo {
+            width: 140px;
+            height: 140px;
             background: white;
-            border-radius: 20px;
-            box-shadow: 0 10px 40px rgba(139, 69, 19, 0.15);
-            border: 3px solid #d4a574;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: float 3s ease-in-out infinite;
+            margin: 0 20px;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+        .splash-title {
+            color: white;
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin-top: 2rem;
+            text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            animation: fadeInUp 1s ease;
+        }
+        .splash-subtitle {
+            color: rgba(255,255,255,0.9);
+            font-size: 1.2rem;
+            margin-top: 0.5rem;
+            animation: fadeInUp 1.2s ease;
+        }
+        .loading-dots {
+            display: flex;
+            gap: 8px;
+            margin-top: 2rem;
+        }
+        .loading-dots span {
+            width: 12px;
+            height: 12px;
+            background: white;
+            border-radius: 50%;
+            animation: bounce 1.4s infinite ease-in-out both;
+        }
+        .loading-dots span:nth-child(1) { animation-delay: -0.32s; }
+        .loading-dots span:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); }            40% { transform: scale(1); }
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
+        /* الأزرار */
         .btn-primary {
             background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
+            color: white;
             transition: all 0.3s;
         }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 5px 20px rgba(139, 69, 19, 0.4); }
+        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(139, 69, 19, 0.4); }
 
         .btn-secondary {
-            background: #e5e7eb;
+            background: linear-gradient(135deg, #2D6A4F 0%, #40916C 100%);
+            color: white;
             transition: all 0.3s;
         }
-        .btn-secondary:hover:not(:disabled) { background: #d1d5db; transform: translateY(-2px); }
-        .btn-secondary:disabled { opacity: 0.4; cursor: not-allowed; }
+        .btn-secondary:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(45, 106, 79, 0.4); }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #DC2626 0%, #EF4444 100%);
+            color: white;
+            transition: all 0.3s;
+        }
+
+        .role-card {
+            transition: all 0.4s;
+            cursor: pointer;
+            border: 3px solid transparent;
+        }
+        .role-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 25px 50px rgba(139, 69, 19, 0.2);
+        }
+        .role-card.selected {
+            border-color: var(--primary);
+            background: linear-gradient(135deg, #FFF8F0 0%, #FFEED5 100%);
+        }
+
+        .input-field {
+            transition: all 0.3s;
+            border: 2px solid #E5E7EB;
+            background: white;
+        }
+        .input-field:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(139, 69, 19, 0.1);            outline: none;
+        }
+
+        .hidden-screen { display: none !important; }
+        .fade-in { animation: fadeIn 0.6s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+        .stat-card {
+            transition: all 0.3s;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+        .stat-card:hover { transform: translateY(-5px); }
 
         .option-btn {
-            border: 3px solid #e5e7eb;
+            border: 3px solid #E5E7EB;
             transition: all 0.2s;
+            cursor: pointer;
         }
-        .option-btn:hover { border-color: #8B4513; background: #fff8f0; }
-        .option-btn.selected { border-color: #10b981; background: #d1fae5; }
+        .option-btn:hover { border-color: var(--primary); background: #FFF8F0; }
+        .option-btn.selected { border-color: var(--success); background: #D1FAE5; }
+        .option-btn.correct { border-color: var(--success); background: #86EFAC; animation: pulse 0.5s; }
+        .option-btn.wrong { border-color: var(--danger); background: #FECACA; animation: shake 0.5s; }
+
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 75% { transform: translateX(10px); } }
 
         .matching-item {
-            border: 3px solid #e5e7eb;
+            border: 3px solid #E5E7EB;
             cursor: pointer;
             transition: all 0.2s;
         }
-        .matching-item:hover { border-color: #8B4513; background: #fff8f0; }        .matching-item.selected { border-color: #f59e0b; background: #fef3c7; }
-        .matching-item.matched { border-color: #10b981; background: #d1fae5; pointer-events: none; }
+        .matching-item:hover { border-color: var(--primary); background: #FFF8F0; }
+        .matching-item.selected { border-color: var(--accent); background: #FEF3C7; }
+        .matching-item.matched { border-color: var(--success); background: #D1FAE5; pointer-events: none; }
 
         .upload-zone {
-            border: 3px dashed #d4a574;
-            background: #fff8f0;
+            border: 3px dashed var(--primary);
+            background: #FFF8F0;
             transition: all 0.3s;
             cursor: pointer;
         }
-        .upload-zone:hover { border-color: #8B4513; background: #fef3c7; transform: scale(1.02); }
+        .upload-zone:hover { background: #FFEED5; transform: scale(1.02); }
 
-        .image-preview {
-            border: 3px solid #10b981;
-            border-radius: 12px;
-            overflow: hidden;
-            margin-top: 1rem;
-        }
-        .image-preview img { width: 100%; max-height: 400px; object-fit: contain; }
+        .progress-ring { transform: rotate(-90deg); }
+        .progress-ring-circle { transition: stroke-dashoffset 0.5s ease; }
 
-        .progress-bar {
-            background: linear-gradient(90deg, #8B4513, #d4a574);
-            transition: width 0.5s ease;
-        }
-
-        .question-image {
-            max-width: 100%;
-            height: auto;
-            border-radius: 12px;
-            margin: 1rem 0;
-        }
-
-        .image-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-            gap: 1rem;
-            margin: 1rem 0;
-        }
-        .image-item {
-            text-align: center;
-            padding: 0.75rem;
-            background: #f9fafb;
-            border-radius: 8px;
-            border: 2px solid #e5e7eb;
-        }
-        .image-item img {
-            width: 100%;
-            height: 100px;
-            object-fit: contain;
-            margin-bottom: 0.5rem;
-        }        .image-item input {
-            width: 100%;
-            padding: 0.5rem;
-            text-align: center;
-            font-size: 1.25rem;
-            font-weight: bold;
-            border: 2px solid #e5e7eb;
-            border-radius: 6px;
-            text-transform: uppercase;
-        }
-        .image-item input:focus {
-            outline: none;
-            border-color: #8B4513;
-            box-shadow: 0 0 0 3px rgba(139, 69, 19, 0.1);
-        }
-
-        .hidden { display: none !important; }
-        .fade-in { animation: fadeIn 0.5s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .score-badge { animation: popIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55); }
+        @keyframes popIn { from { transform: scale(0) rotate(-180deg); opacity: 0; } to { transform: scale(1) rotate(0); opacity: 1; } }
+        .badge-success { background: #D1FAE5; color: #065F46; }
+        .badge-danger { background: #FEE2E2; color: #991B1B; }
 
         @media (max-width: 640px) {
-            .exam-card { border-radius: 12px; padding: 1rem; }
+            .glass-card { border-radius: 16px; padding: 1rem !important; }
+            .splash-title { font-size: 1.5rem; }
+            .splash-logo { width: 100px; height: 100px; }
         }
     </style>
 </head>
-<body class="p-4">
+<body>
 
-    <!-- زر اللغة -->
-    <button onclick="toggleLang()" class="fixed top-4 left-4 bg-white border-2 border-amber-700 text-amber-700 px-4 py-2 rounded-full font-bold hover:bg-amber-50 transition-all z-50">
-        <i class="fas fa-globe ml-2"></i>
-        <span id="lang-btn">English</span>
-    </button>
-
-    <!-- الشاشة الرئيسية -->
-    <div id="main-screen" class="max-w-4xl mx-auto mt-8 exam-card p-8 fade-in">
-        <div class="text-center mb-8">
-            <h1 class="text-4xl font-black text-amber-900 mb-4">منصة الاختبارات الإلكترونية</h1>
-            <p class="text-xl text-gray-600">اختر المادة لبدء الاختبار</p>
+    <!-- ========== الشاشة 1: شاشة البداية ========== -->
+    <div id="splash-screen">
+        <div class="flex items-center justify-center flex-wrap mb-4">
+            <div class="splash-logo">
+                <div class="text-center">
+                    <div class="text-5xl mb-1">🚪</div>
+                    <div class="text-xs font-bold text-amber-900">بوابة الطفل</div>
+                </div>
+            </div>
+            <div class="text-white text-4xl font-black mx-4">&</div>
+            <div class="splash-logo">
+                <div class="text-center">
+                    <div class="text-5xl mb-1">✨</div>
+                    <div class="text-xs font-bold text-amber-900">أجيال المعرفة</div>
+                </div>
+            </div>
         </div>
+        <h1 class="splash-title">منصة الاختبارات الإلكترونية</h1>
+        <p class="splash-subtitle">نظام تقييم ذكي ومتكامل</p>
+        <div class="loading-dots">
+            <span></span><span></span><span></span>
+        </div>
+    </div>
 
-        <div class="grid md:grid-cols-3 gap-6 mb-8">
-            <button onclick="startExam('english')" class="p-6 bg-gradient-to-br from-red-50 to-pink-50 rounded-2xl border-2 border-red-200 hover:border-red-400 transition-all hover:scale-105">
-                <i class="fas fa-language text-5xl text-red-600 mb-3"></i>
-                <h3 class="text-2xl font-bold text-gray-800">اللغة الإنجليزية</h3>
-            </button>
-            <button onclick="startExam('arabic')" class="p-6 bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl border-2 border-green-200 hover:border-green-400 transition-all hover:scale-105">
-                <i class="fas fa-book-arabic text-5xl text-green-600 mb-3"></i>
-                <h3 class="text-2xl font-bold text-gray-800">اللغة العربية</h3>
-            </button>
-            <button onclick="startExam('math')" class="p-6 bg-gradient-to-br from-purple-50 to-indigo-50 rounded-2xl border-2 border-purple-200 hover:border-purple-400 transition-all hover:scale-105">                <i class="fas fa-calculator text-5xl text-purple-600 mb-3"></i>
-                <h3 class="text-2xl font-bold text-gray-800">الرياضيات</h3>
+    <!-- ========== الشاشة 2: اختيار الدور ========== -->
+    <div id="role-screen" class="hidden-screen min-h-screen flex items-center justify-center p-4">
+        <div class="glass-card p-8 md:p-12 max-w-5xl w-full fade-in">
+            <div class="text-center mb-10">
+                <div class="inline-block bg-gradient-to-r from-amber-500 to-orange-600 text-white px-6 py-2 rounded-full text-sm font-bold mb-4">
+                    مرحباً بك في المنصة
+                </div>
+                <h1 class="text-4xl md:text-5xl font-black text-gray-800 mb-3">اختر نوع الدخول</h1>
+                <p class="text-gray-600 text-lg">حدد دورك للمتابعة</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-6 mb-8">
+                <!-- طالب -->
+                <div onclick="selectRole('student')" id="role-student" class="role-card bg-white p-8 rounded-3xl text-center shadow-lg">                    <div class="w-24 h-24 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                        <i class="fas fa-user-graduate text-5xl text-white"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-2">طالب</h3>
+                    <p class="text-gray-600 text-sm">أداء الاختبارات ومتابعة النتائج</p>
+                </div>
+
+                <!-- معلم -->
+                <div onclick="selectRole('teacher')" id="role-teacher" class="role-card bg-white p-8 rounded-3xl text-center shadow-lg">
+                    <div class="w-24 h-24 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                        <i class="fas fa-chalkboard-teacher text-5xl text-white"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-2">معلم</h3>
+                    <p class="text-gray-600 text-sm">متابعة نتائج الطلاب</p>
+                </div>
+
+                <!-- مدير -->
+                <div onclick="selectRole('admin')" id="role-admin" class="role-card bg-white p-8 rounded-3xl text-center shadow-lg">
+                    <div class="w-24 h-24 bg-gradient-to-br from-purple-400 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                        <i class="fas fa-user-tie text-5xl text-white"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-2">مدير النظام</h3>
+                    <p class="text-gray-600 text-sm">لوحة التحكم والإحصائيات</p>
+                </div>
+            </div>
+
+            <button onclick="proceedRole()" id="proceed-btn" disabled class="w-full btn-primary text-white font-bold py-4 rounded-2xl text-xl disabled:opacity-40 disabled:cursor-not-allowed">
+                متابعة <i class="fas fa-arrow-left mr-2"></i>
             </button>
         </div>
     </div>
 
-    <!-- شاشة الاختبار -->
-    <div id="exam-screen" class="max-w-4xl mx-auto mt-8 exam-card p-6 fade-in hidden">
-        <!-- الهيدر -->
-        <div class="bg-gradient-to-r from-amber-50 to-orange-50 p-4 rounded-xl border-2 border-amber-300 mb-6">
-            <div class="flex justify-between items-center flex-wrap gap-4">
-                <div class="flex items-center gap-4">
-                    <div class="w-14 h-14 bg-gradient-to-br from-amber-500 to-orange-600 rounded-full flex items-center justify-center text-white text-2xl shadow-lg">
-                        <i class="fas fa-pen-fancy"></i>
+    <!-- ========== لوحة الطالب: نموذج البيانات ========== -->
+    <div id="student-form-screen" class="hidden-screen min-h-screen flex items-center justify-center p-4">
+        <div class="glass-card p-8 md:p-10 max-w-2xl w-full fade-in">
+            <div class="text-center mb-6">
+                <div class="inline-block bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-2 rounded-full text-sm font-bold mb-4">
+                    <i class="fas fa-user-graduate ml-2"></i>بيانات الطالب
+                </div>
+                <h2 class="text-3xl font-black text-gray-800 mb-2">أدخل معلوماتك</h2>
+            </div>
+
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-gray-700 font-bold mb-2">
+                        <i class="fas fa-user text-blue-600 ml-2"></i>اسم الطالب الرباعي <span class="text-red-500">*</span>
+                    </label>
+                    <input type="text" id="s-name" class="input-field w-full p-4 rounded-xl text-lg" placeholder="اكتب الاسم الكامل">
+                </div>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-gray-700 font-bold mb-2">
+                            <i class="fas fa-id-card text-green-600 ml-2"></i>رقم الهوية
+                        </label>
+                        <input type="text" id="s-id" class="input-field w-full p-4 rounded-xl text-lg" placeholder="10xxxxxxxxx">
                     </div>
                     <div>
-                        <h2 id="subject-title" class="text-2xl font-bold text-amber-900"></h2>
-                        <p class="text-gray-600">
-                            السؤال <span id="q-current" class="font-bold text-amber-700">1</span> 
-                            من <span id="q-total" class="font-bold text-amber-700">5</span>
-                        </p>
+                        <label class="block text-gray-700 font-bold mb-2">
+                            <i class="fas fa-phone text-orange-600 ml-2"></i>رقم الجوال
+                        </label>
+                        <input type="tel" id="s-phone" class="input-field w-full p-4 rounded-xl text-lg" placeholder="05xxxxxxxx">
                     </div>
                 </div>
-                <button onclick="exitExam()" class="bg-red-100 hover:bg-red-200 text-red-700 px-4 py-2 rounded-lg font-bold transition-all">
-                    <i class="fas fa-times ml-2"></i>خروج
+
+                <div>
+                    <label class="block text-gray-700 font-bold mb-2">
+                        <i class="fas fa-venus-mars text-pink-600 ml-2"></i>الجنس
+                    </label>
+                    <div class="grid grid-cols-2 gap-3">
+                        <label class="cursor-pointer">
+                            <input type="radio" name="gender" value="male" class="hidden peer">
+                            <div class="peer-checked:bg-blue-100 peer-checked:border-blue-500 border-2 border-gray-200 rounded-xl p-4 text-center transition-all hover:border-blue-300">
+                                <i class="fas fa-male text-2xl text-blue-600 mb-1"></i>
+                                <div class="font-bold">ذكر</div>
+                            </div>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="radio" name="gender" value="female" class="hidden peer">
+                            <div class="peer-checked:bg-pink-100 peer-checked:border-pink-500 border-2 border-gray-200 rounded-xl p-4 text-center transition-all hover:border-pink-300">
+                                <i class="fas fa-female text-2xl text-pink-600 mb-1"></i>
+                                <div class="font-bold">أنثى</div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-gray-700 font-bold mb-2">
+                        <i class="fas fa-school text-purple-600 ml-2"></i>اختر الفرع <span class="text-red-500">*</span>
+                    </label>
+                    <select id="s-branch" class="input-field w-full p-4 rounded-xl text-lg">
+                        <option value="">-- اختر الفرع --</option>
+                        <option value="child-gate">🚪 بوابة الطفل (KG2 - G6)</option>
+                        <option value="knowledge-gen">✨ أجيال المعرفة (KG2 - G12)</option>
+                    </select>
+                </div>
+
+                <div class="flex gap-3 pt-4">
+                    <button onclick="backToRole()" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-4 rounded-xl text-lg">                        <i class="fas fa-arrow-right ml-2"></i>رجوع
+                    </button>
+                    <button onclick="startStudentExam()" class="flex-2 btn-primary text-white font-bold py-4 rounded-xl text-lg" style="flex: 2;">
+                        بدء الاختبار <i class="fas fa-arrow-left mr-2"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== شاشة تسجيل دخول المعلم ========== -->
+    <div id="teacher-login-screen" class="hidden-screen min-h-screen flex items-center justify-center p-4">
+        <div class="glass-card p-8 max-w-md w-full fade-in">
+            <div class="text-center mb-6">
+                <div class="w-20 h-20 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                    <i class="fas fa-chalkboard-teacher text-4xl text-white"></i>
+                </div>
+                <h2 class="text-3xl font-black text-gray-800 mb-2">دخول المعلم</h2>
+                <p class="text-gray-600">أدخل بياناتك للمتابعة</p>
+            </div>
+
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-gray-700 font-bold mb-2">اسم المستخدم</label>
+                    <input type="text" id="t-username" class="input-field w-full p-4 rounded-xl text-lg" placeholder="teacher">
+                </div>
+                <div>
+                    <label class="block text-gray-700 font-bold mb-2">كلمة المرور</label>
+                    <input type="password" id="t-password" class="input-field w-full p-4 rounded-xl text-lg" placeholder="••••••••">
+                </div>
+                <div id="t-error" class="hidden bg-red-50 border-2 border-red-300 text-red-700 p-3 rounded-xl text-sm font-bold"></div>
+                <div class="flex gap-3">
+                    <button onclick="backToRole()" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-4 rounded-xl">رجوع</button>
+                    <button onclick="loginTeacher()" class="flex-1 btn-secondary text-white font-bold py-4 rounded-xl">دخول</button>
+                </div>
+                <div class="text-center text-xs text-gray-500 bg-gray-50 p-2 rounded-lg">
+                    <i class="fas fa-info-circle ml-1"></i>
+                    تجريبي: teacher / teacher123
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== لوحة المعلم ========== -->
+    <div id="teacher-panel" class="hidden-screen min-h-screen p-4 md:p-8">
+        <div class="max-w-6xl mx-auto">
+            <div class="glass-card p-6 mb-6">
+                <div class="flex justify-between items-center flex-wrap gap-4">
+                    <div>
+                        <h2 class="text-3xl font-black text-gray-800">                            <i class="fas fa-chalkboard-teacher text-green-600 ml-3"></i>
+                            لوحة المعلم
+                        </h2>
+                        <p class="text-gray-600 mt-1">متابعة نتائج الطلاب</p>
+                    </div>
+                    <button onclick="logout()" class="btn-danger px-6 py-3 rounded-xl font-bold">
+                        <i class="fas fa-sign-out-alt ml-2"></i>خروج
+                    </button>
+                </div>
+            </div>
+
+            <!-- إحصائيات المعلم -->
+            <div class="grid md:grid-cols-3 gap-6 mb-6">
+                <div class="stat-card bg-gradient-to-br from-blue-500 to-blue-600 text-white p-6 shadow-lg">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-blue-100 text-sm">إجمالي الطلاب</p>
+                            <p class="text-4xl font-black mt-1" id="t-total">0</p>
+                        </div>
+                        <i class="fas fa-users text-5xl text-blue-200"></i>
+                    </div>
+                </div>
+                <div class="stat-card bg-gradient-to-br from-green-500 to-green-600 text-white p-6 shadow-lg">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-green-100 text-sm">الناجحون</p>
+                            <p class="text-4xl font-black mt-1" id="t-passed">0</p>
+                        </div>
+                        <i class="fas fa-check-circle text-5xl text-green-200"></i>
+                    </div>
+                </div>
+                <div class="stat-card bg-gradient-to-br from-red-500 to-red-600 text-white p-6 shadow-lg">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-red-100 text-sm">الراسبون</p>
+                            <p class="text-4xl font-black mt-1" id="t-failed">0</p>
+                        </div>
+                        <i class="fas fa-times-circle text-5xl text-red-200"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- جدول الطلاب -->
+            <div class="glass-card p-6 overflow-x-auto">
+                <h3 class="text-2xl font-bold text-gray-800 mb-4">
+                    <i class="fas fa-list text-amber-600 ml-2"></i>قائمة الطلاب
+                </h3>
+                <table class="w-full">
+                    <thead class="bg-gray-50 border-b-2 border-gray-200">
+                        <tr>                            <th class="p-3 text-right font-bold text-gray-700">#</th>
+                            <th class="p-3 text-right font-bold text-gray-700">الاسم</th>
+                            <th class="p-3 text-right font-bold text-gray-700">الفرع</th>
+                            <th class="p-3 text-right font-bold text-gray-700">الجنس</th>
+                            <th class="p-3 text-right font-bold text-gray-700">الإنجليزي</th>
+                            <th class="p-3 text-right font-bold text-gray-700">العربي</th>
+                            <th class="p-3 text-right font-bold text-gray-700">الرياضيات</th>
+                            <th class="p-3 text-right font-bold text-gray-700">المجموع</th>
+                            <th class="p-3 text-right font-bold text-gray-700">الحالة</th>
+                            <th class="p-3 text-right font-bold text-gray-700">التاريخ</th>
+                        </tr>
+                    </thead>
+                    <tbody id="t-students-table" class="divide-y divide-gray-200"></tbody>
+                </table>
+                <div id="t-empty" class="hidden text-center py-12 text-gray-500">
+                    <i class="fas fa-inbox text-6xl mb-3 text-gray-300"></i>
+                    <p>لا يوجد طلاب حتى الآن</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== شاشة تسجيل دخول المدير ========== -->
+    <div id="admin-login-screen" class="hidden-screen min-h-screen flex items-center justify-center p-4">
+        <div class="glass-card p-8 max-w-md w-full fade-in">
+            <div class="text-center mb-6">
+                <div class="w-20 h-20 bg-gradient-to-br from-purple-400 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                    <i class="fas fa-user-tie text-4xl text-white"></i>
+                </div>
+                <h2 class="text-3xl font-black text-gray-800 mb-2">دخول مدير النظام</h2>
+                <p class="text-gray-600">منطقة إدارية محمية</p>
+            </div>
+
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-gray-700 font-bold mb-2">اسم المستخدم</label>
+                    <input type="text" id="a-username" class="input-field w-full p-4 rounded-xl text-lg" placeholder="admin">
+                </div>
+                <div>
+                    <label class="block text-gray-700 font-bold mb-2">كلمة المرور</label>
+                    <input type="password" id="a-password" class="input-field w-full p-4 rounded-xl text-lg" placeholder="••••••••">
+                </div>
+                <div id="a-error" class="hidden bg-red-50 border-2 border-red-300 text-red-700 p-3 rounded-xl text-sm font-bold"></div>
+                <div class="flex gap-3">
+                    <button onclick="backToRole()" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-4 rounded-xl">رجوع</button>
+                    <button onclick="loginAdmin()" class="flex-1 btn-primary text-white font-bold py-4 rounded-xl">دخول</button>
+                </div>
+                <div class="text-center text-xs text-gray-500 bg-gray-50 p-2 rounded-lg">
+                    <i class="fas fa-info-circle ml-1"></i>
+                    تجريبي: admin / admin123                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== داشبورد المدير ========== -->
+    <div id="admin-dashboard" class="hidden-screen min-h-screen p-4 md:p-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="glass-card p-6 mb-6">
+                <div class="flex justify-between items-center flex-wrap gap-4">
+                    <div>
+                        <h2 class="text-3xl font-black text-gray-800">
+                            <i class="fas fa-chart-line text-purple-600 ml-3"></i>
+                            داشبورد مدير النظام
+                        </h2>
+                        <p class="text-gray-600 mt-1">نظرة شاملة على أداء المنصة</p>
+                    </div>
+                    <button onclick="logout()" class="btn-danger px-6 py-3 rounded-xl font-bold">
+                        <i class="fas fa-sign-out-alt ml-2"></i>خروج
+                    </button>
+                </div>
+            </div>
+
+            <!-- الإحصائيات الرئيسية -->
+            <div class="grid md:grid-cols-4 gap-6 mb-6">
+                <div class="stat-card bg-gradient-to-br from-blue-500 to-blue-600 text-white p-6 shadow-lg">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-blue-100 text-sm">إجمالي الطلاب</p>
+                            <p class="text-4xl font-black mt-1" id="a-total">0</p>
+                        </div>
+                        <i class="fas fa-users text-5xl text-blue-200"></i>
+                    </div>
+                </div>
+                <div class="stat-card bg-gradient-to-br from-green-500 to-green-600 text-white p-6 shadow-lg">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-green-100 text-sm">الناجحون</p>
+                            <p class="text-4xl font-black mt-1" id="a-passed">0</p>
+                        </div>
+                        <i class="fas fa-check-circle text-5xl text-green-200"></i>
+                    </div>
+                </div>
+                <div class="stat-card bg-gradient-to-br from-red-500 to-red-600 text-white p-6 shadow-lg">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-red-100 text-sm">الراسبون</p>
+                            <p class="text-4xl font-black mt-1" id="a-failed">0</p>
+                        </div>
+                        <i class="fas fa-times-circle text-5xl text-red-200"></i>                    </div>
+                </div>
+                <div class="stat-card bg-gradient-to-br from-purple-500 to-purple-600 text-white p-6 shadow-lg">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-purple-100 text-sm">نسبة النجاح</p>
+                            <p class="text-4xl font-black mt-1" id="a-rate">0%</p>
+                        </div>
+                        <i class="fas fa-percentage text-5xl text-purple-200"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- الرسم البياني -->
+            <div class="grid md:grid-cols-2 gap-6 mb-6">
+                <div class="glass-card p-6">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">
+                        <i class="fas fa-chart-bar text-amber-600 ml-2"></i>توزيع الدرجات
+                    </h3>
+                    <canvas id="a-chart1" height="200"></canvas>
+                </div>
+                <div class="glass-card p-6">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">
+                        <i class="fas fa-chart-pie text-purple-600 ml-2"></i>نسب النجاح والرسوب
+                    </h3>
+                    <canvas id="a-chart2" height="200"></canvas>
+                </div>
+            </div>
+
+            <!-- إحصائيات الفروع -->
+            <div class="grid md:grid-cols-2 gap-6 mb-6">
+                <div class="glass-card p-6">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">
+                        <i class="fas fa-school text-blue-600 ml-2"></i>إحصائيات الفروع
+                    </h3>
+                    <div id="a-branches-stats" class="space-y-3"></div>
+                </div>
+                <div class="glass-card p-6">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">
+                        <i class="fas fa-venus-mars text-pink-600 ml-2"></i>توزيع الجنس
+                    </h3>
+                    <div id="a-gender-stats" class="space-y-3"></div>
+                </div>
+            </div>
+
+            <!-- جدول شامل -->
+            <div class="glass-card p-6 overflow-x-auto">
+                <div class="flex justify-between items-center mb-4 flex-wrap gap-3">
+                    <h3 class="text-xl font-bold text-gray-800">
+                        <i class="fas fa-list text-amber-600 ml-2"></i>جميع الطلاب                    </h3>
+                    <button onclick="exportData()" class="btn-secondary px-4 py-2 rounded-lg font-bold text-sm">
+                        <i class="fas fa-download ml-2"></i>تصدير Excel
+                    </button>
+                </div>
+                <table class="w-full">
+                    <thead class="bg-gray-50 border-b-2 border-gray-200">
+                        <tr>
+                            <th class="p-3 text-right font-bold text-gray-700">#</th>
+                            <th class="p-3 text-right font-bold text-gray-700">الاسم</th>
+                            <th class="p-3 text-right font-bold text-gray-700">الهوية</th>
+                            <th class="p-3 text-right font-bold text-gray-700">الجوال</th>
+                            <th class="p-3 text-right font-bold text-gray-700">الفرع</th>
+                            <th class="p-3 text-right font-bold text-gray-700">الجنس</th>
+                            <th class="p-3 text-right font-bold text-gray-700">الإنجليزي</th>
+                            <th class="p-3 text-right font-bold text-gray-700">العربي</th>
+                            <th class="p-3 text-right font-bold text-gray-700">الرياضيات</th>
+                            <th class="p-3 text-right font-bold text-gray-700">المجموع</th>
+                            <th class="p-3 text-right font-bold text-gray-700">الحالة</th>
+                            <th class="p-3 text-right font-bold text-gray-700">التاريخ</th>
+                        </tr>
+                    </thead>
+                    <tbody id="a-students-table" class="divide-y divide-gray-200"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== شاشة الاختبار ========== -->
+    <div id="exam-screen" class="hidden-screen min-h-screen p-4">
+        <div class="max-w-4xl mx-auto">
+            <div class="glass-card p-6 mb-4">
+                <div class="flex justify-between items-center flex-wrap gap-4">
+                    <div class="flex items-center gap-4">
+                        <div class="w-16 h-16 bg-gradient-to-br from-amber-500 to-orange-600 rounded-full flex items-center justify-center text-white text-2xl shadow-lg">
+                            <i class="fas fa-pen-fancy"></i>
+                        </div>
+                        <div>
+                            <h2 id="exam-subject" class="text-2xl font-bold text-amber-900"></h2>
+                            <p class="text-gray-600">
+                                السؤال <span id="q-num" class="font-bold text-amber-700">1</span> من 
+                                <span id="q-total" class="font-bold text-amber-700">5</span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="text-left">
+                        <p class="text-sm text-gray-600">الطالب:</p>
+                        <p id="exam-student-name" class="font-bold text-amber-700"></p>
+                    </div>
+                </div>            </div>
+
+            <!-- شريط التقدم الدائري -->
+            <div class="flex justify-center mb-4">
+                <div class="relative w-28 h-28">
+                    <svg class="progress-ring w-28 h-28">
+                        <circle class="text-gray-200" stroke-width="8" stroke="currentColor" fill="transparent" r="52" cx="56" cy="56"/>
+                        <circle id="progress-circle" class="text-amber-600 progress-ring-circle" stroke-width="8" stroke-linecap="round" stroke="currentColor" fill="transparent" r="52" cx="56" cy="56"
+                            style="stroke-dasharray: 326.7; stroke-dashoffset: 326.7"/>
+                    </svg>
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <span id="progress-percent" class="text-xl font-bold text-amber-700">0%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- منطقة السؤال -->
+            <div id="question-area" class="glass-card p-6 mb-4"></div>
+
+            <!-- عرض الدرجة -->
+            <div id="score-display" class="hidden mb-4">
+                <div class="bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-300 rounded-2xl p-6 text-center score-badge">
+                    <div class="text-4xl font-black text-green-600 mb-2">
+                        <i class="fas fa-check-circle ml-2"></i>
+                        <span id="question-score">0</span> / <span id="question-max">10</span>
+                    </div>
+                    <p id="score-message" class="text-green-800 font-bold text-lg">أحسنت!</p>
+                </div>
+            </div>
+
+            <!-- الأزرار -->
+            <div class="glass-card p-4 flex justify-between gap-3 flex-wrap">
+                <button onclick="prevQuestion()" id="btn-prev" class="bg-gray-200 hover:bg-gray-300 disabled:opacity-40 px-6 py-3 rounded-xl font-bold transition-all" disabled>
+                    <i class="fas fa-arrow-right ml-2"></i>السابق
+                </button>
+                <button onclick="nextQuestion()" id="btn-next" class="btn-primary text-white px-6 py-3 rounded-xl font-bold">
+                    التالي<i class="fas fa-arrow-left mr-2"></i>
+                </button>
+                <button onclick="finishSubject()" id="btn-finish" class="hidden btn-secondary text-white px-6 py-3 rounded-xl font-bold">
+                    إنهاء المادة<i class="fas fa-check-circle mr-2"></i>
                 </button>
             </div>
         </div>
-
-        <!-- شريط التقدم -->
-        <div class="w-full bg-gray-200 rounded-full h-4 mb-6 overflow-hidden">
-            <div id="progress" class="progress-bar h-4 rounded-full" style="width: 20%"></div>
-        </div>
-
-        <!-- منطقة السؤال -->
-        <div id="question-area" class="mb-6">
-            <!-- هنا رح تظهر الأسئلة -->
-        </div>
-
-        <!-- أزرار التنقل -->
-        <div class="flex justify-between gap-4 pt-6 border-t-2 border-gray-200">
-            <button onclick="prevQuestion()" id="btn-prev" class="btn-secondary px-8 py-3 rounded-xl font-bold text-lg disabled:opacity-40">
-                <i class="fas fa-arrow-right ml-2"></i>السابق
-            </button>
-            <button onclick="nextQuestion()" id="btn-next" class="btn-primary text-white px-8 py-3 rounded-xl font-bold text-lg">
-                التالي<i class="fas fa-arrow-left mr-2"></i>
-            </button>
-            <button onclick="finishExam()" id="btn-finish" class="hidden bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-xl font-bold text-lg">
-                إنهاء الاختبار<i class="fas fa-check-circle mr-2"></i>
-            </button>        </div>
     </div>
 
-    <!-- شاشة النتيجة -->
-    <div id="result-screen" class="max-w-2xl mx-auto mt-8 exam-card p-8 text-center fade-in hidden">
-        <div class="w-32 h-32 bg-gradient-to-br from-green-400 to-emerald-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl">
-            <i class="fas fa-trophy text-6xl text-white"></i>
-        </div>
-        <h2 class="text-4xl font-black text-gray-800 mb-4">أحسنت يا بطل! 🎉</h2>
-        <div class="bg-gradient-to-r from-amber-50 to-orange-50 rounded-2xl p-8 mb-6 border-2 border-amber-300">
-            <p class="text-xl text-gray-700 mb-3">نتيجتك النهائية</p>
-            <div class="text-6xl font-black text-amber-700 mb-2">
-                <span id="final-score">0</span>
-                <span class="text-3xl text-gray-500">من <span id="total-score">30</span></span>
+    <!-- ========== داشبورد الطالب (النتيجة) ========== -->
+    <div id="student-dashboard" class="hidden-screen min-h-screen p-4">
+        <div class="max-w-4xl mx-auto">
+            <div class="glass-card p-8 text-center fade-in">
+                <div class="w-32 h-32 bg-gradient-to-br from-amber-400 to-orange-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-xl">                    <i class="fas fa-trophy text-6xl text-white"></i>
+                </div>
+                <h2 class="text-4xl font-black text-gray-800 mb-2">أحسنت يا بطل! 🎉</h2>
+                <p id="dash-student-name" class="text-xl text-amber-700 font-bold mb-6"></p>
+
+                <div class="grid md:grid-cols-3 gap-4 mb-6">
+                    <div class="stat-card bg-gradient-to-br from-amber-500 to-orange-600 text-white p-6">
+                        <div class="text-4xl font-black mb-1" id="dash-total">0</div>
+                        <p class="text-amber-100">المجموع الكلي</p>
+                        <p class="text-xs text-amber-200">من 90</p>
+                    </div>
+                    <div class="stat-card bg-gradient-to-br from-green-500 to-emerald-600 text-white p-6">
+                        <div class="text-4xl font-black mb-1" id="dash-percentage">0%</div>
+                        <p class="text-green-100">النسبة المئوية</p>
+                    </div>
+                    <div class="stat-card bg-gradient-to-br from-blue-500 to-indigo-600 text-white p-6">
+                        <div class="text-4xl font-black mb-1" id="dash-status">-</div>
+                        <p class="text-blue-100">الحالة</p>
+                    </div>
+                </div>
+
+                <div class="bg-gray-50 rounded-2xl p-6 mb-6 text-right">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">النتائج التفصيلية</h3>
+                    <div id="dash-subjects" class="space-y-3"></div>
+                </div>
+
+                <div id="dash-result-msg" class="mb-6 p-4 rounded-xl font-bold text-lg"></div>
+
+                <button onclick="location.reload()" class="btn-primary text-white px-8 py-4 rounded-xl text-lg font-bold w-full">
+                    <i class="fas fa-redo ml-2"></i>اختبار جديد
+                </button>
             </div>
-            <div id="percentage" class="text-2xl font-bold text-green-600"></div>
         </div>
-        <button onclick="location.reload()" class="btn-primary text-white px-8 py-4 rounded-xl text-xl font-bold">
-            اختبار جديد<i class="fas fa-redo ml-2"></i>
-        </button>
     </div>
 
     <script>
-        // === البيانات ===
-        const images = {
+        // ============ البيانات الأساسية ============
+        let currentRole = '';
+        let currentStudent = { name: '', id: '', phone: '', gender: '', branch: '' };
+        let currentSubject = '';
+        let currentQIndex = 0;
+        let questions = [];
+        let answers = {};
+        let subjectScores = {};
+        const PASSING_SCORE = 45; // 50% من 90
+
+        // تحميل الطلاب من LocalStorage
+        let allStudents = JSON.parse(localStorage.getItem('exam_students')) || [];
+
+        // صور الأسئلة        const images = {
             airplane: 'https://cdn-icons-png.flaticon.com/512/199/199861.png',
             monkey: 'https://cdn-icons-png.flaticon.com/512/616/616408.png',
             tree: 'https://cdn-icons-png.flaticon.com/512/616/616567.png',
             rabbit: 'https://cdn-icons-png.flaticon.com/512/616/616430.png',
             stars: 'https://cdn-icons-png.flaticon.com/512/3050/3050173.png',
+            apple: 'https://cdn-icons-png.flaticon.com/512/415/415733.png',
+            jar: 'https://cdn-icons-png.flaticon.com/512/4391/4391597.png',
+            drop: 'https://cdn-icons-png.flaticon.com/512/3050/3050165.png',
             banana: 'https://cdn-icons-png.flaticon.com/512/2909/2909732.png',
             flower: 'https://cdn-icons-png.flaticon.com/512/888/888847.png',
             horse: 'https://cdn-icons-png.flaticon.com/512/616/616490.png',
             grapes: 'https://cdn-icons-png.flaticon.com/512/4391/4391690.png',
-            duck: 'https://cdn-icons-png.flaticon.com/512/616/616562.png'
+            duck: 'https://cdn-icons-png.flaticon.com/512/616/616562.png',
+            pen: 'https://cdn-icons-png.flaticon.com/512/2997/2997266.png',
+            books: 'https://cdn-icons-png.flaticon.com/512/3330/3330774.png',
+            tent: 'https://cdn-icons-png.flaticon.com/512/3686/3686696.png'
         };
 
-        let currentLang = 'ar';
-        let currentSubject = '';
-        let currentQIndex = 0;
-        let questions = [];
-        let answers = {};
-
-        const translations = {
-            ar: {
-                english: 'اللغة الإنجليزية',
-                arabic: 'اللغة العربية',
-                math: 'الرياضيات',
-                question: 'السؤال',
-                of: 'من',                exit: 'خروج',
-                previous: 'السابق',
-                next: 'التالي',
-                finish: 'إنهاء الاختبار',
-                wellDone: 'أحسنت يا بطل! 🎉',
-                yourScore: 'نتيجتك النهائية',
-                from: 'من',
-                newExam: 'اختبار جديد',
-                uploadImage: 'اضغط هنا لرفع صورة الحل',
-                dragDrop: 'أو اسحب الصورة وأفلتها هنا',
-                supportedFormats: 'يدعم: JPG, PNG, PDF',
-                writeAnswer: 'اكتب إجابتك في ورقة ثم صورها وارفعها',
-                instructions: 'تعليمات:',
-                completeLetters: 'أكمل الحروف الناقصة',
-                matchLetters: 'وصّل الحرف الكبير بالحرف الصغير',
-                firstLetter: 'اكتب الحرف الأول من كل صورة'
+        // بنك الأسئلة
+        const questionBank = {
+            english: {
+                model1: [
+                    { type: 'upload', question: 'أكمل الحروف الناقصة: e, _, _, _, i, _, _, _, _', instruction: 'اكتب الحروف: f, g, h, j, k, l, m', marks: 10 },
+                    { type: 'image_answer', question: 'اكتب الحرف الأول من كل صورة:', images: [images.airplane, images.monkey, images.tree, images.rabbit, images.stars], answers: ['A', 'M', 'T', 'R', 'S'], marks: 10 },
+                    { type: 'matching', question: 'وصّل الحرف الكبير بالحرف الصغير:', left: ['M', 'Q', 'K', 'D', 'R'], right: ['h', 'm', 'n', 'g', 'o', 'q', 'k', 'p', 'c', 'b', 'd', 's', 'j', 'r'], correct: { 0: 1, 1: 5, 2: 6, 3: 9, 4: 13 }, marks: 10 }
+                ],
+                model2: [
+                    { type: 'image_answer', question: 'اكتب الحرف الأول من كل صورة:', images: [images.banana, images.flower, images.horse, images.grapes, images.duck], answers: ['B', 'F', 'H', 'G', 'D'], marks: 10 },
+                    { type: 'matching', question: 'وصّل الحرف الكبير بالحرف الصغير:', left: ['E', 'J', 'W', 'P', 'B'], right: ['e', 'f', 'c', 'z', 'j', 'y', 'h', 'v', 'w', 'r', 'p', 'q', 'd', 'a', 'b'], correct: { 0: 0, 1: 4, 2: 8, 3: 10, 4: 14 }, marks: 10 },
+                    { type: 'upload', question: 'أكمل الحروف الناقصة: o, _, _, _, s, _, _', instruction: 'اكتب: p, q, r, t, u', marks: 10 }
+                ]
             },
-            en: {
-                english: 'English Language',
-                arabic: 'Arabic Language',
-                math: 'Mathematics',
-                question: 'Question',
-                of: 'of',
-                exit: 'Exit',
-                previous: 'Previous',
-                next: 'Next',
-                finish: 'Finish Exam',
-                wellDone: 'Well Done! 🎉',
-                yourScore: 'Your Final Score',
-                from: 'from',
-                newExam: 'New Exam',
-                uploadImage: 'Click to upload your answer',
-                dragDrop: 'or drag and drop image here',
-                supportedFormats: 'Supports: JPG, PNG, PDF',
-                writeAnswer: 'Write your answer on paper, then photograph and upload',
-                instructions: 'Instructions:',
-                completeLetters: 'Complete the missing letters',
-                matchLetters: 'Match capital with small letters',
-                firstLetter: 'Write the first letter of each picture'
+            arabic: {
+                model1: [
+                    { type: 'upload', question: 'اكتب الحروف الناقصة في الجدول', instruction: 'أكمل الحروف العربية في ورقة ثم ارفع الصورة', marks: 10 },
+                    { type: 'image_answer', question: 'اكتب الحرف الأول من كل صورة:', images: [images.pen, images.grapes, images.apple, images.tent, images.books], answers: ['ق', 'ع', 'ت', 'خ', 'ك'], marks: 10 },
+                    { type: 'mcq', question: 'اختر الحرف المشابه لـ "م":', options: ['ن', 'م', 'هـ', 'ي'], correct: 1, marks: 2 },
+                    { type: 'mcq', question: 'اختر الحرف المشابه لـ "ع":', options: ['غ', 'ف', 'ق', 'ع'], correct: 3, marks: 2 },
+                    { type: 'mcq', question: 'اختر الحرف المشابه لـ "ت":', options: ['ث', 'ب', 'ت', 'ن'], correct: 2, marks: 2 },
+                    { type: 'mcq', question: 'اختر الحرف المشابه لـ "ف":', options: ['ق', 'ف', 'ك', 'ل'], correct: 1, marks: 2 },
+                    { type: 'mcq', question: 'اختر الحرف المشابه لـ "س":', options: ['ش', 'ص', 'س', 'ز'], correct: 2, marks: 2 }
+                ]
+            },
+            math: {
+                model1: [
+                    { type: 'upload', question: 'أكمل الأعداد الناقصة من 1 إلى 15', instruction: 'اكتب: 2, 4, 6, 8, 10, 13, 14', marks: 15 },
+                    { type: 'mcq', question: 'عدّ التفاح 🍎 واختر الرقم الصحيح:', options: ['1', '2', '3', '4'], correct: 1, marks: 3 },
+                    { type: 'mcq', question: 'عدّ البرطمانات 🫙🫙 واختر الرقم الصحيح:', options: ['1', '2', '3', '4'], correct: 1, marks: 3 },
+                    { type: 'mcq', question: 'عدّ قطرات الماء 💧💧💧💧 واختر الرقم الصحيح:', options: ['3', '4', '5', '6'], correct: 2, marks: 3 },                    { type: 'mcq', question: 'عدّ الفطيرة 🥧 واختر الرقم الصحيح:', options: ['1', '2', '3', '4'], correct: 0, marks: 3 },
+                    { type: 'mcq', question: 'عدّ التفاح 🍏🍏 واختر الرقم الصحيح:', options: ['2', '3', '4', '5'], correct: 2, marks: 3 }
+                ],
+                model2: [
+                    { type: 'upload', question: 'أكمل الأعداد الناقصة من 1 إلى 15', instruction: 'اكتب: 2, 4, 6, 8, 11, 13, 15', marks: 15 },
+                    { type: 'mcq', question: 'عدّ الزهرة  واختر الرقم الصحيح:', options: ['1', '2', '3', '4'], correct: 0, marks: 3 },
+                    { type: 'mcq', question: 'عدّ الطائرات الورقية 🪁🪁🪁 واختر الرقم الصحيح:', options: ['3', '4', '5', '6'], correct: 1, marks: 3 },
+                    { type: 'mcq', question: 'عدّ الضفادع 🐸🐸 واختر الرقم الصحيح:', options: ['1', '2', '3', '4'], correct: 1, marks: 3 },
+                    { type: 'mcq', question: 'عدّ الزهور 🌼🌼🌼 واختر الرقم الصحيح:', options: ['3', '4', '5', '6'], correct: 2, marks: 3 },
+                    { type: 'mcq', question: 'عدّ الطائرات الورقية 🪁🪁 واختر الرقم الصحيح:', options: ['1', '2', '3', '4'], correct: 2, marks: 3 }
+                ]
             }
         };
 
-        // === بنك الأسئلة ===
-        const questionBank = {
-            english: [
-                {
-                    type: 'upload',
-                    question: { ar: 'أكمل الحروف الناقصة: e, _, _, _, i, _, _, _, _', en: 'Complete: e, _, _, _, i, _, _, _, _' },
-                    instruction: { ar: 'اكتب: f, g, h, j, k, l, m', en: 'Write: f, g, h, j, k, l, m' },
-                    marks: 10                },
-                {
-                    type: 'image_answer',
-                    question: { ar: 'اكتب الحرف الأول من كل صورة:', en: 'Write first letter:' },
-                    images: [images.airplane, images.monkey, images.tree, images.rabbit, images.stars],
-                    answers: ['A', 'M', 'T', 'R', 'S'],
-                    marks: 10
-                },
-                {
-                    type: 'matching',
-                    question: { ar: 'وصّل الحرف الكبير بالحرف الصغير:', en: 'Match capitals with small:' },
-                    left: ['M', 'Q', 'K', 'D', 'R'],
-                    right: ['m', 'q', 'k', 'd', 'r'],
-                    correct: { 0: 0, 1: 1, 2: 2, 3: 3, 4: 4 },
-                    marks: 10
-                }
-            ],
-            arabic: [
-                {
-                    type: 'upload',
-                    question: { ar: 'اكتب الحروف الناقصة في الجدول', en: 'Write missing letters' },
-                    instruction: { ar: 'أكمل الحروف العربية', en: 'Complete Arabic letters' },
-                    marks: 10
-                },
-                {
-                    type: 'image_answer',
-                    question: { ar: 'اكتب الحرف الأول من كل صورة:', en: 'Write first letter:' },
-                    images: [images.banana, images.flower, images.horse, images.grapes, images.duck],
-                    answers: ['م', 'ز', 'ح', 'ع', 'ب'],
-                    marks: 10
-                },
-                {
-                    type: 'mcq',
-                    question: { ar: 'اختر الحرف المشابه لـ "م":', en: 'Choose similar to "م":' },
-                    options: ['ن', 'م', 'هـ', 'ي'],
-                    correct: 1,
-                    marks: 10
-                }
-            ],
-            math: [
-                {
-                    type: 'upload',
-                    question: { ar: 'أكمل الأعداد الناقصة: 1-15', en: 'Complete numbers 1-15' },
-                    instruction: { ar: 'اكتب الأعداد الناقصة', en: 'Write missing numbers' },
-                    marks: 15
-                },
-                {
-                    type: 'mcq',
-                    question: { ar: 'كم تفاحة؟ 🍎', en: 'How many apples? 🍎🍎' },
-                    options: ['1', '2', '3', '4'],                    correct: 1,
-                    marks: 5
-                },
-                {
-                    type: 'mcq',
-                    question: { ar: 'كم برطمان؟ 🫙', en: 'How many jars? 🫙🫙' },
-                    options: ['1', '2', '3', '4'],
-                    correct: 1,
-                    marks: 5
-                },
-                {
-                    type: 'mcq',
-                    question: { ar: 'كم قطرة؟ 💧💧💧', en: 'How many drops? 💧💧' },
-                    options: ['2', '3', '4', '5'],
-                    correct: 1,
-                    marks: 5
-                }
-            ]
-        };
+        // ============ شاشة البداية ============
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('splash-screen').classList.add('hide');
+                setTimeout(() => {
+                    document.getElementById('splash-screen').classList.add('hidden-screen');
+                    document.getElementById('role-screen').classList.remove('hidden-screen');
+                }, 800);
+            }, 3000); // 3 ثواني
+        });
 
-        // === الدوال الأساسية ===
-        function toggleLang() {
-            currentLang = currentLang === 'ar' ? 'en' : 'ar';
-            document.documentElement.lang = currentLang;
-            document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
-            document.getElementById('lang-btn').textContent = currentLang === 'ar' ? 'English' : 'العربية';
+        // ============ اختيار الدور ============
+        function selectRole(role) {
+            currentRole = role;
+            document.querySelectorAll('.role-card').forEach(c => c.classList.remove('selected'));
+            document.getElementById(`role-${role}`).classList.add('selected');
+            document.getElementById('proceed-btn').disabled = false;
         }
 
-        function startExam(subject) {
+        function proceedRole() {
+            if (!currentRole) return;
+            document.getElementById('role-screen').classList.add('hidden-screen');
+            
+            if (currentRole === 'student') {
+                document.getElementById('student-form-screen').classList.remove('hidden-screen');
+            } else if (currentRole === 'teacher') {
+                document.getElementById('teacher-login-screen').classList.remove('hidden-screen');
+            } else if (currentRole === 'admin') {
+                document.getElementById('admin-login-screen').classList.remove('hidden-screen');
+            }
+        }
+
+        function backToRole() {
+            document.querySelectorAll('[id$="-screen"]').forEach(s => {
+                if (s.id !== 'splash-screen') s.classList.add('hidden-screen');
+            });            document.getElementById('role-screen').classList.remove('hidden-screen');
+            currentRole = '';
+            document.querySelectorAll('.role-card').forEach(c => c.classList.remove('selected'));
+            document.getElementById('proceed-btn').disabled = true;
+        }
+
+        // ============ الطالب ============
+        function startStudentExam() {
+            const name = document.getElementById('s-name').value.trim();
+            const id = document.getElementById('s-id').value.trim();
+            const phone = document.getElementById('s-phone').value.trim();
+            const genderEl = document.querySelector('input[name="gender"]:checked');
+            const branch = document.getElementById('s-branch').value;
+
+            if (!name) { alert('الرجاء إدخال اسم الطالب'); return; }
+            if (!branch) { alert('الرجاء اختيار الفرع'); return; }
+            if (!genderEl) { alert('الرجاء اختيار الجنس'); return; }
+
+            currentStudent = { name, id, phone, gender: genderEl.value, branch };
+            subjectScores = {};
+
+            document.getElementById('student-form-screen').classList.add('hidden-screen');
+            document.getElementById('exam-screen').classList.remove('hidden-screen');
+
+            startSubject('english');
+        }
+
+        function startSubject(subject) {
             currentSubject = subject;
             currentQIndex = 0;
             answers = {};
 
-            // اختيار نموذج عشوائي وخلط الأسئلة
             const bank = questionBank[subject];
-            questions = [...bank].sort(() => Math.random() - 0.5);
+            const models = Object.keys(bank);
+            const randomModel = models[Math.floor(Math.random() * models.length)];
+            const baseQuestions = bank[randomModel];
 
-            // خلط خيارات MCQ
+            questions = [...baseQuestions].sort(() => Math.random() - 0.5);
+
             questions = questions.map(q => {
                 if (q.type === 'mcq') {
                     const indexed = q.options.map((opt, idx) => ({ opt, isCorrect: idx === q.correct }));
                     const shuffled = indexed.sort(() => Math.random() - 0.5);
-                    return {
-                        ...q,
-                        options: shuffled.map(x => x.opt),
-                        correct: shuffled.findIndex(x => x.isCorrect)
-                    };
+                    return { ...q, options: shuffled.map(x => x.opt), correct: shuffled.findIndex(x => x.isCorrect) };
+                }
+                if (q.type === 'matching') {
+                    const rightIndexed = q.rightItems ? q.rightItems.map((item, idx) => ({ item, origIdx: idx })) : q.right.map((item, idx) => ({ item, origIdx: idx }));
+                    const shuffled = rightIndexed.sort(() => Math.random() - 0.5);
+                    const newCorrect = {};
+                    Object.entries(q.correct).forEach(([l, r]) => {                        newCorrect[l] = shuffled.findIndex(x => x.origIdx === r);
+                    });
+                    return { ...q, right: shuffled.map(x => x.item), correct: newCorrect };
                 }
                 return q;
             });
-            document.getElementById('main-screen').classList.add('hidden');
-            document.getElementById('result-screen').classList.add('hidden');
-            document.getElementById('exam-screen').classList.remove('hidden');
-            
-            document.getElementById('subject-title').textContent = translations[currentLang][subject];
+
+            const subjectNames = { english: 'اللغة الإنجليزية', arabic: 'اللغة العربية', math: 'الرياضيات' };
+            document.getElementById('exam-subject').textContent = subjectNames[subject];
+            document.getElementById('exam-student-name').textContent = currentStudent.name;
             document.getElementById('q-total').textContent = questions.length;
 
             renderQuestion();
@@ -405,92 +899,68 @@
             const q = questions[currentQIndex];
             const area = document.getElementById('question-area');
             
-            // تحديث الأرقام والشريط
-            document.getElementById('q-current').textContent = currentQIndex + 1;
-            const progress = ((currentQIndex + 1) / questions.length) * 100;
-            document.getElementById('progress').style.width = progress + '%';
+            document.getElementById('q-num').textContent = currentQIndex + 1;
+            document.getElementById('score-display').classList.add('hidden');
 
-            // إنشاء HTML السؤال
-            let html = `
-                <div class="bg-white rounded-xl p-6 border-2 border-gray-200">
-                    <h3 class="text-2xl font-bold text-gray-800 mb-4">${q.question[currentLang]}</h3>
-            `;
+            const percent = ((currentQIndex + 1) / questions.length) * 100;
+            const circle = document.getElementById('progress-circle');
+            const circumference = 2 * Math.PI * 52;
+            circle.style.strokeDashoffset = circumference - (percent / 100) * circumference;
+            document.getElementById('progress-percent').textContent = Math.round(percent) + '%';
+
+            let html = `<div><h3 class="text-2xl font-bold text-gray-800 mb-4">${q.question}</h3>`;
 
             if (q.type === 'upload') {
                 html += `
-                    <div class="bg-amber-50 border-2 border-amber-300 rounded-lg p-4 mb-4">
-                        <p class="text-amber-900 font-bold mb-2">
-                            <i class="fas fa-info-circle ml-2"></i>
-                            ${translations[currentLang].instructions}
-                        </p>
-                        <p class="text-amber-800">${q.instruction[currentLang]}</p>
+                    <div class="bg-amber-50 border-2 border-amber-300 rounded-xl p-4 mb-4">
+                        <p class="text-amber-900 font-bold"><i class="fas fa-info-circle ml-2"></i>${q.instruction}</p>
                     </div>
                     <div class="upload-zone rounded-xl p-8 text-center" onclick="document.getElementById('file-input').click()">
                         <i class="fas fa-cloud-upload-alt text-6xl text-amber-600 mb-4"></i>
-                        <p class="text-gray-800 font-bold text-lg mb-2">${translations[currentLang].uploadImage}</p>
-                        <p class="text-gray-500">${translations[currentLang].dragDrop}</p>
-                        <p class="text-gray-400 text-sm mt-2">${translations[currentLang].supportedFormats}</p>
+                        <p class="text-gray-800 font-bold text-lg">اضغط لرفع صورة الحل</p>
+                        <p class="text-gray-500 text-sm mt-2">يدعم: JPG, PNG</p>
                     </div>
-                    <input type="file" id="file-input" accept="image/*,.pdf" class="hidden" onchange="handleFile(this)">
-                    <div id="preview-container"></div>
-                </div>
-            `;
+                    <input type="file" id="file-input" accept="image/*" class="hidden" onchange="handleFile(this)">
+                    <div id="preview"></div>
+                `;
             } else if (q.type === 'mcq') {
                 html += `<div class="space-y-3">`;
                 q.options.forEach((opt, idx) => {
                     const selected = answers[currentQIndex] === idx ? 'selected' : '';
-                    html += `                        <button onclick="selectMCQ(${idx})" class="option-btn w-full text-right p-5 rounded-xl font-bold text-lg flex items-center gap-3 ${selected}">
-                            <span class="w-12 h-12 rounded-full bg-amber-100 text-amber-800 flex items-center justify-center font-black">${String.fromCharCode(65 + idx)}</span>
-                            <span>${opt}</span>
+                    html += `
+                        <button onclick="selectMCQ(${idx})" class="option-btn w-full text-right p-5 rounded-xl font-bold text-lg flex items-center gap-3 ${selected}">
+                            <span class="w-12 h-12 rounded-full bg-amber-100 text-amber-800 flex items-center justify-center font-black">${String.fromCharCode(65 + idx)}</span>                            <span>${opt}</span>
                         </button>
                     `;
                 });
-                html += `</div></div>`;
+                html += `</div>`;
             } else if (q.type === 'matching') {
-                html += `
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="space-y-3">
-                            ${q.left.map((item, idx) => `
-                                <button onclick="selectMatch('left', ${idx})" 
-                                    class="matching-item w-full p-4 rounded-xl font-bold text-lg text-center bg-white"
-                                    id="left-${idx}"
-                                    data-side="left" data-idx="${idx}">
-                                    ${item}
-                                </button>
-                            `).join('')}
-                        </div>
-                        <div class="space-y-3">
-                            ${q.right.map((item, idx) => `
-                                <button onclick="selectMatch('right', ${idx})" 
-                                    class="matching-item w-full p-4 rounded-xl font-bold text-lg text-center bg-white"
-                                    id="right-${idx}"
-                                    data-side="right" data-idx="${idx}">
-                                    ${item}
-                                </button>
-                            `).join('')}
-                        </div>
-                    </div>
+                html += `<div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-3">${q.left.map((item, idx) => 
+                        `<button onclick="selectMatch('left', ${idx})" id="l-${idx}" class="matching-item w-full p-4 rounded-xl font-bold text-lg bg-white">${item}</button>`
+                    ).join('')}</div>
+                    <div class="space-y-3">${q.right.map((item, idx) => 
+                        `<button onclick="selectMatch('right', ${idx})" id="r-${idx}" class="matching-item w-full p-4 rounded-xl font-bold text-lg bg-white">${item}</button>`
+                    ).join('')}</div>
                 </div>`;
             } else if (q.type === 'image_answer') {
-                html += `<div class="image-grid">`;
+                html += `<div class="grid grid-cols-5 gap-3">`;
                 q.images.forEach((img, idx) => {
                     const val = answers[currentQIndex]?.images?.[idx] || '';
                     html += `
-                        <div class="image-item">
-                            <img src="${img}" alt="img${idx}">
-                            <input type="text" maxlength="1" 
-                                value="${val}"
-                                onchange="saveImageAnswer(${idx}, this.value)"
-                                placeholder="?"
-                                id="img-input-${idx}">
+                        <div class="text-center">
+                            <img src="${img}" class="w-full h-24 object-contain mb-2 rounded-lg border-2 border-gray-200 bg-white">
+                            <input type="text" maxlength="2" value="${val}" onchange="saveImage(${idx}, this.value)" 
+                                class="w-full p-2 border-2 border-gray-300 rounded-lg text-center text-xl font-bold uppercase focus:border-amber-500 focus:outline-none">
                         </div>
                     `;
                 });
-                html += `</div></div>`;
+                html += `</div>`;
             }
+
+            html += `</div>`;
             area.innerHTML = html;
 
-            // تحديث الأزرار
             document.getElementById('btn-prev').disabled = currentQIndex === 0;
             if (currentQIndex === questions.length - 1) {
                 document.getElementById('btn-next').classList.add('hidden');
@@ -499,67 +969,91 @@
                 document.getElementById('btn-next').classList.remove('hidden');
                 document.getElementById('btn-finish').classList.add('hidden');
             }
+        }
 
-            // استعادة الإجابة إذا موجودة
-            if (answers[currentQIndex]) {
-                if (answers[currentQIndex].image) {
-                    showPreview(answers[currentQIndex].image);
+        function showScore(score, max, isCorrect) {
+            document.getElementById('question-score').textContent = score;
+            document.getElementById('question-max').textContent = max;
+            document.getElementById('score-message').textContent = isCorrect ? 'إجابة صحيحة! أحسنت 🌟' : 'حاول في السؤال التالي ';
+            document.getElementById('score-display').classList.remove('hidden');
+        }
+
+        function selectMCQ(idx) {            answers[currentQIndex] = idx;
+            const q = questions[currentQIndex];
+            const isCorrect = idx === q.correct;
+            const score = isCorrect ? q.marks : 0;
+            
+            showScore(score, q.marks, isCorrect);
+            
+            const btns = document.querySelectorAll('.option-btn');
+            btns[idx].classList.add(isCorrect ? 'correct' : 'wrong');
+            
+            setTimeout(() => {
+                if (currentQIndex < questions.length - 1) {
+                    currentQIndex++;
+                    renderQuestion();
                 }
-            }
+            }, 1500);
         }
 
-        function selectMCQ(idx) {
-            answers[currentQIndex] = idx;
-            renderQuestion();
-        }
-
-        let matchTemp = { left: null, right: null };
-
+        let matchTemp = {};
         function selectMatch(side, idx) {
             matchTemp[side] = idx;
-            
-            // إزالة التحديد السابق
-            document.querySelectorAll(`[data-side="${side}"]`).forEach(el => el.classList.remove('selected'));
+            document.querySelectorAll(`[id^="${side}-"]`).forEach(el => el.classList.remove('selected'));
             document.getElementById(`${side}-${idx}`).classList.add('selected');
 
-            if (matchTemp.left !== null && matchTemp.right !== null) {
-                // حفظ التطابق
+            if (matchTemp.left !== undefined && matchTemp.right !== undefined) {
                 if (!answers[currentQIndex]) answers[currentQIndex] = { matches: {} };
                 answers[currentQIndex].matches[matchTemp.left] = matchTemp.right;
 
-                // تمييز العناصر المتطابقة
-                document.getElementById(`left-${matchTemp.left}`).classList.add('matched');
-                document.getElementById(`right-${matchTemp.right}`).classList.add('matched');
+                document.getElementById(`l-${matchTemp.left}`).classList.add('matched');
+                document.getElementById(`r-${matchTemp.right}`).classList.add('matched');
 
-                matchTemp = { left: null, right: null };
-            }
-        }
+                matchTemp = {};
 
-        function saveImageAnswer(idx, value) {
+                const q = questions[currentQIndex];
+                let correct = 0;
+                Object.entries(q.correct).forEach(([l, r]) => {
+                    if (answers[currentQIndex].matches[l] == r) correct++;
+                });
+                const score = Math.round((correct / Object.keys(q.correct).length) * q.marks);
+                const isCorrect = correct === Object.keys(q.correct).length;
+
+                showScore(score, q.marks, isCorrect);
+
+                setTimeout(() => {
+                    if (currentQIndex < questions.length - 1) {
+                        currentQIndex++;
+                        renderQuestion();
+                    }
+                }, 1500);
+            }        }
+
+        function saveImage(idx, val) {
             if (!answers[currentQIndex]) answers[currentQIndex] = { images: {} };
-            answers[currentQIndex].images[idx] = value.toUpperCase();        }
+            answers[currentQIndex].images[idx] = val;
+        }
 
         function handleFile(input) {
             if (input.files && input.files[0]) {
                 const reader = new FileReader();
                 reader.onload = (e) => {
                     answers[currentQIndex] = { image: e.target.result };
-                    showPreview(e.target.result);
+                    document.getElementById('preview').innerHTML = 
+                        `<img src="${e.target.result}" class="mt-4 max-h-64 rounded-xl border-2 border-green-500">`;
+                    
+                    const q = questions[currentQIndex];
+                    showScore(q.marks, q.marks, true);
+                    
+                    setTimeout(() => {
+                        if (currentQIndex < questions.length - 1) {
+                            currentQIndex++;
+                            renderQuestion();
+                        }
+                    }, 1500);
                 };
                 reader.readAsDataURL(input.files[0]);
             }
-        }
-
-        function showPreview(src) {
-            const container = document.getElementById('preview-container');
-            container.innerHTML = `
-                <div class="image-preview">
-                    <img src="${src}" alt="preview">
-                    <div class="absolute top-2 right-2 bg-green-500 text-white w-10 h-10 rounded-full flex items-center justify-center">
-                        <i class="fas fa-check"></i>
-                    </div>
-                </div>
-            `;
         }
 
         function nextQuestion() {
@@ -576,45 +1070,305 @@
             }
         }
 
-        function finishExam() {
+        function finishSubject() {
             let score = 0;
             questions.forEach((q, idx) => {
-                if (q.type === 'mcq') {
-                    if (answers[idx] === q.correct) score += q.marks;
-                } else if (q.type === 'matching') {
-                    if (answers[idx]?.matches) {
-                        let correct = 0;
-                        Object.entries(q.correct).forEach(([l, r]) => {
-                            if (answers[idx].matches[l] == r) correct++;
-                        });                        score += (correct / Object.keys(q.correct).length) * q.marks;
-                    }
-                } else if (q.type === 'image_answer') {
-                    if (answers[idx]?.images) {
-                        let correct = 0;
-                        q.answers.forEach((ans, i) => {
-                            if (answers[idx].images[i] === ans) correct++;
-                        });
-                        score += (correct / q.answers.length) * q.marks;
-                    }
-                } else if (q.type === 'upload') {
-                    if (answers[idx]?.image) score += q.marks;
+                if (q.type === 'mcq' && answers[idx] === q.correct) score += q.marks;
+                else if (q.type === 'upload' && answers[idx]?.image) score += q.marks;
+                else if (q.type === 'matching' && answers[idx]?.matches) {
+                    let correct = 0;                    Object.entries(q.correct).forEach(([l, r]) => {
+                        if (answers[idx].matches[l] == r) correct++;
+                    });
+                    score += (correct / Object.keys(q.correct).length) * q.marks;
+                }
+                else if (q.type === 'image_answer' && answers[idx]?.images) {
+                    let correct = 0;
+                    q.answers.forEach((ans, i) => {
+                        if (answers[idx].images[i] === ans) correct++;
+                    });
+                    score += (correct / q.answers.length) * q.marks;
                 }
             });
 
-            document.getElementById('exam-screen').classList.add('hidden');
-            document.getElementById('result-screen').classList.remove('hidden');
-            document.getElementById('final-score').textContent = Math.round(score);
-            document.getElementById('total-score').textContent = questions.reduce((sum, q) => sum + q.marks, 0);
+            subjectScores[currentSubject] = Math.round(score);
+
+            const subjects = ['english', 'arabic', 'math'];
+            const currentIdx = subjects.indexOf(currentSubject);
             
-            const pct = Math.round((score / questions.reduce((sum, q) => sum + q.marks, 0)) * 100);
-            document.getElementById('percentage').textContent = `${pct}%`;
+            if (currentIdx < subjects.length - 1) {
+                alert(`تم إنهاء ${currentSubject === 'english' ? 'الإنجليزية' : currentSubject === 'arabic' ? 'العربية' : 'الرياضيات'} بدرجة ${subjectScores[currentSubject]}/30\nالانتقال للمادة التالية...`);
+                startSubject(subjects[currentIdx + 1]);
+            } else {
+                saveStudentResult();
+            }
         }
 
-        function exitExam() {
-            if (confirm('هل تريد الخروج من الاختبار؟')) {
+        function saveStudentResult() {
+            const total = Object.values(subjectScores).reduce((a, b) => a + b, 0);
+            const passed = total >= PASSING_SCORE;
+
+            const studentData = {
+                id: Date.now(),
+                name: currentStudent.name,
+                idNumber: currentStudent.id,
+                phone: currentStudent.phone,
+                gender: currentStudent.gender,
+                branch: currentStudent.branch,
+                scores: { ...subjectScores },
+                total: total,
+                passed: passed,
+                date: new Date().toLocaleString('ar-SA'),
+                timestamp: Date.now()
+            };
+
+            allStudents.push(studentData);
+            localStorage.setItem('exam_students', JSON.stringify(allStudents));
+
+            showStudentDashboard(studentData);
+        }
+        function showStudentDashboard(data) {
+            document.getElementById('exam-screen').classList.add('hidden-screen');
+            document.getElementById('student-dashboard').classList.remove('hidden-screen');
+
+            document.getElementById('dash-student-name').textContent = data.name;
+            document.getElementById('dash-total').textContent = data.total;
+            const pct = Math.round((data.total / 90) * 100);
+            document.getElementById('dash-percentage').textContent = pct + '%';
+            document.getElementById('dash-status').textContent = data.passed ? 'ناجح ✅' : 'راسب ❌';
+
+            const container = document.getElementById('dash-subjects');
+            const subjectNames = { english: 'اللغة الإنجليزية', arabic: 'اللغة العربية', math: 'الرياضيات' };
+            container.innerHTML = Object.entries(data.scores).map(([subj, score]) => `
+                <div class="flex items-center justify-between p-4 bg-white rounded-xl border-2 border-gray-100">
+                    <span class="font-bold text-lg">${subjectNames[subj]}</span>
+                    <span class="text-2xl font-black ${score >= 15 ? 'text-green-600' : 'text-red-600'}">${score}/30</span>
+                </div>
+            `).join('');
+
+            const msgBox = document.getElementById('dash-result-msg');
+            if (data.passed) {
+                msgBox.className = 'mb-6 p-4 rounded-xl font-bold text-lg bg-green-100 text-green-800 border-2 border-green-300';
+                msgBox.innerHTML = '<i class="fas fa-trophy ml-2"></i> مبروك! لقد اجتزت الاختبار بنجاح ';
+            } else {
+                msgBox.className = 'mb-6 p-4 rounded-xl font-bold text-lg bg-red-100 text-red-800 border-2 border-red-300';
+                msgBox.innerHTML = '<i class="fas fa-redo ml-2"></i> لم تجتز الاختبار. حظاً أوفر في المرة القادمة 💪';
+            }
+        }
+
+        // ============ المعلم ============
+        function loginTeacher() {
+            const user = document.getElementById('t-username').value;
+            const pass = document.getElementById('t-password').value;
+            const errBox = document.getElementById('t-error');
+
+            if (user === 'teacher' && pass === 'teacher123') {
+                errBox.classList.add('hidden');
+                document.getElementById('teacher-login-screen').classList.add('hidden-screen');
+                document.getElementById('teacher-panel').classList.remove('hidden-screen');
+                updateTeacherPanel();
+            } else {
+                errBox.textContent = ' اسم المستخدم أو كلمة المرور غير صحيحة';
+                errBox.classList.remove('hidden');
+            }
+        }
+
+        function updateTeacherPanel() {
+            document.getElementById('t-total').textContent = allStudents.length;
+            const passed = allStudents.filter(s => s.passed).length;            const failed = allStudents.length - passed;
+            document.getElementById('t-passed').textContent = passed;
+            document.getElementById('t-failed').textContent = failed;
+
+            const tbody = document.getElementById('t-students-table');
+            const emptyMsg = document.getElementById('t-empty');
+
+            if (allStudents.length === 0) {
+                tbody.innerHTML = '';
+                emptyMsg.classList.remove('hidden');
+                return;
+            }
+            emptyMsg.classList.add('hidden');
+
+            tbody.innerHTML = allStudents.map((s, i) => {
+                const branchName = s.branch === 'child-gate' ? 'بوابة الطفل' : 'أجيال المعرفة';
+                const genderName = s.gender === 'male' ? 'ذكر' : 'أنثى';
+                return `
+                    <tr class="hover:bg-gray-50 transition-colors">
+                        <td class="p-3">${i + 1}</td>
+                        <td class="p-3 font-bold">${s.name}</td>
+                        <td class="p-3 text-sm">${branchName}</td>
+                        <td class="p-3">${genderName}</td>
+                        <td class="p-3">${s.scores.english || 0}</td>
+                        <td class="p-3">${s.scores.arabic || 0}</td>
+                        <td class="p-3">${s.scores.math || 0}</td>
+                        <td class="p-3 font-bold text-amber-700">${s.total}</td>
+                        <td class="p-3">
+                            <span class="px-3 py-1 rounded-full text-xs font-bold ${s.passed ? 'badge-success' : 'badge-danger'}">
+                                ${s.passed ? 'ناجح ✅' : 'راسب ❌'}
+                            </span>
+                        </td>
+                        <td class="p-3 text-xs text-gray-500">${s.date}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // ============ المدير ============
+        function loginAdmin() {
+            const user = document.getElementById('a-username').value;
+            const pass = document.getElementById('a-password').value;
+            const errBox = document.getElementById('a-error');
+
+            if (user === 'admin' && pass === 'admin123') {
+                errBox.classList.add('hidden');
+                document.getElementById('admin-login-screen').classList.add('hidden-screen');
+                document.getElementById('admin-dashboard').classList.remove('hidden-screen');
+                updateAdminDashboard();
+            } else {                errBox.textContent = ' بيانات الدخول غير صحيحة';
+                errBox.classList.remove('hidden');
+            }
+        }
+
+        function updateAdminDashboard() {
+            const total = allStudents.length;
+            const passed = allStudents.filter(s => s.passed).length;
+            const failed = total - passed;
+            const rate = total > 0 ? Math.round((passed / total) * 100) : 0;
+
+            document.getElementById('a-total').textContent = total;
+            document.getElementById('a-passed').textContent = passed;
+            document.getElementById('a-failed').textContent = failed;
+            document.getElementById('a-rate').textContent = rate + '%';
+
+            // إحصائيات الفروع
+            const childGate = allStudents.filter(s => s.branch === 'child-gate');
+            const knowledgeGen = allStudents.filter(s => s.branch === 'knowledge-gen');
+            const childGatePassed = childGate.filter(s => s.passed).length;
+            const knowledgeGenPassed = knowledgeGen.filter(s => s.passed).length;
+
+            document.getElementById('a-branches-stats').innerHTML = `
+                <div class="flex items-center justify-between p-4 bg-blue-50 rounded-xl border-2 border-blue-200">
+                    <div>
+                        <div class="font-bold text-blue-900"> بوابة الطفل</div>
+                        <div class="text-sm text-blue-700">${childGatePassed} ناجح من ${childGate.length}</div>
+                    </div>
+                    <div class="text-2xl font-black text-blue-600">${childGate.length}</div>
+                </div>
+                <div class="flex items-center justify-between p-4 bg-amber-50 rounded-xl border-2 border-amber-200">
+                    <div>
+                        <div class="font-bold text-amber-900">✨ أجيال المعرفة</div>
+                        <div class="text-sm text-amber-700">${knowledgeGenPassed} ناجح من ${knowledgeGen.length}</div>
+                    </div>
+                    <div class="text-2xl font-black text-amber-600">${knowledgeGen.length}</div>
+                </div>
+            `;
+
+            // إحصائيات الجنس
+            const males = allStudents.filter(s => s.gender === 'male');
+            const females = allStudents.filter(s => s.gender === 'female');
+            const malesPassed = males.filter(s => s.passed).length;
+            const femalesPassed = females.filter(s => s.passed).length;
+
+            document.getElementById('a-gender-stats').innerHTML = `
+                <div class="flex items-center justify-between p-4 bg-blue-50 rounded-xl border-2 border-blue-200">
+                    <div>
+                        <div class="font-bold text-blue-900"><i class="fas fa-male ml-2"></i>ذكور</div>
+                        <div class="text-sm text-blue-700">${malesPassed} ناجح من ${males.length}</div>                    </div>
+                    <div class="text-2xl font-black text-blue-600">${males.length}</div>
+                </div>
+                <div class="flex items-center justify-between p-4 bg-pink-50 rounded-xl border-2 border-pink-200">
+                    <div>
+                        <div class="font-bold text-pink-900"><i class="fas fa-female ml-2"></i>إناث</div>
+                        <div class="text-sm text-pink-700">${femalesPassed} ناجحة من ${females.length}</div>
+                    </div>
+                    <div class="text-2xl font-black text-pink-600">${females.length}</div>
+                </div>
+            `;
+
+            // الجدول
+            const tbody = document.getElementById('a-students-table');
+            tbody.innerHTML = allStudents.map((s, i) => {
+                const branchName = s.branch === 'child-gate' ? 'بوابة الطفل' : 'أجيال المعرفة';
+                const genderName = s.gender === 'male' ? 'ذكر' : 'أنثى';
+                return `
+                    <tr class="hover:bg-gray-50">
+                        <td class="p-3">${i + 1}</td>
+                        <td class="p-3 font-bold">${s.name}</td>
+                        <td class="p-3 text-sm">${s.idNumber || '-'}</td>
+                        <td class="p-3 text-sm">${s.phone || '-'}</td>
+                        <td class="p-3 text-sm">${branchName}</td>
+                        <td class="p-3">${genderName}</td>
+                        <td class="p-3">${s.scores.english || 0}</td>
+                        <td class="p-3">${s.scores.arabic || 0}</td>
+                        <td class="p-3">${s.scores.math || 0}</td>
+                        <td class="p-3 font-bold text-amber-700">${s.total}</td>
+                        <td class="p-3">
+                            <span class="px-3 py-1 rounded-full text-xs font-bold ${s.passed ? 'badge-success' : 'badge-danger'}">
+                                ${s.passed ? 'ناجح ✅' : 'راسب ❌'}
+                            </span>
+                        </td>
+                        <td class="p-3 text-xs text-gray-500">${s.date}</td>
+                    </tr>
+                `;
+            }).join('');
+
+            // الرسوم البيانية
+            setTimeout(() => {
+                const ctx1 = document.getElementById('a-chart1');
+                const ctx2 = document.getElementById('a-chart2');
+                
+                if (ctx1._chart) ctx1._chart.destroy();
+                if (ctx2._chart) ctx2._chart.destroy();
+
+                if (allStudents.length > 0) {
+                    ctx1._chart = new Chart(ctx1, {
+                        type: 'bar',                        data: {
+                            labels: allStudents.map(s => s.name.split(' ')[0]),
+                            datasets: [{
+                                label: 'المجموع',
+                                data: allStudents.map(s => s.total),
+                                backgroundColor: 'rgba(139, 69, 19, 0.6)',
+                                borderColor: 'rgba(139, 69, 19, 1)',
+                                borderWidth: 2
+                            }]
+                        },
+                        options: { responsive: true, scales: { y: { beginAtZero: true, max: 90 } } }
+                    });
+
+                    ctx2._chart = new Chart(ctx2, {
+                        type: 'doughnut',
+                        data: {
+                            labels: ['ناجحون', 'راسبون'],
+                            datasets: [{
+                                data: [passed, failed],
+                                backgroundColor: ['#10B981', '#EF4444']
+                            }]
+                        },
+                        options: { responsive: true }
+                    });
+                }
+            }, 100);
+        }
+
+        function exportData() {
+            let csv = '\ufeffالاسم,الهوية,الجوال,الفرع,الجنس,الإنجليزي,العربي,الرياضيات,المجموع,الحالة,التاريخ\n';
+            allStudents.forEach(s => {
+                const branch = s.branch === 'child-gate' ? 'بوابة الطفل' : 'أجيال المعرفة';
+                const gender = s.gender === 'male' ? 'ذكر' : 'أنثى';
+                const status = s.passed ? 'ناجح' : 'راسب';
+                csv += `${s.name},${s.idNumber || '-'},${s.phone || '-'},${branch},${gender},${s.scores.english || 0},${s.scores.arabic || 0},${s.scores.math || 0},${s.total},${status},${s.date}\n`;
+            });
+
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'students_results.csv';
+            link.click();
+        }
+
+        function logout() {
+            if (confirm('هل تريد تسجيل الخروج؟')) {
                 location.reload();
             }
         }
-    </script>
-</body>
-</html>
+    </script></body>
+    </html>
