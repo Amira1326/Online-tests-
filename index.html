@@ -237,47 +237,14 @@
         </div>
     </div>
 
-    <!-- ========== الشاشة 4: تسجيل دخول الطالب ========== -->
-    <div id="student-login-screen" class="hidden-screen min-h-screen flex items-center justify-center p-4">
-        <div class="glass-card p-8 max-w-md w-full fade-in">
-            <div class="text-center mb-6">
-                <div class="w-20 h-20 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
-                    <i class="fas fa-user-graduate text-4xl text-white"></i>
-                </div>
-                <h2 class="text-3xl font-black text-gray-800 mb-2">تسجيل دخول الطالب</h2>
-                <p class="text-gray-600">أدخل بياناتك للمتابعة</p>
-            </div>
-
-            <div class="space-y-4">
-                <div>
-                    <label class="block text-gray-700 font-bold mb-2">البريد الإلكتروني</label>
-                    <input type="email" id="sl-email" class="input-field w-full p-4 rounded-xl text-lg" placeholder="example@email.com">
-                </div>
-                <div>
-                    <label class="block text-gray-700 font-bold mb-2">كلمة المرور</label>
-                    <input type="password" id="sl-password" class="input-field w-full p-4 rounded-xl text-lg" placeholder="••••••••">
-                </div>
-                <div id="sl-error" class="hidden bg-red-50 border-2 border-red-300 text-red-700 p-3 rounded-xl text-sm font-bold"></div>
-                <div class="flex gap-3">
-                    <button onclick="backToRole()" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-4 rounded-xl">رجوع</button>
-                    <button onclick="loginStudent()" class="flex-1 btn-primary text-white font-bold py-4 rounded-xl">دخول</button>
-                </div>
-                <div class="text-center text-xs text-gray-500 bg-gray-50 p-2 rounded-lg">
-                    <i class="fas fa-info-circle ml-1"></i>
-                    تجريبي: student@test.com / 123456
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- ========== الشاشة 5: نموذج بيانات الطالب ========== -->
+    <!-- ========== الشاشة 4: نموذج بيانات الطالب (مباشرة بدون تسجيل دخول) ========== -->
     <div id="student-form-screen" class="hidden-screen min-h-screen flex items-center justify-center p-4">
         <div class="glass-card p-8 md:p-10 max-w-3xl w-full fade-in">
             <div class="text-center mb-6">
                 <div class="inline-block bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-2 rounded-full text-sm font-bold mb-4">
                     <i class="fas fa-user-graduate ml-2"></i>بيانات الطالب
                 </div>
-                <h2 class="text-3xl font-black text-gray-800 mb-2">أكمل معلوماتك</h2>
+                <h2 class="text-3xl font-black text-gray-800 mb-2">أدخل معلوماتك</h2>
                 <p class="text-sm text-amber-700 font-bold">
                     <span id="form-branch-name"></span> | <span id="form-role-name">طالب</span>
                 </p>
@@ -596,7 +563,7 @@
         // ============ البيانات الأساسية ============
         let currentBranch = '';
         let currentRole = '';
-        let currentStudent = { name: '', dob: '', id: '', phone: '', gender: '', grade: '', email: '' };
+        let currentStudent = { name: '', dob: '', id: '', phone: '', gender: '', grade: '' };
         let allStudents = JSON.parse(localStorage.getItem('exam_students')) || [];
 
         const gradeOptions = {
@@ -634,7 +601,7 @@
                     document.getElementById('welcome-screen').classList.add('hidden-screen');
                     document.getElementById('branch-screen').classList.remove('hidden-screen');
                 }, 300);
-            }, 1000); // ثانية واحدة فقط!
+            }, 1000);
         });
 
         // ============ اختيار الفرع ============
@@ -670,8 +637,22 @@
             if (!currentRole) return;
             document.getElementById('role-screen').classList.add('hidden-screen');
             
+            // ✅ الطالب يدخل مباشرة لصفحة البيانات (بدون تسجيل دخول)
             if (currentRole === 'student') {
-                document.getElementById('student-login-screen').classList.remove('hidden-screen');
+                document.getElementById('student-form-screen').classList.remove('hidden-screen');
+                
+                document.getElementById('form-branch-name').textContent = 
+                    currentBranch === 'child-gate' ? 'بوابة الطفل' : 'أجيال المعرفة';
+                
+                // ملء خيارات المرحلة حسب الفرع
+                const gradeSelect = document.getElementById('s-grade');
+                gradeSelect.innerHTML = '<option value="">-- اختر المرحلة --</option>';
+                gradeOptions[currentBranch].forEach(opt => {
+                    const option = document.createElement('option');
+                    option.value = opt.value;
+                    option.textContent = opt.label;
+                    gradeSelect.appendChild(option);
+                });
             } else if (currentRole === 'teacher') {
                 document.getElementById('teacher-login-screen').classList.remove('hidden-screen');
             } else if (currentRole === 'admin') {
@@ -687,36 +668,6 @@
             currentRole = '';
             document.querySelectorAll('.role-card').forEach(c => c.classList.remove('selected'));
             document.getElementById('role-btn').disabled = true;
-        }
-
-        // ============ تسجيل دخول الطالب ============
-        function loginStudent() {
-            const email = document.getElementById('sl-email').value.trim();
-            const password = document.getElementById('sl-password').value;
-            const errBox = document.getElementById('sl-error');
-
-            if (email === 'student@test.com' && password === '123456') {
-                errBox.classList.add('hidden');
-                currentStudent.email = email;
-                document.getElementById('student-login-screen').classList.add('hidden-screen');
-                document.getElementById('student-form-screen').classList.remove('hidden-screen');
-                
-                document.getElementById('form-branch-name').textContent = 
-                    currentBranch === 'child-gate' ? 'بوابة الطفل' : 'أجيال المعرفة';
-                
-                // ملء خيارات المرحلة حسب الفرع
-                const gradeSelect = document.getElementById('s-grade');
-                gradeSelect.innerHTML = '<option value="">-- اختر المرحلة --</option>';
-                gradeOptions[currentBranch].forEach(opt => {
-                    const option = document.createElement('option');
-                    option.value = opt.value;
-                    option.textContent = opt.label;
-                    gradeSelect.appendChild(option);
-                });
-            } else {
-                errBox.textContent = '⚠️ البريد الإلكتروني أو كلمة المرور غير صحيحة';
-                errBox.classList.remove('hidden');
-            }
         }
 
         // ============ بدء اختبار الطالب ============
@@ -739,18 +690,16 @@
                 name, dob, id, phone, 
                 gender: genderEl.value, 
                 grade, 
-                branch: currentBranch,
-                email: currentStudent.email
+                branch: currentBranch
             };
 
-            // هنا تبدأ الاختبارات (نفس الكود السابق)
-            alert('تم حفظ البيانات! الآن يبدأ الاختبار...');
-            
-            // حفظ البيانات مؤقتاً
+            // حفظ البيانات
             localStorage.setItem('current_student', JSON.stringify(currentStudent));
             
-            // الانتقال لشاشة الاختبار (سنكملها لاحقاً)
-            alert('البيانات المحفوظة:\n' + JSON.stringify(currentStudent, null, 2));
+            // هنا تبدأ الاختبارات (سنكملها لاحقاً)
+            alert('تم حفظ البيانات بنجاح!\n\nالاسم: ' + name + '\nالمرحلة: ' + grade + '\nالفرع: ' + (currentBranch === 'child-gate' ? 'بوابة الطفل' : 'أجيال المعرفة'));
+            
+            // الانتقال لشاشة الاختبار (سنضيفها لاحقاً)
         }
 
         // ============ المعلم ============
@@ -823,7 +772,7 @@
                 document.getElementById('admin-dashboard').classList.remove('hidden-screen');
                 updateAdminDashboard();
             } else {
-                errBox.textContent = '️ بيانات الدخول غير صحيحة';
+                errBox.textContent = '⚠️ بيانات الدخول غير صحيحة';
                 errBox.classList.remove('hidden');
             }
         }
@@ -873,7 +822,6 @@
 
             const data = allStudents.map(s => ({
                 'الاسم': s.name,
-                'البريد الإلكتروني': s.email || '-',
                 'تاريخ الميلاد': s.dob || '-',
                 'رقم الهوية': s.id || '-',
                 'رقم الجوال': s.phone || '-',
