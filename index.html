@@ -8,34 +8,45 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         * { font-family: 'Cairo', sans-serif; box-sizing: border-box; }
-        body { background: linear-gradient(135deg, #FAF7F2 0%, #F5EDE0 100%); min-height: 100vh; margin: 0; }
-        .glass-card { background: rgba(255, 255, 255, 0.98); backdrop-filter: blur(20px); border-radius: 24px; box-shadow: 0 20px 60px rgba(139, 69, 19, 0.15); border: 2px solid rgba(139, 69, 19, 0.1); }
+        body { background: linear-gradient(135deg, #FAF7F2 0%, #F5EDE0 100%); min-height: 100vh; margin: 0; transition: all 0.3s; }
+        body.dark-mode { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); color: white; }
+        .glass-card { background: rgba(255, 255, 255, 0.98); backdrop-filter: blur(20px); border-radius: 24px; box-shadow: 0 20px 60px rgba(139, 69, 19, 0.15); border: 2px solid rgba(139, 69, 19, 0.1); transition: all 0.3s; }
+        body.dark-mode .glass-card { background: rgba(30, 30, 50, 0.95); border-color: rgba(255, 255, 255, 0.1); }
         #welcome-screen { position: fixed; inset: 0; background: linear-gradient(135deg, #8B4513 0%, #A0522D 50%, #D2691E 100%); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.5s ease, visibility 0.5s; }
         #welcome-screen.hide { opacity: 0; visibility: hidden; }
-        .welcome-title { color: white; font-size: 3.5rem; font-weight: 900; text-shadow: 0 4px 20px rgba(0,0,0,0.3); animation: fadeIn 0.8s ease; text-align: center; padding: 0 1rem; }
-        .welcome-subtitle { color: rgba(255,255,255,0.95); font-size: 1.5rem; margin-top: 1rem; animation: fadeIn 1s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        .welcome-title { color: white; font-size: 3.5rem; font-weight: 900; text-shadow: 0 4px 20px rgba(0,0,0,0.3); animation: bounceIn 0.8s ease; text-align: center; padding: 0 1rem; }
+        .welcome-subtitle { color: rgba(255,255,255,0.95); font-size: 1.5rem; margin-top: 1rem; animation: fadeInUp 1s ease; }
+        @keyframes bounceIn { 0% { transform: scale(0); opacity: 0; } 50% { transform: scale(1.1); } 100% { transform: scale(1); opacity: 1; } }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
+        @keyframes pulse-glow { 0%, 100% { box-shadow: 0 0 20px rgba(139, 69, 19, 0.3); } 50% { box-shadow: 0 0 40px rgba(139, 69, 19, 0.6); } }
         .btn-primary { background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%); color: white; transition: all 0.3s; border: none; cursor: pointer; font-weight: bold; }
         .btn-primary:hover:not(:disabled) { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(139, 69, 19, 0.4); }
         .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
         .btn-secondary { background: linear-gradient(135deg, #D2691E 0%, #CD853F 100%); color: white; transition: all 0.3s; border: none; cursor: pointer; font-weight: bold; }
         .btn-secondary:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(210, 105, 30, 0.4); }
         .btn-danger { background: linear-gradient(135deg, #DC2626 0%, #EF4444 100%); color: white; transition: all 0.3s; border: none; cursor: pointer; font-weight: bold; }
-        .branch-card, .role-card { transition: all 0.4s; cursor: pointer; border: 3px solid transparent; }
+        .btn-gold { background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%); color: white; transition: all 0.3s; border: none; cursor: pointer; font-weight: bold; }
+        .btn-gold:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(255, 215, 0, 0.4); }
+        .branch-card, .role-card { transition: all 0.4s; cursor: pointer; border: 3px solid transparent; position: relative; overflow: hidden; }
         .branch-card:hover, .role-card:hover { transform: translateY(-10px) scale(1.02); box-shadow: 0 25px 50px rgba(139, 69, 19, 0.25); }
         .branch-card.selected, .role-card.selected { border-color: #8B4513; background: linear-gradient(135deg, #FFF8F0 0%, #FFEED5 100%); box-shadow: 0 0 0 4px rgba(139, 69, 19, 0.15); }
         .input-field { transition: all 0.3s; border: 2px solid #E5E7EB; background: white; border-radius: 12px; }
+        body.dark-mode .input-field { background: #2a2a4a; color: white; border-color: #444; }
         .input-field:focus { border-color: #8B4513; box-shadow: 0 0 0 4px rgba(139, 69, 19, 0.1); outline: none; }
         .hidden-screen { display: none !important; }
-        .fade-in { animation: fadeIn 0.6s ease; }
-        .stat-card { transition: all 0.3s; border-radius: 20px; overflow: hidden; }
-        .stat-card:hover { transform: translateY(-5px); }
+        .fade-in { animation: fadeInUp 0.6s ease; }
+        .stat-card { transition: all 0.3s; border-radius: 20px; overflow: hidden; position: relative; }
+        .stat-card:hover { transform: translateY(-5px) scale(1.02); }
+        .stat-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, transparent 100%); }
         .badge-success { background: #10B981; color: white; }
         .badge-danger { background: #EF4444; color: white; }
-        .badge-warning { background: #F59E0B; color: white; }
-        .logo-container { width: 140px; height: 140px; border-radius: 50%; overflow: hidden; background: white; padding: 10px; margin: 0 auto 1rem; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .badge-gold { background: linear-gradient(135deg, #FFD700, #FFA500); color: white; }
+        .logo-container { width: 140px; height: 140px; border-radius: 50%; overflow: hidden; background: white; padding: 10px; margin: 0 auto 1rem; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 30px rgba(0,0,0,0.1); animation: float 3s ease-in-out infinite; }
         .logo-container img { width: 100%; height: 100%; object-fit: contain; }
         .option-btn { border: 3px solid #E5E7EB; transition: all 0.3s; cursor: pointer; background: white; border-radius: 16px; padding: 0.75rem; }
         .option-btn:hover { border-color: #8B4513; background: #FFF8F0; }
@@ -43,28 +54,97 @@
         .upload-zone { border: 3px dashed #8B4513; background: #FFF8F0; transition: all 0.3s; cursor: pointer; border-radius: 16px; }
         .upload-zone:hover { background: #FFEED5; }
         .progress-container { background: #E5E7EB; border-radius: 9999px; overflow: hidden; height: 12px; }
-        .progress-bar { background: linear-gradient(90deg, #8B4513, #D2691E, #CD853F); height: 100%; border-radius: 9999px; transition: width 0.5s ease; }
+        .progress-bar { background: linear-gradient(90deg, #8B4513, #D2691E, #CD853F, #FFD700); background-size: 200% 100%; animation: shimmer 2s infinite; height: 100%; border-radius: 9999px; transition: width 0.5s ease; }
+        @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
         .subject-tab { padding: 0.5rem 1.5rem; border-radius: 9999px; font-weight: bold; transition: all 0.3s; }
         .subject-tab.active { background: linear-gradient(135deg, #8B4513, #D2691E); color: white; }
         .subject-tab.inactive { background: #E5E7EB; color: #6B7280; }
         .subject-tab.completed { background: #10B981; color: white; }
-        .question-block { background: white; border: 2px solid #E5E7EB; border-radius: 16px; padding: 1.5rem; margin-bottom: 1rem; }
+        .question-block { background: white; border: 2px solid #E5E7EB; border-radius: 16px; padding: 1.5rem; margin-bottom: 1rem; position: relative; }
+        body.dark-mode .question-block { background: #2a2a4a; border-color: #444; color: white; }
+        .score-badge { position: absolute; top: 1rem; left: 1rem; padding: 0.5rem 1rem; border-radius: 9999px; font-weight: bold; font-size: 1.1rem; animation: bounceIn 0.5s; }
+        .score-correct { background: #D1FAE5; color: #065F46; border: 2px solid #10B981; }
+        .score-wrong { background: #FEE2E2; color: #991B1B; border: 2px solid #EF4444; }
         .subject-result-card { background: white; border-radius: 16px; padding: 1.5rem; border: 3px solid #E5E7EB; transition: all 0.3s; }
         .subject-result-card.passed { border-color: #10B981; background: linear-gradient(135deg, #F0FDF4 0%, #DCFCE7 100%); }
         .subject-result-card.failed { border-color: #EF4444; background: linear-gradient(135deg, #FEF2F2 0%, #FEE2E2 100%); }
         .status-badge { display: inline-block; padding: 0.5rem 1.5rem; border-radius: 9999px; font-weight: bold; font-size: 1.1rem; }
         .status-passed { background: linear-gradient(135deg, #10B981 0%, #059669 100%); color: white; }
         .status-failed { background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%); color: white; }
-        .status-pending { background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%); color: white; }
+        
+        /* لوحة المعلم الاحترافية */
+        .teacher-split-screen { display: grid; grid-template-columns: 1fr 2fr; gap: 1.5rem; height: calc(100vh - 200px); }
+        .student-list-panel { background: white; border-radius: 20px; padding: 1.5rem; overflow-y: auto; border: 2px solid #E5E7EB; }
+        .student-detail-panel { background: white; border-radius: 20px; padding: 2rem; overflow-y: auto; border: 2px solid #E5E7EB; }
+        body.dark-mode .student-list-panel, body.dark-mode .student-detail-panel { background: #2a2a4a; border-color: #444; }
+        .student-item { padding: 1rem; border-radius: 12px; cursor: pointer; transition: all 0.3s; border: 2px solid transparent; margin-bottom: 0.5rem; }
+        .student-item:hover { background: #FFF8F0; border-color: #8B4513; }
+        .student-item.active { background: #FFF8F0; border-color: #8B4513; box-shadow: 0 4px 12px rgba(139, 69, 19, 0.2); }
+        
+        /* نظام الشارات */
+        .badge-container { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.5rem; }
+        .achievement-badge { padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: bold; display: inline-flex; align-items: center; gap: 0.25rem; }
+        .badge-excellent { background: linear-gradient(135deg, #FFD700, #FFA500); color: white; }
+        .badge-good { background: linear-gradient(135deg, #10B981, #059669); color: white; }
+        .badge-effort { background: linear-gradient(135deg, #3B82F6, #1D4ED8); color: white; }
+        
+        /* نظام التنبيهات */
+        .notification { position: fixed; top: 20px; left: 20px; padding: 1rem 1.5rem; border-radius: 12px; color: white; font-weight: bold; z-index: 10000; animation: slideIn 0.3s ease; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .notification.success { background: linear-gradient(135deg, #10B981, #059669); }
+        .notification.warning { background: linear-gradient(135deg, #F59E0B, #D97706); }
+        .notification.error { background: linear-gradient(135deg, #EF4444, #DC2626); }
+        @keyframes slideIn { from { transform: translateX(-100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        
+        /* Particles Background */
+        .particles { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
+        .particle { position: absolute; background: rgba(139, 69, 19, 0.1); border-radius: 50%; animation: float-particle 20s infinite ease-in-out; }
+        @keyframes float-particle { 0%, 100% { transform: translateY(0) translateX(0); } 25% { transform: translateY(-100px) translateX(50px); } 50% { transform: translateY(-50px) translateX(-30px); } 75% { transform: translateY(-150px) translateX(20px); } }
+        
+        /* Dark Mode Toggle */
+        .theme-toggle { position: fixed; top: 20px; right: 20px; z-index: 1000; background: white; border-radius: 50%; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 5px 20px rgba(0,0,0,0.2); transition: all 0.3s; }
+        .theme-toggle:hover { transform: scale(1.1); }
+        body.dark-mode .theme-toggle { background: #2a2a4a; }
+        
+        /* Search Box */
+        .search-box { position: relative; }
+        .search-box input { padding-right: 3rem; }
+        .search-box i { position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); color: #8B4513; }
+        
+        /* About Page */
+        .feature-card { background: white; border-radius: 20px; padding: 2rem; text-align: center; transition: all 0.3s; border: 2px solid transparent; }
+        .feature-card:hover { transform: translateY(-10px); border-color: #8B4513; box-shadow: 0 20px 40px rgba(139, 69, 19, 0.2); }
+        .feature-icon { width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, #8B4513, #D2691E); color: white; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; font-size: 2rem; }
+        
+        /* Chart Container */
+        .chart-container { background: white; border-radius: 20px; padding: 1.5rem; margin-bottom: 1.5rem; }
+        body.dark-mode .chart-container { background: #2a2a4a; }
+        
+        @media (max-width: 1024px) { .teacher-split-screen { grid-template-columns: 1fr; } }
         @media (max-width: 640px) { .glass-card { border-radius: 16px; padding: 1rem !important; } .welcome-title { font-size: 2rem; } .logo-container { width: 100px; height: 100px; } }
     </style>
 </head>
 <body>
+    <!-- Particles Background -->
+    <div class="particles" id="particles"></div>
+    
+    <!-- Theme Toggle -->
+    <div class="theme-toggle" onclick="toggleTheme()">
+        <i class="fas fa-moon text-2xl text-amber-700" id="theme-icon"></i>
+    </div>
+
+    <!-- Notification Container -->
+    <div id="notification-container"></div>
+
     <!-- ========== الشاشة 1: الترحيب ========== -->
     <div id="welcome-screen">
-        <div class="text-8xl mb-4">🎓</div>
+        <div class="text-8xl mb-4" style="animation: bounceIn 1s ease;">🎓</div>
         <h1 class="welcome-title">منصة الاختبارات الإلكترونية</h1>
         <p class="welcome-subtitle">بوابة الطفل | أجيال المعرفة</p>
+        <div class="flex gap-3 mt-8">
+            <div class="w-4 h-4 bg-white rounded-full" style="animation: bounce 1s infinite 0s;"></div>
+            <div class="w-4 h-4 bg-white rounded-full" style="animation: bounce 1s infinite 0.2s;"></div>
+            <div class="w-4 h-4 bg-white rounded-full" style="animation: bounce 1s infinite 0.4s;"></div>
+        </div>
     </div>
 
     <!-- ========== الشاشة 2: اختيار الفرع ========== -->
@@ -127,7 +207,7 @@
                     <p class="text-gray-600 text-xs">التسجيل والقبول</p>
                 </div>
                 <div onclick="selectRole('admin')" id="role-admin" class="role-card bg-white p-6 rounded-3xl text-center shadow-lg">
-                    <div class="w-20 h-20 bg-gradient-to-br from-purple-500 to-purple-700 rounded-full flex items-center justify-center mx-auto mb-3 shadow-lg text-4xl">👔</div>
+                    <div class="w-20 h-20 bg-gradient-to-br from-purple-500 to-purple-700 rounded-full flex items-center justify-center mx-auto mb-3 shadow-lg text-4xl"></div>
                     <h3 class="text-xl font-bold text-gray-800 mb-2">مدير النظام</h3>
                     <p class="text-gray-600 text-xs">الإحصائيات الكاملة</p>
                 </div>
@@ -194,13 +274,13 @@
                         <optgroup label="🌍 الجنسيات العربية (تختبر: إنجليزي + رياضيات + عربي)">
                             <option value="saudi">🇸🇦 سعودي</option>
                             <option value="yemeni">🇾🇪 يمني</option>
-                            <option value="egyptian">🇪🇬 مصري</option>
+                            <option value="egyptian">🇬 مصري</option>
                             <option value="jordanian">🇯🇴 أردني</option>
                             <option value="other-arab">عربي آخر</option>
                         </optgroup>
                         <optgroup label="🌏 الجنسيات غير العربية (تختبر: إنجليزي + رياضيات فقط)">
-                            <option value="indian">🇮🇳 هندي</option>
-                            <option value="pakistani">🇵🇰 باكستاني</option>
+                            <option value="indian">🇳 هندي</option>
+                            <option value="pakistani">🇵 باكستاني</option>
                             <option value="filipino">🇵🇭 فلبيني</option>
                             <option value="other-non-arab">أخرى</option>
                         </optgroup>
@@ -226,7 +306,7 @@
     <div id="teacher-login-screen" class="hidden-screen min-h-screen flex items-center justify-center p-4">
         <div class="glass-card p-8 max-w-md w-full fade-in">
             <div class="text-center mb-6">
-                <div class="w-24 h-24 bg-gradient-to-br from-green-500 to-green-700 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg text-5xl">👨‍🏫</div>
+                <div class="w-24 h-24 bg-gradient-to-br from-green-500 to-green-700 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg text-5xl">‍🏫</div>
                 <h2 class="text-3xl font-black text-gray-800 mb-2">دخول المعلم</h2>
                 <p class="text-gray-600">تصحيح إجابات الطلاب</p>
             </div>
@@ -239,6 +319,41 @@
                     <button onclick="loginTeacher()" class="flex-1 btn-secondary text-white font-bold py-4 rounded-xl">دخول</button>
                 </div>
                 <div class="text-center text-xs text-gray-500 bg-gray-50 p-2 rounded-lg">تجريبي: teacher / teacher123</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== لوحة المعلم الاحترافية ========== -->
+    <div id="teacher-panel" class="hidden-screen min-h-screen p-4 md:p-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="glass-card p-6 mb-6">
+                <div class="flex justify-between items-center flex-wrap gap-4">
+                    <div>
+                        <h2 class="text-3xl font-black text-gray-800"><span class="text-4xl ml-3">‍🏫</span>لوحة المعلم - تصحيح الإجابات</h2>
+                        <p class="text-gray-600 mt-1">راجع إجابات الطلاب وأضف الدرجات</p>
+                    </div>
+                    <div class="flex gap-3">
+                        <button onclick="exportToExcel()" class="btn-secondary px-6 py-3 rounded-xl font-bold"><i class="fas fa-file-excel ml-2"></i>Excel</button>
+                        <button onclick="logout()" class="btn-danger px-6 py-3 rounded-xl font-bold"><i class="fas fa-sign-out-alt ml-2"></i>خروج</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="teacher-split-screen">
+                <div class="student-list-panel">
+                    <div class="search-box mb-4">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="teacher-search" class="input-field w-full p-3 rounded-xl" placeholder="ابحث بالاسم..." oninput="filterStudents()">
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">📋 قائمة الطلاب</h3>
+                    <div id="teacher-student-list"></div>
+                </div>
+                <div class="student-detail-panel" id="student-detail-panel">
+                    <div class="text-center text-gray-500 py-20">
+                        <i class="fas fa-user-graduate text-6xl mb-4"></i>
+                        <p class="text-xl">اختر طالباً من القائمة لعرض إجاباته</p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -260,67 +375,6 @@
                     <button onclick="loginRegistrar()" class="flex-1 btn-primary text-white font-bold py-4 rounded-xl">دخول</button>
                 </div>
                 <div class="text-center text-xs text-gray-500 bg-gray-50 p-2 rounded-lg">تجريبي: registrar / registrar123</div>
-            </div>
-        </div>
-    </div>
-
-    <!-- ========== شاشة تسجيل دخول المدير ========== -->
-    <div id="admin-login-screen" class="hidden-screen min-h-screen flex items-center justify-center p-4">
-        <div class="glass-card p-8 max-w-md w-full fade-in">
-            <div class="text-center mb-6">
-                <div class="w-24 h-24 bg-gradient-to-br from-purple-500 to-purple-700 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg text-5xl">👔</div>
-                <h2 class="text-3xl font-black text-gray-800 mb-2">مدير النظام</h2>
-                <p class="text-gray-600">منطقة إدارية محمية</p>
-            </div>
-            <div class="space-y-4">
-                <input type="text" id="a-username" class="input-field w-full p-4 rounded-xl text-lg" placeholder="اسم المستخدم">
-                <input type="password" id="a-password" class="input-field w-full p-4 rounded-xl text-lg" placeholder="كلمة المرور">
-                <div id="a-error" class="hidden bg-red-50 border-2 border-red-300 text-red-700 p-3 rounded-xl text-sm font-bold"></div>
-                <div class="flex gap-3">
-                    <button onclick="backToRole()" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-4 rounded-xl">رجوع</button>
-                    <button onclick="loginAdmin()" class="flex-1 btn-primary text-white font-bold py-4 rounded-xl">دخول</button>
-                </div>
-                <div class="text-center text-xs text-gray-500 bg-gray-50 p-2 rounded-lg">تجريبي: admin / admin123</div>
-            </div>
-        </div>
-    </div>
-
-    <!-- ========== لوحة المعلم ========== -->
-    <div id="teacher-panel" class="hidden-screen min-h-screen p-4 md:p-8">
-        <div class="max-w-7xl mx-auto">
-            <div class="glass-card p-6 mb-6">
-                <div class="flex justify-between items-center flex-wrap gap-4">
-                    <div>
-                        <h2 class="text-3xl font-black text-gray-800"><span class="text-4xl ml-3">👨‍</span>لوحة المعلم - تصحيح الإجابات</h2>
-                        <p class="text-gray-600 mt-1">راجع إجابات الطلاب وأضف الدرجات</p>
-                    </div>
-                    <button onclick="logout()" class="btn-danger px-6 py-3 rounded-xl font-bold"><i class="fas fa-sign-out-alt ml-2"></i>خروج</button>
-                </div>
-            </div>
-            <div class="grid md:grid-cols-4 gap-4 mb-6">
-                <div class="stat-card bg-gradient-to-br from-blue-500 to-blue-700 text-white p-5 shadow-lg"><div class="text-3xl font-black" id="t-total">0</div><p class="text-blue-100 text-sm">إجمالي الطلاب</p></div>
-                <div class="stat-card bg-gradient-to-br from-green-500 to-green-700 text-white p-5 shadow-lg"><div class="text-3xl font-black" id="t-passed">0</div><p class="text-green-100 text-sm">مقبول</p></div>
-                <div class="stat-card bg-gradient-to-br from-red-500 to-red-700 text-white p-5 shadow-lg"><div class="text-3xl font-black" id="t-failed">0</div><p class="text-red-100 text-sm">غير مقبول</p></div>
-                <div class="stat-card bg-gradient-to-br from-amber-500 to-amber-700 text-white p-5 shadow-lg"><div class="text-3xl font-black" id="t-pending">0</div><p class="text-amber-100 text-sm">بانتظار التصحيح</p></div>
-            </div>
-            <div class="glass-card p-6 overflow-x-auto">
-                <h3 class="text-2xl font-bold text-gray-800 mb-4"><span class="text-3xl ml-2">📋</span>قائمة الطلاب</h3>
-                <table class="w-full">
-                    <thead class="bg-amber-50 border-b-2 border-amber-200">
-                        <tr>
-                            <th class="p-3 text-right font-bold text-gray-700">#</th>
-                            <th class="p-3 text-right font-bold text-gray-700">الاسم</th>
-                            <th class="p-3 text-right font-bold text-gray-700">المرحلة</th>
-                            <th class="p-3 text-right font-bold text-gray-700">الإنجليزي</th>
-                            <th class="p-3 text-right font-bold text-gray-700">الرياضيات</th>
-                            <th class="p-3 text-right font-bold text-gray-700">العربي</th>
-                            <th class="p-3 text-right font-bold text-gray-700">المجموع</th>
-                            <th class="p-3 text-right font-bold text-gray-700">الحالة</th>
-                            <th class="p-3 text-right font-bold text-gray-700">إجراء</th>
-                        </tr>
-                    </thead>
-                    <tbody id="t-students-table" class="divide-y divide-gray-200"></tbody>
-                </table>
             </div>
         </div>
     </div>
@@ -353,19 +407,12 @@
                         <tr>
                             <th class="p-3 text-right font-bold text-gray-700">#</th>
                             <th class="p-3 text-right font-bold text-gray-700">الاسم</th>
-                            <th class="p-3 text-right font-bold text-gray-700">تاريخ الميلاد</th>
-                            <th class="p-3 text-right font-bold text-gray-700">الهوية</th>
-                            <th class="p-3 text-right font-bold text-gray-700">الجوال</th>
-                            <th class="p-3 text-right font-bold text-gray-700">الجنس</th>
-                            <th class="p-3 text-right font-bold text-gray-700">الفرع</th>
                             <th class="p-3 text-right font-bold text-gray-700">المرحلة</th>
-                            <th class="p-3 text-right font-bold text-gray-700">الجنسية</th>
                             <th class="p-3 text-right font-bold text-gray-700">الإنجليزي</th>
                             <th class="p-3 text-right font-bold text-gray-700">الرياضيات</th>
                             <th class="p-3 text-right font-bold text-gray-700">العربي</th>
                             <th class="p-3 text-right font-bold text-gray-700">المجموع</th>
                             <th class="p-3 text-right font-bold text-gray-700">الحالة</th>
-                            <th class="p-3 text-right font-bold text-gray-700">التاريخ</th>
                         </tr>
                     </thead>
                     <tbody id="r-students-table" class="divide-y divide-gray-200"></tbody>
@@ -374,7 +421,28 @@
         </div>
     </div>
 
-    <!-- ========== داشبورد المدير ========== -->
+    <!-- ========== شاشة تسجيل دخول المدير ========== -->
+    <div id="admin-login-screen" class="hidden-screen min-h-screen flex items-center justify-center p-4">
+        <div class="glass-card p-8 max-w-md w-full fade-in">
+            <div class="text-center mb-6">
+                <div class="w-24 h-24 bg-gradient-to-br from-purple-500 to-purple-700 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg text-5xl"></div>
+                <h2 class="text-3xl font-black text-gray-800 mb-2">مدير النظام</h2>
+                <p class="text-gray-600">منطقة إدارية محمية</p>
+            </div>
+            <div class="space-y-4">
+                <input type="text" id="a-username" class="input-field w-full p-4 rounded-xl text-lg" placeholder="اسم المستخدم">
+                <input type="password" id="a-password" class="input-field w-full p-4 rounded-xl text-lg" placeholder="كلمة المرور">
+                <div id="a-error" class="hidden bg-red-50 border-2 border-red-300 text-red-700 p-3 rounded-xl text-sm font-bold"></div>
+                <div class="flex gap-3">
+                    <button onclick="backToRole()" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-4 rounded-xl">رجوع</button>
+                    <button onclick="loginAdmin()" class="flex-1 btn-primary text-white font-bold py-4 rounded-xl">دخول</button>
+                </div>
+                <div class="text-center text-xs text-gray-500 bg-gray-50 p-2 rounded-lg">تجريبي: admin / admin123</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== داشبورد المدير الاحترافي ========== -->
     <div id="admin-dashboard" class="hidden-screen min-h-screen p-4 md:p-8">
         <div class="max-w-7xl mx-auto">
             <div class="glass-card p-6 mb-6">
@@ -384,17 +452,31 @@
                         <p class="text-gray-600 mt-1">نظرة شاملة على أداء المنصة</p>
                     </div>
                     <div class="flex gap-3">
-                        <button onclick="exportToExcel()" class="btn-secondary px-6 py-3 rounded-xl font-bold"><i class="fas fa-file-excel ml-2"></i>تصدير Excel</button>
+                        <button onclick="exportToExcel()" class="btn-secondary px-6 py-3 rounded-xl font-bold"><i class="fas fa-file-excel ml-2"></i>Excel</button>
                         <button onclick="logout()" class="btn-danger px-6 py-3 rounded-xl font-bold"><i class="fas fa-sign-out-alt ml-2"></i>خروج</button>
                     </div>
                 </div>
             </div>
+            
             <div class="grid md:grid-cols-4 gap-4 mb-6">
                 <div class="stat-card bg-gradient-to-br from-blue-500 to-blue-700 text-white p-5 shadow-lg"><div class="text-3xl font-black" id="a-total">0</div><p class="text-blue-100 text-sm">إجمالي الطلاب</p></div>
                 <div class="stat-card bg-gradient-to-br from-green-500 to-green-700 text-white p-5 shadow-lg"><div class="text-3xl font-black" id="a-passed">0</div><p class="text-green-100 text-sm">مقبول</p></div>
                 <div class="stat-card bg-gradient-to-br from-red-500 to-red-700 text-white p-5 shadow-lg"><div class="text-3xl font-black" id="a-failed">0</div><p class="text-red-100 text-sm">غير مقبول</p></div>
                 <div class="stat-card bg-gradient-to-br from-amber-500 to-amber-700 text-white p-5 shadow-lg"><div class="text-3xl font-black" id="a-rate">0%</div><p class="text-amber-100 text-sm">نسبة القبول</p></div>
             </div>
+            
+            <!-- Charts -->
+            <div class="grid md:grid-cols-2 gap-6 mb-6">
+                <div class="chart-container">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">📊 توزيع النتائج</h3>
+                    <canvas id="resultsChart"></canvas>
+                </div>
+                <div class="chart-container">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4"> أداء المواد</h3>
+                    <canvas id="subjectsChart"></canvas>
+                </div>
+            </div>
+            
             <div class="glass-card p-6 overflow-x-auto">
                 <h3 class="text-xl font-bold text-gray-800 mb-4"><span class="text-2xl ml-2">📋</span>جميع الطلاب</h3>
                 <table class="w-full">
@@ -453,7 +535,7 @@
     <div id="results-screen" class="hidden-screen min-h-screen p-4">
         <div class="max-w-5xl mx-auto">
             <div class="glass-card p-8 text-center fade-in">
-                <div class="w-32 h-32 bg-gradient-to-br from-amber-600 to-amber-700 rounded-full flex items-center justify-center mx-auto mb-4 shadow-xl text-6xl">📊</div>
+                <div class="w-32 h-32 bg-gradient-to-br from-amber-600 to-amber-700 rounded-full flex items-center justify-center mx-auto mb-4 shadow-xl text-6xl" style="animation: pulse-glow 2s infinite;">🏆</div>
                 <h2 class="text-4xl font-black text-gray-800 mb-2">نتيجة الاختبار</h2>
                 <p id="result-student-name" class="text-xl text-amber-700 font-bold mb-6"></p>
                 <div id="result-subjects" class="grid md:grid-cols-3 gap-4 mb-6"></div>
@@ -465,390 +547,238 @@
                         <div><div id="result-status" class="text-2xl font-black"></div><p class="text-gray-600 text-sm">الحالة النهائية</p></div>
                     </div>
                 </div>
+                <div id="result-badges" class="mb-6"></div>
                 <div id="result-message" class="mb-6 p-4 rounded-xl font-bold text-lg"></div>
-                <button onclick="location.reload()" class="btn-primary text-white px-8 py-4 rounded-xl text-lg font-bold w-full"><i class="fas fa-redo ml-2"></i>اختبار جديد</button>
+                <div class="flex gap-3">
+                    <button onclick="downloadPDF()" class="btn-gold text-white px-6 py-4 rounded-xl text-lg font-bold flex-1"><i class="fas fa-file-pdf ml-2"></i>تحميل الشهادة PDF</button>
+                    <button onclick="location.reload()" class="btn-primary text-white px-6 py-4 rounded-xl text-lg font-bold flex-1"><i class="fas fa-redo ml-2"></i>اختبار جديد</button>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
         // ============ إعداد EmailJS ============
-        const EMAILJS_CONFIG = {
-            publicKey: '30UlzYidCO1myETH9',
-            serviceId: 'service_y5ryjca',
-            templateId: 'template_9apg4bw'
-        };
+        const EMAILJS_CONFIG = { publicKey: '30UlzYidCO1myETH9', serviceId: 'service_y5ryjca', templateId: 'template_9apg4bw' };
         emailjs.init(EMAILJS_CONFIG.publicKey);
 
         // ============ البيانات الأساسية ============
-        let currentBranch = '';
-        let currentRole = '';
-        let currentStudent = {};
-        let currentSubject = '';
-        let currentQIndex = 0;
-        let questions = [];
-        let answers = {};
-        let subjectScores = { english: 0, math: 0, arabic: 0 };
-        let examSubjects = [];
-        let allStudents = JSON.parse(localStorage.getItem('exam_students')) || [];
+        let currentBranch = ''; let currentRole = ''; let currentStudent = {}; let currentSubject = ''; let currentQIndex = 0;
+        let questions = []; let answers = {}; let questionScores = {}; let subjectScores = { english: 0, math: 0, arabic: 0 };
+        let examSubjects = []; let allStudents = JSON.parse(localStorage.getItem('exam_students')) || [];
+        let charts = {};
 
         const gradeOptions = {
             'child-gate': [
-                { value: 'KG2', label: 'رياض أطفال 2 (KG2)' },
-                { value: 'G1', label: 'الصف الأول الابتدائي (I)' },
-                { value: 'G2', label: 'الصف الثاني الابتدائي (II)' },
-                { value: 'G3', label: 'الصف الثالث الابتدائي (III)' },
-                { value: 'G4', label: 'الصف الرابع الابتدائي (IV)' },
-                { value: 'G5', label: 'الصف الخامس الابتدائي (V)' },
+                { value: 'KG2', label: 'رياض أطفال 2 (KG2)' }, { value: 'G1', label: 'الصف الأول الابتدائي (I)' },
+                { value: 'G2', label: 'الصف الثاني الابتدائي (II)' }, { value: 'G3', label: 'الصف الثالث الابتدائي (III)' },
+                { value: 'G4', label: 'الصف الرابع الابتدائي (IV)' }, { value: 'G5', label: 'الصف الخامس الابتدائي (V)' },
                 { value: 'G6', label: 'الصف السادس الابتدائي (VI)' }
             ],
             'knowledge-gen': [
-                { value: 'KG2', label: 'رياض أطفال 2 (KG2)' },
-                { value: 'G1', label: 'الصف الأول الابتدائي (I)' },
-                { value: 'G2', label: 'الصف الثاني الابتدائي (II)' },
-                { value: 'G3', label: 'الصف الثالث الابتدائي (III)' },
-                { value: 'G4', label: 'الصف الرابع الابتدائي (IV)' },
-                { value: 'G5', label: 'الصف الخامس الابتدائي (V)' },
-                { value: 'G6', label: 'الصف السادس الابتدائي (VI)' },
-                { value: 'G7', label: 'الصف الأول المتوسط (VII)' },
-                { value: 'G8', label: 'الصف الثاني المتوسط (VIII)' },
-                { value: 'G9', label: 'الصف الثالث المتوسط (IX)' },
-                { value: 'G10', label: 'الصف الأول الثانوي (X)' },
-                { value: 'G11', label: 'الصف الثاني الثانوي (XI)' },
+                { value: 'KG2', label: 'رياض أطفال 2 (KG2)' }, { value: 'G1', label: 'الصف الأول الابتدائي (I)' },
+                { value: 'G2', label: 'الصف الثاني الابتدائي (II)' }, { value: 'G3', label: 'الصف الثالث الابتدائي (III)' },
+                { value: 'G4', label: 'الصف الرابع الابتدائي (IV)' }, { value: 'G5', label: 'الصف الخامس الابتدائي (V)' },
+                { value: 'G6', label: 'الصف السادس الابتدائي (VI)' }, { value: 'G7', label: 'الصف الأول المتوسط (VII)' },
+                { value: 'G8', label: 'الصف الثاني المتوسط (VIII)' }, { value: 'G9', label: 'الصف الثالث المتوسط (IX)' },
+                { value: 'G10', label: 'الصف الأول الثانوي (X)' }, { value: 'G11', label: 'الصف الثاني الثانوي (XI)' },
                 { value: 'G12', label: 'الصف الثالث الثانوي (XII)' }
             ]
         };
 
         const arabicNationalities = ['saudi', 'yemeni', 'egyptian', 'jordanian', 'other-arab'];
-        const nationalityLabels = {
-            'saudi': '🇸🇦 سعودي', 'yemeni': '🇾🇪 يمني', 'egyptian': '🇪 مصري',
-            'jordanian': '🇴 أردني', 'other-arab': 'عربي',
-            'indian': '🇳 هندي', 'pakistani': '🇵🇰 باكستاني',
-            'filipino': '🇵🇭 فلبيني', 'other-non-arab': 'أخرى'
-        };
+        const nationalityLabels = { 'saudi': '🇸🇦 سعودي', 'yemeni': '🇾🇪 يمني', 'egyptian': '🇪🇬 مصري', 'jordanian': '🇯🇴 أردني', 'other-arab': 'عربي', 'indian': '🇮🇳 هندي', 'pakistani': '🇵🇰 باكستاني', 'filipino': '🇵 فلبيني', 'other-non-arab': 'أخرى' };
         const PASSING_SCORE = 15;
+
+        // ============ Particles Background ============
+        function createParticles() {
+            const container = document.getElementById('particles');
+            for (let i = 0; i < 20; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.width = Math.random() * 100 + 50 + 'px';
+                particle.style.height = particle.style.width;
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 20 + 's';
+                particle.style.animationDuration = (Math.random() * 20 + 20) + 's';
+                container.appendChild(particle);
+            }
+        }
+        createParticles();
+
+        // ============ Theme Toggle ============
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            const icon = document.getElementById('theme-icon');
+            if (document.body.classList.contains('dark-mode')) {
+                icon.className = 'fas fa-sun text-2xl text-yellow-400';
+            } else {
+                icon.className = 'fas fa-moon text-2xl text-amber-700';
+            }
+        }
+
+        // ============ Notification System ============
+        function showNotification(message, type = 'success') {
+            const container = document.getElementById('notification-container');
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : type === 'warning' ? 'exclamation-triangle' : 'times-circle'} ml-2"></i>${message}`;
+            container.appendChild(notification);
+            setTimeout(() => notification.remove(), 3000);
+        }
 
         // ============ بنك الأسئلة ============
         const questionBank = {
-            G1: {
-                english: {
-                    modelA: [
-                        { id: "g1_en_a_q1", type: "image_choice", question: "Choose the correct name for the given pictures:", marks: 12, items: [
-                            { image: "https://cdn-icons-png.flaticon.com/512/616/616408.png", options: ["Cat", "Cot"], correct: 0 },
-                            { image: "https://cdn-icons-png.flaticon.com/512/2917/2917995.png", options: ["Pan", "Pen"], correct: 0 },
-                            { image: "https://cdn-icons-png.flaticon.com/512/616/616430.png", options: ["Dog", "Dug"], correct: 0 },
-                            { image: "https://cdn-icons-png.flaticon.com/512/616/616567.png", options: ["Big", "Bag"], correct: 0 }
-                        ], needs_manual: false },
-                        { id: "g1_en_a_q2", type: "mcq", question: "Choose the correct ending sound:", marks: 10, subQuestions: [
-                            { question: "Man - Pan - Rot - Pit", options: ["Man", "Pan", "Rot", "Pit"], correct: 0 },
-                            { question: "Sun - Hub - Sip - Fun", options: ["Sun", "Hub", "Sip", "Fun"], correct: 3 },
-                            { question: "Rat - Tin - Hat - Put", options: ["Rat", "Tin", "Hat", "Put"], correct: 2 },
-                            { question: "Cod - Cut - Fit - Rod", options: ["Cod", "Cut", "Fit", "Rod"], correct: 3 },
-                            { question: "Pin - Sin - Lip - Tag", options: ["Pin", "Sin", "Lip", "Tag"], correct: 2 }
-                        ], needs_manual: false },
-                        { id: "g1_en_a_q3", type: "mcq", question: "Choose the correct answers:", marks: 8, subQuestions: [
-                            { question: "___ is my rabbit.", options: ["This", "That"], correct: 0 },
-                            { question: "___ tree is big.", options: ["This", "That"], correct: 1 }
-                        ], needs_manual: false }
-                    ],
-                    modelB: [
-                        { id: "g1_en_b_q1", type: "image_choice", question: "Choose the correct name for the given pictures:", marks: 12, items: [
-                            { image: "https://cdn-icons-png.flaticon.com/512/2917/2917995.png", options: ["Pin", "Sip"], correct: 0 },
-                            { image: "https://cdn-icons-png.flaticon.com/512/888/888847.png", options: ["Sun", "Tan"], correct: 0 },
-                            { image: "https://cdn-icons-png.flaticon.com/512/616/616430.png", options: ["Pit", "Hen"], correct: 1 },
-                            { image: "https://cdn-icons-png.flaticon.com/512/2917/2917995.png", options: ["Rot", "Pot"], correct: 1 }
-                        ], needs_manual: false },
-                        { id: "g1_en_b_q2", type: "mcq", question: "Choose the correct ending sound:", marks: 10, subQuestions: [
-                            { question: "Sat - Pan - Rot - Pat", options: ["Sat", "Pan", "Rot", "Pat"], correct: 0 },
-                            { question: "Hug - Pug - Sip - Fun", options: ["Hug", "Pug", "Sip", "Fun"], correct: 1 },
-                            { question: "Fin - Tin - Hat - Put", options: ["Fin", "Tin", "Hat", "Put"], correct: 1 },
-                            { question: "Cut - Tap - Hut - Rod", options: ["Cut", "Tap", "Hut", "Rod"], correct: 2 },
-                            { question: "Bag - Sin - Lip - Tag", options: ["Bag", "Sin", "Lip", "Tag"], correct: 3 }
-                        ], needs_manual: false },
-                        { id: "g1_en_b_q3", type: "mcq", question: "Choose the correct answers:", marks: 8, subQuestions: [
-                            { question: "___ is a yellow duck.", options: ["This", "That"], correct: 0 },
-                            { question: "___ is a big aero plane.", options: ["This", "That"], correct: 1 }
-                        ], needs_manual: false }
-                    ]
-                }
-            },
-            G2: {
-                english: {
-                    modelA: [
-                        { id: "g2_en_a_q1", type: "upload", question: "Read the given passage and answer the following questions.", passage: "One misty morning, Jane was looking around her garden. She sat on the grass. She saw a rock with little plants on it. There were flowers. They looked pretty.", subQuestions: ["Who sat on the grass?", "___ were looking pretty."], marks: 10, needs_manual: true },
-                        { id: "g2_en_a_q2", type: "mcq", question: "Use (is - am - are):", marks: 10, subQuestions: [
-                            { question: "They ___ happy to see us.", options: ["am", "are"], correct: 1 },
-                            { question: "The dog ___ in the backyard.", options: ["are", "is"], correct: 1 },
-                            { question: "We ___ ready.", options: ["are", "am"], correct: 0 },
-                            { question: "You ___ intelligent.", options: ["are", "is"], correct: 0 },
-                            { question: "I ___ writing.", options: ["is", "am"], correct: 1 }
-                        ], needs_manual: false },
-                        { id: "g2_en_a_q3", type: "mcq", question: "Use (have / has):", marks: 10, subQuestions: [
-                            { question: "I ___ many toys.", options: ["have", "has"], correct: 0 },
-                            { question: "You ___ an extra pen.", options: ["have", "has"], correct: 0 },
-                            { question: "She ___ one sister.", options: ["have", "has"], correct: 1 },
-                            { question: "They ___ a test today.", options: ["have", "has"], correct: 0 },
-                            { question: "The rainbow ___ seven colors.", options: ["have", "has"], correct: 1 }
-                        ], needs_manual: false }
-                    ],
-                    modelB: [
-                        { id: "g2_en_b_q1", type: "upload", question: "Read the given passage and answer the following questions.", passage: "Jane wants to build a birdhouse. She gets some wood, nails and paint. She draws her birdhouse. They hang it up in a tree. A bird goes into it.", subQuestions: ["Who wants to build a birdhouse?", "___ goes into the birdhouse."], marks: 10, needs_manual: true },
-                        { id: "g2_en_b_q2", type: "mcq", question: "Use (is - am - are):", marks: 10, subQuestions: [
-                            { question: "I ___ a teacher.", options: ["am", "are"], correct: 0 },
-                            { question: "The dress ___ beautiful.", options: ["are", "is"], correct: 1 },
-                            { question: "We ___ happy.", options: ["are", "am"], correct: 0 },
-                            { question: "She ___ tall.", options: ["am", "is"], correct: 1 },
-                            { question: "They ___ learning.", options: ["is", "are"], correct: 1 }
-                        ], needs_manual: false },
-                        { id: "g2_en_b_q3", type: "mcq", question: "Use (have / has):", marks: 10, subQuestions: [
-                            { question: "She ___ a blue bag.", options: ["have", "has"], correct: 1 },
-                            { question: "We ___ a big house.", options: ["have", "has"], correct: 0 },
-                            { question: "I ___ some cookies.", options: ["have", "has"], correct: 0 },
-                            { question: "They ___ a ball.", options: ["have", "has"], correct: 0 },
-                            { question: "You ___ a bicycle.", options: ["have", "has"], correct: 0 }
-                        ], needs_manual: false }
-                    ]
-                }
-            },
-            G3: {
-                english: {
-                    modelA: [
-                        { id: "g3_en_a_q1", type: "mcq", question: "Read the given passage and answer the questions.", passage: "Jana and Ali are going for a trip to Taif. They are waiting for the bus at the bus stop. Jana has a small pink bag and Ali has a big blue backpack. They are taking their dog, Max with them. They are excited for the trip.", marks: 14, subQuestions: [
-                            { question: "Where is Ali going?", options: ["Trip", "School"], correct: 0 },
-                            { question: "Who is going with him?", options: ["Jana", "Friends"], correct: 0 },
-                            { question: "What are they waiting for?", options: ["Bus", "Car"], correct: 0 },
-                            { question: "Max:", options: ["Common Noun", "Proper Noun"], correct: 1 },
-                            { question: "Bus:", options: ["Common Noun", "Proper Noun"], correct: 0 },
-                            { question: "Taif:", options: ["Common Noun", "Proper Noun"], correct: 1 },
-                            { question: "Backpack:", options: ["Common Noun", "Proper Noun"], correct: 0 }
-                        ], needs_manual: false },
-                        { id: "g3_en_a_q2", type: "mcq", question: "Choose the correct answer:", marks: 16, subQuestions: [
-                            { question: "The elephant ___ a long trunk.", options: ["has", "have"], correct: 0 },
-                            { question: "You ___ a beautiful dress.", options: ["has", "have"], correct: 1 },
-                            { question: "She ___ in the hospital yesterday.", options: ["was", "were"], correct: 0 },
-                            { question: "They ___ many trees in their backyard.", options: ["has", "have"], correct: 1 },
-                            { question: "You ___ a tall boy.", options: ["is", "are"], correct: 1 },
-                            { question: "___ she baking a cake?", options: ["Is", "Are"], correct: 0 },
-                            { question: "I ___ eating apples but they ___ eating popcorns.", options: ["am/are", "is/are", "am/is"], correct: 0 }
-                        ], needs_manual: false }
-                    ],
-                    modelB: [
-                        { id: "g3_en_b_q1", type: "mcq", question: "Read the given passage and answer the questions.", passage: "Alma and her friend Reem are in Hyde Park. They are wearing red dresses. They are looking beautiful. They are eating ice cream. There is a white kitten near the ice cream truck. Alma is playing with it. She is throwing the ball and the kitten is running after it.", marks: 14, subQuestions: [
-                            { question: "Where is Alma?", options: ["School", "Park"], correct: 1 },
-                            { question: "What is she wearing?", options: ["Dress", "T-shirt"], correct: 0 },
-                            { question: "What is the kitten running after?", options: ["Bug", "Ball"], correct: 1 },
-                            { question: "Truck:", options: ["Common Noun", "Proper Noun"], correct: 0 },
-                            { question: "Reem:", options: ["Common Noun", "Proper Noun"], correct: 1 },
-                            { question: "Kitten:", options: ["Common Noun", "Proper Noun"], correct: 0 },
-                            { question: "Hyde Park:", options: ["Common Noun", "Proper Noun"], correct: 1 }
-                        ], needs_manual: false },
-                        { id: "g3_en_b_q2", type: "mcq", question: "Choose the correct answer:", marks: 16, subQuestions: [
-                            { question: "You ___ driving a car.", options: ["was", "were"], correct: 1 },
-                            { question: "He ___ playing with me.", options: ["was", "were"], correct: 0 },
-                            { question: "Monkeys ___ long tails.", options: ["has", "have"], correct: 1 },
-                            { question: "My mother ___ an expensive ring.", options: ["has", "have"], correct: 0 },
-                            { question: "You ___ my best friend.", options: ["is", "are"], correct: 1 },
-                            { question: "___ he sleeping in the room?", options: ["Is", "Are"], correct: 0 },
-                            { question: "I ___ going to Abha but she ___ going to Jeddah.", options: ["am/is", "am/are", "is/are"], correct: 0 }
-                        ], needs_manual: false }
-                    ]
-                }
-            },
-            G4: {
-                english: {
-                    modelA: [
-                        { id: "g4_en_a_q1", type: "mcq", question: "Read the passage and answer the questions.", passage: "Tina saw a hidden path and decided to follow it. The path led her to a lovely garden filled with colorful flowers and friendly animals. Tina spent the whole day playing and laughing with her newfound friends. When it was time to go home, she promised to return to the garden whenever she could.", marks: 12, subQuestions: [
-                            { question: "What did Tina find when she followed the hidden path?", options: ["Garden", "Park"], correct: 0 },
-                            { question: "What did Tina do with her newfound friends?", options: ["Eat and drink", "Play and laugh"], correct: 1 },
-                            { question: "Tina promised that she will never come back.", options: ["True", "False"], correct: 1 },
-                            { question: "Choose the proper noun:", options: ["Tina", "Garden"], correct: 0 },
-                            { question: "What part of speech is: Spent", options: ["Adverb", "Verb"], correct: 1 },
-                            { question: "Which word is an adjective?", options: ["Friendly", "Follow"], correct: 0 }
-                        ], needs_manual: false },
-                        { id: "g4_en_a_q2", type: "mcq", question: "Choose the correct answer:", marks: 8, subQuestions: [
-                            { question: "I ___ going to Japan and you ___ going to China.", options: ["am/are", "are/is", "am/is"], correct: 0 },
-                            { question: "A monkey ___ a long tail but rabbits ___ short tails.", options: ["has/have", "have/has", "has/has"], correct: 0 }
-                        ], needs_manual: false },
-                        { id: "g4_en_a_q3", type: "mcq", question: "Identify the tense:", marks: 8, subQuestions: [
-                            { question: "She likes to drink coffee in the morning.", options: ["Simple Present", "Present Continuous"], correct: 0 },
-                            { question: "My dad is playing football with me.", options: ["Simple Present", "Present Continuous"], correct: 1 },
-                            { question: "They were in Canada last year.", options: ["Simple Present", "Simple Past"], correct: 1 },
-                            { question: "Who is sitting on the couch?", options: ["Simple Present", "Present Continuous"], correct: 1 }
-                        ], needs_manual: false }
-                    ],
-                    modelB: [
-                        { id: "g4_en_b_q1", type: "mcq", question: "Read the passage and answer the questions.", passage: "Lily loved plants and flowers. She had a beautiful garden in her backyard. One day, some people visited Lily's garden. They were amazed by the colorful flowers. They wanted to make their own gardens and share the joy of gardening with others.", marks: 12, subQuestions: [
-                            { question: "What did Lily like to do?", options: ["Gardening", "Cooking"], correct: 0 },
-                            { question: "What did the visitors like about Lily's garden?", options: ["Flowers", "Bugs"], correct: 0 },
-                            { question: "What did the visitors want to do?", options: ["Make gardens and share the joy", "Cook food and share it"], correct: 0 },
-                            { question: "Choose the proper noun:", options: ["Lily", "Backyard"], correct: 0 },
-                            { question: "What part of speech is: Visited", options: ["Adverb", "Verb"], correct: 1 },
-                            { question: "Which word is an adjective?", options: ["Colorful", "Share"], correct: 0 }
-                        ], needs_manual: false },
-                        { id: "g4_en_b_q2", type: "mcq", question: "Choose the correct answer:", marks: 10, subQuestions: [
-                            { question: "We ___ received a letter from the college.", options: ["has", "have"], correct: 1 },
-                            { question: "Jana and I ___ eating a pizza. Jana ___ drinking juice too.", options: ["am/are", "are/is", "are/are"], correct: 1 },
-                            { question: "You ___ a cat and I ___ a hamster.", options: ["has/have", "have/has", "have/have"], correct: 1 }
-                        ], needs_manual: false },
-                        { id: "g4_en_b_q3", type: "mcq", question: "Identify the tense:", marks: 8, subQuestions: [
-                            { question: "Ahmad is going on a camping trip.", options: ["Simple Present", "Present Continuous"], correct: 1 },
-                            { question: "Sam is an old friend of mine.", options: ["Simple Present", "Simple Past"], correct: 0 },
-                            { question: "He was in Abha last week.", options: ["Simple Present", "Simple Past"], correct: 1 },
-                            { question: "Why are you crying?", options: ["Simple Present", "Present Continuous"], correct: 1 }
-                        ], needs_manual: false }
-                    ]
-                }
-            },
-            G5: {
-                english: {
-                    modelA: [
-                        { id: "g5_en_a_q1", type: "mcq", question: "Read the passage and answer the questions.", passage: "Alex and his friends were thrilled about their upcoming summer trip to the beach. They packed their swimsuits, sunscreen, and beach towels, ready for days of fun in the sun. As they arrived at the sandy shores, they couldn't wait to dive into the refreshing ocean waves. They spent their days building sandcastles, playing beach volleyball, and enjoying ice cream by the shore. In the evenings, they gathered around a bonfire, roasting marshmallows and sharing stories. It was a memorable summer trip.", marks: 12, subQuestions: [
-                            { question: "Where did Alex and his friends go on their summer trip?", options: ["Beach", "Mountains"], correct: 0 },
-                            { question: "What items did they pack for their trip?", options: ["Boats", "Sunscreen"], correct: 1 },
-                            { question: "What did they do in the evening?", options: ["shared stories", "ate ice cream"], correct: 0 },
-                            { question: "What part of speech is: Gathered", options: ["Verb", "Adjective"], correct: 0 },
-                            { question: "Refreshing is used as an adjective.", options: ["True", "False"], correct: 0 },
-                            { question: "Marshmallow is a proper noun.", options: ["True", "False"], correct: 1 }
-                        ], needs_manual: false },
-                        { id: "g5_en_a_q2", type: "mcq", question: "Identify the tense.", marks: 10, subQuestions: [
-                            { question: "My dog slept on the couch.", options: ["Simple past", "Simple Present"], correct: 0 },
-                            { question: "I read one book every week.", options: ["Simple past", "Simple Present"], correct: 1 },
-                            { question: "They are taking an exam.", options: ["Simple present", "Present Continuous"], correct: 1 },
-                            { question: "Are you going to Paris?", options: ["Simple Past", "Present Continuous"], correct: 1 },
-                            { question: "James bought a new phone.", options: ["Simple Past", "Simple Present"], correct: 0 }
-                        ], needs_manual: false },
-                        { id: "g5_en_a_q3", type: "mcq", question: "Choose the correct answer.", marks: 8, subQuestions: [
-                            { question: "Nelly is a nurse. She ___ at the hospital.", options: ["works", "working"], correct: 0 },
-                            { question: "Ali ___ his breakfast in the kitchen.", options: ["is eats", "is eating"], correct: 1 },
-                            { question: "Does your mom ___ her car to the hospital everyday?", options: ["drive", "drives"], correct: 0 },
-                            { question: "Tina ___ her room yesterday.", options: ["cleans", "cleaned"], correct: 1 }
-                        ], needs_manual: false }
-                    ],
-                    modelB: [
-                        { id: "g5_en_b_q1", type: "mcq", question: "Read the passage and answer the questions.", passage: "Maya was excited about using her new pink backpack. First, Maya put her crayons in the backpack. She would use the crayons to draw pictures for her new teacher, Mrs. Smith. Next, she put her scissors in the backpack. She could use the scissors to cut out hearts for her best friend. Next, Maya put in her new princess pencils. She thought of all the stories she would write with them. Finally, Maya put a bottle of glitter glue in her backpack. It would make everything she made sparkle.", marks: 12, subQuestions: [
-                            { question: "What did Maya put in her backpack right before she put her glitter glue in?", options: ["pencils", "crayons"], correct: 0 },
-                            { question: "What did Maya plan on using her scissors for?", options: ["writing stories", "making hearts"], correct: 1 },
-                            { question: "What is the name of Maya's new teacher?", options: ["Ms. Jones", "Mrs. Smith"], correct: 1 },
-                            { question: "What part of speech is Pink?", options: ["Noun", "Adjective"], correct: 1 },
-                            { question: "Excited is used a verb.", options: ["True", "False"], correct: 1 },
-                            { question: "Glitter is a noun.", options: ["True", "False"], correct: 0 }
-                        ], needs_manual: false },
-                        { id: "g5_en_b_q2", type: "mcq", question: "Identify the tense.", marks: 8, subQuestions: [
-                            { question: "She eats lunch in the afternoon.", options: ["Simple Past", "Simple present"], correct: 1 },
-                            { question: "We are watching a movie.", options: ["Present Continuous", "Past Continuous"], correct: 0 },
-                            { question: "He played volleyball on the beach.", options: ["Simple Past", "Simple Present"], correct: 0 },
-                            { question: "Is he cleaning the room?", options: ["Present Continuous", "Simple Present"], correct: 0 }
-                        ], needs_manual: false },
-                        { id: "g5_en_b_q3", type: "mcq", question: "Choose the correct answer.", marks: 10, subQuestions: [
-                            { question: "We ___ in the library every night.", options: ["studying", "study"], correct: 1 },
-                            { question: "Does she ___ football regularly?", options: ["play", "plays"], correct: 0 },
-                            { question: "He ___ movie with his friends.", options: ["is watching", "watch"], correct: 0 },
-                            { question: "He ___ his grandma yesterday.", options: ["visits", "visited"], correct: 1 },
-                            { question: "The rabbit ___ in the garden.", options: ["is hops", "is hopping"], correct: 1 }
-                        ], needs_manual: false }
-                    ]
-                }
-            },
-            G6: {
-                english: {
-                    modelA: [
-                        { id: "g6_en_a_q1", type: "mcq", question: "Read the passage and choose the correct answer.", passage: "The library was unusually quiet, even for a Thursday afternoon. Sarah sat in the far corner, surrounded by towering shelves. The soft hum of the ceiling fan and the occasional rustle of a turning page were the only sounds. She wasn't reading, though the book lay open in her lap. Instead, she was watching the sunlight pour through the window, drawing golden patterns on the floor. In that quiet moment, Sarah felt a calmness she hadn't known in days. The silence was not empty—it was comforting, full of thought and presence. It was as if the library itself was breathing gently around her.", marks: 10, subQuestions: [
-                            { question: "What mood does the writer create in this passage?", options: ["Tense", "Calm and reflective", "Confusing"], correct: 1 },
-                            { question: "Where was Sara?", options: ["in a garden", "her room", "library"], correct: 2 },
-                            { question: "Choose the correct part of speech for the word 'quiet'.", options: ["Noun", "Verb", "Adjective"], correct: 2 },
-                            { question: "Why wasn't Sarah reading the book in her lap?", options: ["She was waiting for someone", "She was daydreaming", "She fell asleep"], correct: 1 },
-                            { question: "What does the author suggest about silence?", options: ["It is boring", "It is dangerous", "It can bring peace"], correct: 2 }
-                        ], needs_manual: false },
-                        { id: "g6_en_a_q2", type: "mcq", question: "Choose the correct answer for each sentence.", marks: 10, subQuestions: [
-                            { question: "Change to present progressive: 'They build roads'", options: ["They built roads.", "They were building roads.", "They are building roads."], correct: 2 },
-                            { question: "Identify the tense: 'They have been studying for hours.'", options: ["Simple present", "Present perfect continuous", "Past continuous"], correct: 1 },
-                            { question: "What tense: She travelled to Japan last month.", options: ["Past progressive", "Past simple", "Present perfect"], correct: 1 },
-                            { question: "Part of speech of 'myself'?", options: ["noun", "pronoun", "adverb"], correct: 1 },
-                            { question: "Which sentence is positive?", options: ["He didn't come to school today.", "They never eat vegetables.", "She always completes her homework."], correct: 2 }
-                        ], needs_manual: false },
-                        { id: "g6_en_a_q3", type: "upload", question: "Write a paragraph in about 100 words on: Importance of Reading Books.", marks: 10, needs_manual: true }
-                    ],
-                    modelB: [
-                        { id: "g6_en_b_q1", type: "mcq", question: "Read the passage and choose the correct answer.", passage: "It was a regular Tuesday morning at Greenhill Middle School. The students were bustling around, preparing for their classes. Among them was Maya, a curious and bright seventh grader who always carried her lunch in a bright red lunchbox. But today, something was wrong. When the lunch bell rang, Maya rushed to her locker, only to find that her lunchbox was missing! Confused and a little upset, she asked her friends if they had seen it. No one had. That's when Maya decided to investigate. She started by checking around her locker for any clues. To her surprise, she noticed a small trail of cookie crumbs leading down the hallway. 'That's strange,' she thought. She followed the crumbs until they ended near the gymnasium. There, she found Max, the class hamster, outside his cage with a half-eaten sandwich next to him. The janitor, Mr. Benson, explained that Max had escaped earlier that day when someone accidentally left his cage open. Maya smiled. It seemed that Max had gone on a mini adventure—and her lunch had been a part of it.", marks: 10, subQuestions: [
-                            { question: "Which of the following describe Maya?", options: ["Curious", "Lazy", "Responsible"], correct: 0 },
-                            { question: "What clues helped Maya?", options: ["A trail of cookie crumbs", "A torn note", "Max found outside his cage"], correct: 0 },
-                            { question: "What do we know about Max?", options: ["He escaped from his cage", "He ate some of Maya's lunch", "He always stays in his cage"], correct: 0 },
-                            { question: "What actions show Maya's problem-solving skills?", options: ["Asking her friends", "Following the crumbs", "Going home early"], correct: 1 },
-                            { question: "What lessons can be learned?", options: ["Small clues can solve big mysteries", "Hamsters should not be kept in schools", "It's good to stay calm and think"], correct: 0 }
-                        ], needs_manual: false },
-                        { id: "g6_en_b_q2", type: "mcq", question: "Identify the part of speech and tense.", marks: 10, subQuestions: [
-                            { question: "Part of speech: She quickly finished her homework.", options: ["Verb", "Adverb", "Adjective"], correct: 1 },
-                            { question: "Which sentence is in present perfect tense?", options: ["She writes a letter every week.", "She wrote a letter yesterday.", "She has written a letter to her friend."], correct: 2 },
-                            { question: "Type of present tense: He is reading a novel.", options: ["Present simple", "Present perfect continuous", "Present continuous"], correct: 2 },
-                            { question: "Which sentence is in past perfect tense?", options: ["They had left before the rain started.", "They left early in the morning.", "They were leaving when I arrived."], correct: 0 },
-                            { question: "Part of speech: The blue butterfly landed.", options: ["Noun", "Verb", "Adjective"], correct: 2 }
-                        ], needs_manual: false },
-                        { id: "g6_en_b_q3", type: "upload", question: "Write a paragraph in about 100 words on: 'The Activity I like to do in my Freetime'", marks: 10, needs_manual: true }
-                    ]
-                }
-            },
-            G7: {
-                english: {
-                    modelA: [
-                        { id: "g7_en_a_q1", type: "mcq", question: "Read the passage and choose the correct answer.", passage: "In life, setbacks are inevitable. Whether it's failing a test, losing a game, or facing personal challenges, it's easy to become discouraged. However, the difference between those who succeed and those who give up is resilience—the ability to bounce back after facing difficulties. Resilience isn't about avoiding challenges; it's about facing them head-on and learning from them. Take Thomas Edison, for example. He failed countless times before finally inventing the light bulb. In fact, he famously said, 'I have not failed. I've just found 10,000 ways that won't work.' His resilience allowed him to keep going, no matter how many times he failed.", marks: 10, subQuestions: [
-                            { question: "What is the main idea of the passage?", options: ["Success is only for those who don't face challenges.", "Resilience helps people overcome challenges and succeed.", "Failure should be avoided at all costs."], correct: 1 },
-                            { question: "What does the author mean by 'resilience'?", options: ["The ability to ignore challenges.", "The ability to face difficulties and recover from them.", "The ability to avoid setbacks."], correct: 1 },
-                            { question: "Which best describes Thomas Edison's attitude toward failure?", options: ["He saw failure as a reason to quit.", "He believed that failure was part of the process of success.", "He didn't care about failure."], correct: 1 },
-                            { question: "According to the passage, what is necessary to build resilience?", options: ["Giving up when things get difficult.", "Avoiding challenges altogether.", "Maintaining a positive attitude and being patient."], correct: 2 },
-                            { question: "Which is a synonym for 'resilience'?", options: ["Weakness", "mental strength or Persistence", "Stubbornness"], correct: 1 }
-                        ], needs_manual: false },
-                        { id: "g7_en_a_q2", type: "mcq", question: "Do as directed:", marks: 10, subQuestions: [
-                            { question: "Part of speech: The students listened carefully.", options: ["Adjective", "Verb", "Adverb"], correct: 2 },
-                            { question: "Which sentence contains a coordinating conjunction?", options: ["She stayed home because she was sick.", "I will call you after I arrive.", "He wanted to go to the park, but it started to rain."], correct: 2 },
-                            { question: "Part of speech: The dog barked at the stranger.", options: ["Verb", "Adverb", "Preposition"], correct: 0 },
-                            { question: "Which is in present continuous tense?", options: ["He will be studying at 7 p.m.", "He studied all night for the test.", "He is studying for his exams right now."], correct: 2 },
-                            { question: "Fill in blank: She divided the cake equally ___ her three children.", options: ["Among", "Between", "With"], correct: 0 }
-                        ], needs_manual: false },
-                        { id: "g7_en_a_q3", type: "upload", question: "Write a paragraph in about 100 words on: Advantages of School Uniform.", marks: 10, needs_manual: true }
-                    ],
-                    modelB: [
-                        { id: "g7_en_b_q1", type: "mcq", question: "Read the passage and choose the correct answer.", passage: "Teamwork is often considered the key to success in both personal and professional life. It brings together people with different skills, experiences, and perspectives, allowing them to accomplish things they could never achieve alone. In a team, each person plays a unique role, and when everyone contributes their strengths, the team as a whole becomes much stronger. Take sports teams, for example. A football team cannot win a match if every player tries to do everything on their own. The players must work together, relying on each other's strengths and trusting each other to perform their roles.", marks: 10, subQuestions: [
-                            { question: "What is the main idea of the passage?", options: ["Teamwork is essential for success in various aspects of life.", "Working alone is more effective than working in a team.", "Teamwork only matters in sports."], correct: 0 },
-                            { question: "Why is teamwork important in sports?", options: ["Because individual players can always win on their own.", "Because teamwork leads to more goals and success in the game.", "Because players don't need to work together to win."], correct: 1 },
-                            { question: "What is one essential component of effective teamwork?", options: ["Ignoring each other's ideas.", "Communication and respect.", "Keeping ideas to oneself."], correct: 1 },
-                            { question: "What does the author mean by 'a diversity of ideas'?", options: ["Only one person's idea should be considered.", "Everyone has the same idea.", "Each person brings unique ideas that contribute to the success of the team."], correct: 2 },
-                            { question: "What does 'cooperation' mean?", options: ["Working independently", "Working together with others", "Avoiding others' ideas"], correct: 1 }
-                        ], needs_manual: false },
-                        { id: "g7_en_b_q2", type: "mcq", question: "Do as directed:", marks: 10, subQuestions: [
-                            { question: "Part of speech: She was feeling extremely tired.", options: ["Adverb", "Noun", "Verb"], correct: 0 },
-                            { question: "Choose correct preposition: The book is lying ___ the table.", options: ["Under", "Between", "With"], correct: 0 },
-                            { question: "Which sentence is in present perfect tense?", options: ["I have seen that movie before.", "I will watch that movie tomorrow.", "I watched that movie last night."], correct: 0 },
-                            { question: "Choose sentence with past perfect tense:", options: ["They were walking to school.", "They would have walked to school every day.", "They had walked to school."], correct: 2 },
-                            { question: "Identify tense: By next summer, I will have visited five countries.", options: ["Present perfect", "Past continuous", "Future perfect"], correct: 2 }
-                        ], needs_manual: false },
-                        { id: "g7_en_b_q3", type: "upload", question: "Write a paragraph in about 100 words on: 'The most exciting day of my life.'", marks: 10, needs_manual: true }
-                    ]
-                }
-            },
-            G8: {
-                english: {
-                    modelA: [
-                        { id: "g8_en_a_q1", type: "mcq", question: "Read the following passage and choose the correct answer.", passage: "Garbage is a great environment hazard. It comes from various sources—used paper, tiffin packing's, plastic bags, ice-cream wrappers, bottle caps, fallen leaves from trees and many more. Garbage makes the premises ugly, unkempt and breeds diseases. A lot of trash that is thrown away contain material that can be recycled and reused such as paper, metals and glass which can be sent to the nearest recycling center or disposed of to the junk dealer. It also contains organic matter such as leaves which can enrich soil fertility. A compost pit can be made at a convenient location where the refuse can be placed with layers of soil and an occasional sprinkling of water. This would help decomposition to make valuable fertilizer. This would also prevent pollution that is usually caused by burning such organic waste.", marks: 10, subQuestions: [
-                            { question: "Garbage originates from", options: ["used paper, tiffin, packings, plastic bags and fallen leaves from trees", "leftovers of food", "fallen branches from trees", "building materials."], correct: 0 },
-                            { question: "Garbage can create havoc to the mankind by", options: ["spreading foul smell", "slowing our vehicles on the road", "spreading several diseases", "all the above."], correct: 2 },
-                            { question: "What happens to the disposed material at the recycling center?", options: ["It is thrown away", "It is recycled for reuse", "It is sold to the rag pickers", "It is dumped into the ground."], correct: 1 },
-                            { question: "Fallen leaves from trees are useful because they", options: ["solve the problem of fuel wood in village households", "enrich water quality", "enrich soil fertility", "beautify landscape."], correct: 2 },
-                            { question: "Which is correct with reference to a composite pit?", options: ["The refuge is placed with layers of soil with an occasional sprinkling of water", "It contributes to the manufacture of useful fertilizer", "It prevents pollution", "All the above."], correct: 3 }
-                        ], needs_manual: false },
-                        { id: "g8_en_a_q2", type: "upload", question: "Write an essay in 130 words on: An achievement that filled me with pride.", marks: 20, needs_manual: true }
-                    ],
-                    modelB: [
-                        { id: "g8_en_b_q1", type: "mcq", question: "Read the article and choose the correct answer.", passage: "Ancient cave art - In December 1994, three climbers were climbing a cliff in southern France when they came across a small opening. They made the opening wider, and then crawled along a narrow passage into a large cave. To their amazement, they saw hundreds of beautiful images of animals on the cave walls. As they walked through the cave, they realised they were stepping on animal bones. Later tests showed that these were thousands of years old. The climbers told the local authorities about the cave, and experts were sent to study it. The experts realised it was a very important discovery. They identified more than 400 drawings and paintings of 15 different animal species. Some were between 28000 and 31000 years old. The majority, however, dated back 35000 years.", marks: 10, subQuestions: [
-                            { question: "What did the climbers notice on the floor of the cave?", options: ["Images of animals", "narrow passage", "animal bones"], correct: 2 },
-                            { question: "How many years ago was most of the art in the cave made?", options: ["28000", "35000", "31000"], correct: 1 },
-                            { question: "Why were people unable to enter the cave for thousands of years?", options: ["Rock fall", "no art", "cave was damaged"], correct: 0 },
-                            { question: "What material did the cave artists use to make their brushes?", options: ["Wood", "horsehair", "hair"], correct: 1 },
-                            { question: "Who was sent to study about the cave?", options: ["Climbers", "local authorities", "experts"], correct: 2 }
-                        ], needs_manual: false },
-                        { id: "g8_en_b_q2", type: "upload", question: "Write an essay in about 130 words on: Importance of Sports.", marks: 20, needs_manual: true }
-                    ]
-                }
-            }
+            G1: { english: { modelA: [
+                { id: "g1_en_a_q1", type: "image_choice", question: "Choose the correct name for the given pictures:", marks: 12, items: [
+                    { image: "https://cdn-icons-png.flaticon.com/512/616/616408.png", options: ["Cat", "Cot"], correct: 0 },
+                    { image: "https://cdn-icons-png.flaticon.com/512/2917/2917995.png", options: ["Pan", "Pen"], correct: 0 },
+                    { image: "https://cdn-icons-png.flaticon.com/512/616/616430.png", options: ["Dog", "Dug"], correct: 0 },
+                    { image: "https://cdn-icons-png.flaticon.com/512/616/616567.png", options: ["Big", "Bag"], correct: 0 }
+                ], needs_manual: false },
+                { id: "g1_en_a_q2", type: "mcq", question: "Choose the correct ending sound:", marks: 10, subQuestions: [
+                    { question: "Man - Pan - Rot - Pit", options: ["Man", "Pan", "Rot", "Pit"], correct: 0 },
+                    { question: "Sun - Hub - Sip - Fun", options: ["Sun", "Hub", "Sip", "Fun"], correct: 3 },
+                    { question: "Rat - Tin - Hat - Put", options: ["Rat", "Tin", "Hat", "Put"], correct: 2 },
+                    { question: "Cod - Cut - Fit - Rod", options: ["Cod", "Cut", "Fit", "Rod"], correct: 3 },
+                    { question: "Pin - Sin - Lip - Tag", options: ["Pin", "Sin", "Lip", "Tag"], correct: 2 }
+                ], needs_manual: false },
+                { id: "g1_en_a_q3", type: "mcq", question: "Choose the correct answers:", marks: 8, subQuestions: [
+                    { question: "___ is my rabbit.", options: ["This", "That"], correct: 0 },
+                    { question: "___ tree is big.", options: ["This", "That"], correct: 1 }
+                ], needs_manual: false }
+            ], modelB: [
+                { id: "g1_en_b_q1", type: "image_choice", question: "Choose the correct name for the given pictures:", marks: 12, items: [
+                    { image: "https://cdn-icons-png.flaticon.com/512/2917/2917995.png", options: ["Pin", "Sip"], correct: 0 },
+                    { image: "https://cdn-icons-png.flaticon.com/512/888/888847.png", options: ["Sun", "Tan"], correct: 0 },
+                    { image: "https://cdn-icons-png.flaticon.com/512/616/616430.png", options: ["Pit", "Hen"], correct: 1 },
+                    { image: "https://cdn-icons-png.flaticon.com/512/2917/2917995.png", options: ["Rot", "Pot"], correct: 1 }
+                ], needs_manual: false },
+                { id: "g1_en_b_q2", type: "mcq", question: "Choose the correct ending sound:", marks: 10, subQuestions: [
+                    { question: "Sat - Pan - Rot - Pat", options: ["Sat", "Pan", "Rot", "Pat"], correct: 0 },
+                    { question: "Hug - Pug - Sip - Fun", options: ["Hug", "Pug", "Sip", "Fun"], correct: 1 },
+                    { question: "Fin - Tin - Hat - Put", options: ["Fin", "Tin", "Hat", "Put"], correct: 1 },
+                    { question: "Cut - Tap - Hut - Rod", options: ["Cut", "Tap", "Hut", "Rod"], correct: 2 },
+                    { question: "Bag - Sin - Lip - Tag", options: ["Bag", "Sin", "Lip", "Tag"], correct: 3 }
+                ], needs_manual: false },
+                { id: "g1_en_b_q3", type: "mcq", question: "Choose the correct answers:", marks: 8, subQuestions: [
+                    { question: "___ is a yellow duck.", options: ["This", "That"], correct: 0 },
+                    { question: "___ is a big aero plane.", options: ["This", "That"], correct: 1 }
+                ], needs_manual: false }
+            ] } },
+            G2: { english: { modelA: [
+                { id: "g2_en_a_q1", type: "upload", question: "Read the given passage and answer the following questions.", passage: "One misty morning, Jane was looking around her garden. She sat on the grass. She saw a rock with little plants on it. There were flowers. They looked pretty.", subQuestions: ["Who sat on the grass?", "___ were looking pretty."], marks: 10, needs_manual: true },
+                { id: "g2_en_a_q2", type: "mcq", question: "Use (is - am - are):", marks: 10, subQuestions: [
+                    { question: "They ___ happy to see us.", options: ["am", "are"], correct: 1 },
+                    { question: "The dog ___ in the backyard.", options: ["are", "is"], correct: 1 },
+                    { question: "We ___ ready.", options: ["are", "am"], correct: 0 },
+                    { question: "You ___ intelligent.", options: ["are", "is"], correct: 0 },
+                    { question: "I ___ writing.", options: ["is", "am"], correct: 1 }
+                ], needs_manual: false },
+                { id: "g2_en_a_q3", type: "mcq", question: "Use (have / has):", marks: 10, subQuestions: [
+                    { question: "I ___ many toys.", options: ["have", "has"], correct: 0 },
+                    { question: "You ___ an extra pen.", options: ["have", "has"], correct: 0 },
+                    { question: "She ___ one sister.", options: ["have", "has"], correct: 1 },
+                    { question: "They ___ a test today.", options: ["have", "has"], correct: 0 },
+                    { question: "The rainbow ___ seven colors.", options: ["have", "has"], correct: 1 }
+                ], needs_manual: false }
+            ], modelB: [
+                { id: "g2_en_b_q1", type: "upload", question: "Read the given passage and answer the following questions.", passage: "Jane wants to build a birdhouse. She gets some wood, nails and paint. She draws her birdhouse. They hang it up in a tree. A bird goes into it.", subQuestions: ["Who wants to build a birdhouse?", "___ goes into the birdhouse."], marks: 10, needs_manual: true },
+                { id: "g2_en_b_q2", type: "mcq", question: "Use (is - am - are):", marks: 10, subQuestions: [
+                    { question: "I ___ a teacher.", options: ["am", "are"], correct: 0 },
+                    { question: "The dress ___ beautiful.", options: ["are", "is"], correct: 1 },
+                    { question: "We ___ happy.", options: ["are", "am"], correct: 0 },
+                    { question: "She ___ tall.", options: ["am", "is"], correct: 1 },
+                    { question: "They ___ learning.", options: ["is", "are"], correct: 1 }
+                ], needs_manual: false },
+                { id: "g2_en_b_q3", type: "mcq", question: "Use (have / has):", marks: 10, subQuestions: [
+                    { question: "She ___ a blue bag.", options: ["have", "has"], correct: 1 },
+                    { question: "We ___ a big house.", options: ["have", "has"], correct: 0 },
+                    { question: "I ___ some cookies.", options: ["have", "has"], correct: 0 },
+                    { question: "They ___ a ball.", options: ["have", "has"], correct: 0 },
+                    { question: "You ___ a bicycle.", options: ["have", "has"], correct: 0 }
+                ], needs_manual: false }
+            ] } },
+            G3: { english: { modelA: [
+                { id: "g3_en_a_q1", type: "mcq", question: "Read the given passage and answer the questions.", passage: "Jana and Ali are going for a trip to Taif. They are waiting for the bus at the bus stop. Jana has a small pink bag and Ali has a big blue backpack. They are taking their dog, Max with them. They are excited for the trip.", marks: 14, subQuestions: [
+                    { question: "Where is Ali going?", options: ["Trip", "School"], correct: 0 },
+                    { question: "Who is going with him?", options: ["Jana", "Friends"], correct: 0 },
+                    { question: "What are they waiting for?", options: ["Bus", "Car"], correct: 0 },
+                    { question: "Max:", options: ["Common Noun", "Proper Noun"], correct: 1 },
+                    { question: "Bus:", options: ["Common Noun", "Proper Noun"], correct: 0 },
+                    { question: "Taif:", options: ["Common Noun", "Proper Noun"], correct: 1 },
+                    { question: "Backpack:", options: ["Common Noun", "Proper Noun"], correct: 0 }
+                ], needs_manual: false },
+                { id: "g3_en_a_q2", type: "mcq", question: "Choose the correct answer:", marks: 16, subQuestions: [
+                    { question: "The elephant ___ a long trunk.", options: ["has", "have"], correct: 0 },
+                    { question: "You ___ a beautiful dress.", options: ["has", "have"], correct: 1 },
+                    { question: "She ___ in the hospital yesterday.", options: ["was", "were"], correct: 0 },
+                    { question: "They ___ many trees in their backyard.", options: ["has", "have"], correct: 1 },
+                    { question: "You ___ a tall boy.", options: ["is", "are"], correct: 1 },
+                    { question: "___ she baking a cake?", options: ["Is", "Are"], correct: 0 },
+                    { question: "I ___ eating apples but they ___ eating popcorns.", options: ["am/are", "is/are", "am/is"], correct: 0 }
+                ], needs_manual: false }
+            ], modelB: [
+                { id: "g3_en_b_q1", type: "mcq", question: "Read the given passage and answer the questions.", passage: "Alma and her friend Reem are in Hyde Park. They are wearing red dresses. They are looking beautiful. They are eating ice cream. There is a white kitten near the ice cream truck. Alma is playing with it. She is throwing the ball and the kitten is running after it.", marks: 14, subQuestions: [
+                    { question: "Where is Alma?", options: ["School", "Park"], correct: 1 },
+                    { question: "What is she wearing?", options: ["Dress", "T-shirt"], correct: 0 },
+                    { question: "What is the kitten running after?", options: ["Bug", "Ball"], correct: 1 },
+                    { question: "Truck:", options: ["Common Noun", "Proper Noun"], correct: 0 },
+                    { question: "Reem:", options: ["Common Noun", "Proper Noun"], correct: 1 },
+                    { question: "Kitten:", options: ["Common Noun", "Proper Noun"], correct: 0 },
+                    { question: "Hyde Park:", options: ["Common Noun", "Proper Noun"], correct: 1 }
+                ], needs_manual: false },
+                { id: "g3_en_b_q2", type: "mcq", question: "Choose the correct answer:", marks: 16, subQuestions: [
+                    { question: "You ___ driving a car.", options: ["was", "were"], correct: 1 },
+                    { question: "He ___ playing with me.", options: ["was", "were"], correct: 0 },
+                    { question: "Monkeys ___ long tails.", options: ["has", "have"], correct: 1 },
+                    { question: "My mother ___ an expensive ring.", options: ["has", "have"], correct: 0 },
+                    { question: "You ___ my best friend.", options: ["is", "are"], correct: 1 },
+                    { question: "___ he sleeping in the room?", options: ["Is", "Are"], correct: 0 },
+                    { question: "I ___ going to Abha but she ___ going to Jeddah.", options: ["am/is", "am/are", "is/are"], correct: 0 }
+                ], needs_manual: false }
+            ] } },
+            G4: { english: { modelA: [
+                { id: "g4_en_a_q1", type: "mcq", question: "Read the passage and answer the questions.", passage: "Tina saw a hidden path and decided to follow it. The path led her to a lovely garden filled with colorful flowers and friendly animals. Tina spent the whole day playing and laughing with her newfound friends. When it was time to go home, she promised to return to the garden whenever she could.", marks: 12, subQuestions: [
+                    { question: "What did Tina find when she followed the hidden path?", options: ["Garden", "Park"], correct: 0 },
+                    { question: "What did Tina do with her newfound friends?", options: ["Eat and drink", "Play and laugh"], correct: 1 },
+                    { question: "Tina promised that she will never come back.", options: ["True", "False"], correct: 1 },
+                    { question: "Choose the proper noun:", options: ["Tina", "Garden"], correct: 0 },
+                    { question: "What part of speech is: Spent", options: ["Adverb", "Verb"], correct: 1 },
+                    { question: "Which word is an adjective?", options: ["Friendly", "Follow"], correct: 0 }
+                ], needs_manual: false },
+                { id: "g4_en_a_q2", type: "mcq", question: "Choose the correct answer:", marks: 8, subQuestions: [
+                    { question: "I ___ going to Japan and you ___ going to China.", options: ["am/are", "are/is", "am/is"], correct: 0 },
+                    { question: "A monkey ___ a long tail but rabbits ___ short tails.", options: ["has/have", "have/has", "has/has"], correct: 0 }
+                ], needs_manual: false },
+                { id: "g4_en_a_q3", type: "mcq", question: "Identify the tense:", marks: 8, subQuestions: [
+                    { question: "She likes to drink coffee in the morning.", options: ["Simple Present", "Present Continuous"], correct: 0 },
+                    { question: "My dad is playing football with me.", options: ["Simple Present", "Present Continuous"], correct: 1 },
+                    { question: "They were in Canada last year.", options: ["Simple Present", "Simple Past"], correct: 1 },
+                    { question: "Who is sitting on the couch?", options: ["Simple Present", "Present Continuous"], correct: 1 }
+                ], needs_manual: false }
+            ], modelB: [
+                { id: "g4_en_b_q1", type: "mcq", question: "Read the passage and answer the questions.", passage: "Lily loved plants and flowers. She had a beautiful garden in her backyard. One day, some people visited Lily's garden. They were amazed by the colorful flowers. They wanted to make their own gardens and share the joy of gardening with others.", marks: 12, subQuestions: [
+                    { question: "What did Lily like to do?", options: ["Gardening", "Cooking"], correct: 0 },
+                    { question: "What did the visitors like about Lily's garden?", options: ["Flowers", "Bugs"], correct: 0 },
+                    { question: "What did the visitors want to do?", options: ["Make gardens and share the joy", "Cook food and share it"], correct: 0 },
+                    { question: "Choose the proper noun:", options: ["Lily", "Backyard"], correct: 0 },
+                    { question: "What part of speech is: Visited", options: ["Adverb", "Verb"], correct: 1 },
+                    { question: "Which word is an adjective?", options: ["Colorful", "Share"], correct: 0 }
+                ], needs_manual: false },
+                { id: "g4_en_b_q2", type: "mcq", question: "Choose the correct answer:", marks: 10, subQuestions: [
+                    { question: "We ___ received a letter from the college.", options: ["has", "have"], correct: 1 },
+                    { question: "Jana and I ___ eating a pizza. Jana ___ drinking juice too.", options: ["am/are", "are/is", "are/are"], correct: 1 },
+                    { question: "You ___ a cat and I ___ a hamster.", options: ["has/have", "have/has", "have/have"], correct: 1 }
+                ], needs_manual: false },
+                { id: "g4_en_b_q3", type: "mcq", question: "Identify the tense:", marks: 8, subQuestions: [
+                    { question: "Ahmad is going on a camping trip.", options: ["Simple Present", "Present Continuous"], correct: 1 },
+                    { question: "Sam is an old friend of mine.", options: ["Simple Present", "Simple Past"], correct: 0 },
+                    { question: "He was in Abha last week.", options: ["Simple Present", "Simple Past"], correct: 1 },
+                    { question: "Why are you crying?", options: ["Simple Present", "Present Continuous"], correct: 1 }
+                ], needs_manual: false }
+            ] } }
         };
 
         // ============ شاشة الترحيب ============
@@ -950,6 +880,7 @@
             document.getElementById('student-form-screen').classList.add('hidden-screen');
             document.getElementById('exam-screen').classList.remove('hidden-screen');
             document.getElementById('exam-student-name').textContent = currentStudent.name;
+            showNotification('بدأ الاختبار بنجاح! بالتوفيق ', 'success');
             startSubject('english');
         }
 
@@ -958,7 +889,8 @@
             currentSubject = subject;
             currentQIndex = 0;
             answers = {};
-            const subjectNames = { english: 'اللغة الإنجليزية 🇬', math: 'الرياضيات 🔢', arabic: 'اللغة العربية 🇸' };
+            questionScores = {};
+            const subjectNames = { english: 'اللغة الإنجليزية 🇬', math: 'الرياضيات ', arabic: 'اللغة العربية 🇸' };
             document.getElementById('exam-subject').textContent = subjectNames[subject];
             updateSubjectTabs();
             loadQuestions(subject);
@@ -1033,10 +965,12 @@
             if (q.passage) { html += `<div class="bg-blue-50 p-4 rounded-xl border-2 border-blue-200"><p class="text-sm text-blue-600 font-bold mb-2">📖 Passage:</p><p class="text-gray-700 italic">${q.passage}</p></div>`; }
             q.subQuestions.forEach((sq, sqIdx) => {
                 const qKey = `${currentQIndex}_${sqIdx}`;
-                html += `<div class="question-block"><p class="font-bold text-gray-800 mb-3">${sqIdx + 1}. ${sq.question}</p><div class="grid grid-cols-2 gap-3">`;
+                const score = questionScores[qKey];
+                const scoreBadge = score !== undefined ? `<div class="score-badge ${score > 0 ? 'score-correct' : 'score-wrong'}">${score}/1</div>` : '';
+                html += `<div class="question-block">${scoreBadge}<p class="font-bold text-gray-800 mb-3">${sqIdx + 1}. ${sq.question}</p><div class="grid grid-cols-2 gap-3">`;
                 sq.options.forEach((opt, optIdx) => {
                     const selected = answers[qKey] === optIdx ? 'selected' : '';
-                    html += `<button onclick="selectMCQ('${qKey}', ${optIdx})" class="option-btn font-bold text-center ${selected}">${opt}</button>`;
+                    html += `<button onclick="selectMCQ('${qKey}', ${optIdx}, ${sq.correct})" class="option-btn font-bold text-center ${selected}">${opt}</button>`;
                 });
                 html += `</div></div>`;
             });
@@ -1050,10 +984,12 @@
             html += `<div class="grid grid-cols-2 md:grid-cols-4 gap-4">`;
             q.items.forEach((item, itemIdx) => {
                 const qKey = `${currentQIndex}_${itemIdx}`;
-                html += `<div class="bg-white p-4 rounded-xl border-2 border-gray-100"><img src="${item.image}" alt="Question ${itemIdx + 1}" class="w-full h-32 object-contain mb-3"><div class="space-y-2">`;
+                const score = questionScores[qKey];
+                const scoreBadge = score !== undefined ? `<div class="score-badge ${score > 0 ? 'score-correct' : 'score-wrong'}">${score}/1</div>` : '';
+                html += `<div class="bg-white p-4 rounded-xl border-2 border-gray-100 relative">${scoreBadge}<img src="${item.image}" alt="Question ${itemIdx + 1}" class="w-full h-32 object-contain mb-3"><div class="space-y-2">`;
                 item.options.forEach((opt, optIdx) => {
                     const selected = answers[qKey] === optIdx ? 'selected' : '';
-                    html += `<button onclick="selectMCQ('${qKey}', ${optIdx})" class="option-btn w-full font-bold text-sm ${selected}">${opt}</button>`;
+                    html += `<button onclick="selectMCQ('${qKey}', ${optIdx}, ${item.correct})" class="option-btn w-full font-bold text-sm ${selected}">${opt}</button>`;
                 });
                 html += `</div></div>`;
             });
@@ -1071,10 +1007,13 @@
             return html;
         }
 
-        function selectMCQ(qKey, optIdx) {
+        function selectMCQ(qKey, optIdx, correctIdx) {
             answers[qKey] = optIdx;
+            const isCorrect = optIdx === correctIdx;
+            questionScores[qKey] = isCorrect ? 1 : 0;
             const buttons = document.querySelectorAll(`button[onclick^="selectMCQ('${qKey}'"]`);
             buttons.forEach((btn, idx) => { btn.classList.remove('selected'); if (idx === optIdx) { btn.classList.add('selected'); } });
+            setTimeout(() => renderQuestion(), 300);
         }
 
         function handleFile(input) {
@@ -1085,24 +1024,15 @@
                     answers[`${currentQIndex}_upload`] = imageData;
                     document.getElementById('preview').innerHTML = `<div class="mt-4 border-4 border-amber-300 rounded-xl overflow-hidden"><img src="${imageData}" class="w-full max-h-96 object-contain"><div class="bg-amber-100 p-3 text-center"><i class="fas fa-check-circle text-amber-600 text-2xl"></i><p class="text-amber-800 font-bold">تم رفع الصورة بنجاح</p><p class="text-amber-700 text-xs mt-1">سيتم إرسالها للمعلمة للمراجعة</p></div></div>`;
                     sendImageToEmail(imageData);
+                    showNotification('تم رفع الصورة وإرسالها للمعلمة ✅', 'success');
                 };
                 reader.readAsDataURL(input.files[0]);
             }
         }
 
-        // ============ إرسال الصورة للإيميل ============
         function sendImageToEmail(imageData) {
-            const templateParams = {
-                to_email: 'amira.echo21@gmail.com',
-                student_name: currentStudent.name,
-                grade: currentStudent.grade,
-                branch: currentBranch === 'child-gate' ? 'بوابة الطفل' : 'أجيال المعرفة',
-                subject: currentSubject === 'english' ? 'الإنجليزية' : currentSubject === 'math' ? 'الرياضيات' : 'العربية',
-                question: questions[currentQIndex].question,
-                attachment: imageData
-            };
-            emailjs.send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.templateId, templateParams)
-                .then(function() { console.log('تم إرسال الصورة بنجاح!'); }, function(error) { console.log('فشل إرسال الصورة:', error); });
+            const templateParams = { to_email: 'amira.echo21@gmail.com', student_name: currentStudent.name, grade: currentStudent.grade, branch: currentBranch === 'child-gate' ? 'بوابة الطفل' : 'أجيال المعرفة', subject: currentSubject === 'english' ? 'الإنجليزية' : currentSubject === 'math' ? 'الرياضيات' : 'العربية', question: questions[currentQIndex].question, attachment: imageData };
+            emailjs.send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.templateId, templateParams).then(function() { console.log('تم إرسال الصورة بنجاح!'); }, function(error) { console.log('فشل إرسال الصورة:', error); });
         }
 
         function nextQuestion() { if (currentQIndex < questions.length - 1) { currentQIndex++; renderQuestion(); } }
@@ -1110,14 +1040,13 @@
 
         function submitExam() {
             if (!confirm('هل أنت متأكد من تسليم هذا الاختبار؟')) { return; }
-            let score = 0;
-            let totalMarks = 0;
+            let score = 0; let totalMarks = 0;
             questions.forEach((q, qIdx) => {
                 if (q.type === 'mcq' && q.subQuestions) { q.subQuestions.forEach((sq, sqIdx) => { const qKey = `${qIdx}_${sqIdx}`; totalMarks += 1; if (answers[qKey] === sq.correct) score += 1; }); } else if (q.type === 'image_choice' && q.items) { q.items.forEach((item, itemIdx) => { const qKey = `${qIdx}_${itemIdx}`; totalMarks += 1; if (answers[qKey] === item.correct) score += 1; }); } else if (q.type === 'upload') { totalMarks += q.marks; if (answers[`${qIdx}_upload`]) score += q.marks; } });
             const finalScore = Math.round((score / totalMarks) * 30);
             subjectScores[currentSubject] = finalScore;
             const currentIdx = examSubjects.indexOf(currentSubject);
-            if (currentIdx < examSubjects.length - 1) { alert(`أنهيت ${currentSubject === 'english' ? 'الإنجليزية' : currentSubject === 'math' ? 'الرياضيات' : 'العربية'} بدرجة ${finalScore}/30\nالانتقال للمادة التالية...`); startSubject(examSubjects[currentIdx + 1]); } else { saveStudentResult(); }
+            if (currentIdx < examSubjects.length - 1) { showNotification(`أنهيت ${currentSubject === 'english' ? 'الإنجليزية' : currentSubject === 'math' ? 'الرياضيات' : 'العربية'} بدرجة ${finalScore}/30`, 'success'); startSubject(examSubjects[currentIdx + 1]); } else { saveStudentResult(); }
         }
 
         function saveStudentResult() {
@@ -1127,6 +1056,7 @@
             const studentData = { id: Date.now().toString(), name: currentStudent.name, dob: currentStudent.dob, idNumber: currentStudent.id, phone: currentStudent.phone, gender: currentStudent.gender, branch: currentStudent.branch, grade: currentStudent.grade, nationality: currentStudent.nationality, testsArabic: currentStudent.testsArabic, scores: { ...subjectScores }, total: total, maxScore: maxScore, passed: passed, date: new Date().toLocaleString('ar-SA'), timestamp: Date.now() };
             allStudents.push(studentData);
             localStorage.setItem('exam_students', JSON.stringify(allStudents));
+            showNotification('تم حفظ النتيجة بنجاح! ', 'success');
             showResults(studentData);
         }
 
@@ -1141,7 +1071,7 @@
             const statusEl = document.getElementById('result-status');
             statusEl.innerHTML = data.passed ? '<span class="status-badge status-passed">مقبول ✅</span>' : '<span class="status-badge status-failed">غير مقبول </span>';
             const container = document.getElementById('result-subjects');
-            const subjectNames = { english: '🇬🇧 اللغة الإنجليزية', math: '🔢 الرياضيات', arabic: '🇸🇦 اللغة العربية' };
+            const subjectNames = { english: '🇬🇧 اللغة الإنجليزية', math: '🔢 الرياضيات', arabic: '🇸 اللغة العربية' };
             container.innerHTML = Object.entries(data.scores).map(([subj, score]) => {
                 const passed = score >= PASSING_SCORE;
                 const statusText = passed ? 'مقبول ✅' : 'غير مقبول ';
@@ -1149,8 +1079,35 @@
                 const cardClass = passed ? 'passed' : 'failed';
                 return `<div class="subject-result-card ${cardClass}"><div class="text-center"><h4 class="text-lg font-bold text-gray-800 mb-2">${subjectNames[subj]}</h4><div class="text-4xl font-black mb-2 ${passed ? 'text-green-600' : 'text-red-600'}">${score}/30</div><div class="status-badge ${statusClass}">${statusText}</div></div></div>`;
             }).join('');
+            
+            // نظام الشارات
+            const badgesContainer = document.getElementById('result-badges');
+            let badges = '';
+            if (data.total >= 75) { badges += '<span class="achievement-badge badge-excellent">🏆 طالب متميز</span>'; }
+            if (data.total >= 60) { badges += '<span class="achievement-badge badge-good">⭐ أداء جيد</span>'; }
+            if (data.total >= 45) { badges += '<span class="achievement-badge badge-effort">💪 اجتهاد</span>'; }
+            badgesContainer.innerHTML = badges ? `<div class="badge-container justify-center">${badges}</div>` : '';
+            
             const msgBox = document.getElementById('result-message');
             if (data.passed) { msgBox.className = 'mb-6 p-4 rounded-xl font-bold text-lg bg-green-100 text-green-800 border-2 border-green-300'; msgBox.innerHTML = '🎉 لقد اجتزت الاختبار بنجاح - تم قبولك'; } else { msgBox.className = 'mb-6 p-4 rounded-xl font-bold text-lg bg-red-100 text-red-800 border-2 border-red-300'; msgBox.innerHTML = 'لم تجتز الاختبار - يرجى المحاولة مرة أخرى'; }
+        }
+
+        // ============ تحميل PDF ============
+        function downloadPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            doc.setFont('helvetica');
+            doc.setFontSize(20);
+            doc.text('Certificate of Achievement', 105, 30, { align: 'center' });
+            doc.setFontSize(16);
+            doc.text(`Student: ${currentStudent.name}`, 105, 50, { align: 'center' });
+            doc.text(`Grade: ${currentStudent.grade}`, 105, 65, { align: 'center' });
+            doc.text(`Total Score: ${Object.values(subjectScores).reduce((a, b) => a + b, 0)}/${currentStudent.testsArabic ? 90 : 60}`, 105, 80, { align: 'center' });
+            doc.text(`English: ${subjectScores.english}/30`, 105, 95, { align: 'center' });
+            doc.text(`Math: ${subjectScores.math}/30`, 105, 110, { align: 'center' });
+            if (currentStudent.testsArabic) { doc.text(`Arabic: ${subjectScores.arabic}/30`, 105, 125, { align: 'center' }); }
+            doc.save(`certificate_${currentStudent.name}.pdf`);
+            showNotification('تم تحميل الشهادة بنجاح! ', 'success');
         }
 
         // ============ تسجيل دخول المعلم ============
@@ -1158,30 +1115,69 @@
             const user = document.getElementById('t-username').value;
             const pass = document.getElementById('t-password').value;
             const errBox = document.getElementById('t-error');
-            if (user === 'teacher' && pass === 'teacher123') { errBox.classList.add('hidden'); document.getElementById('teacher-login-screen').classList.add('hidden-screen'); document.getElementById('teacher-panel').classList.remove('hidden-screen'); updateTeacherPanel(); } else { errBox.textContent = 'اسم المستخدم أو كلمة المرور غير صحيحة'; errBox.classList.remove('hidden'); }
+            if (user === 'teacher' && pass === 'teacher123') { errBox.classList.add('hidden'); document.getElementById('teacher-login-screen').classList.add('hidden-screen'); document.getElementById('teacher-panel').classList.remove('hidden-screen'); updateTeacherPanel(); showNotification('مرحباً بك في لوحة المعلم 👨‍🏫', 'success'); } else { errBox.textContent = 'اسم المستخدم أو كلمة المرور غير صحيحة'; errBox.classList.remove('hidden'); }
         }
 
         function updateTeacherPanel() {
-            document.getElementById('t-total').textContent = allStudents.length;
-            const passed = allStudents.filter(s => s.passed).length;
-            const failed = allStudents.length - passed;
-            const pending = allStudents.filter(s => Object.values(s.scores).some(score => score === 0)).length;
-            document.getElementById('t-passed').textContent = passed;
-            document.getElementById('t-failed').textContent = failed;
-            document.getElementById('t-pending').textContent = pending;
-            const tbody = document.getElementById('t-students-table');
-            if (allStudents.length === 0) { tbody.innerHTML = '<tr><td colspan="9" class="p-8 text-center text-gray-500">لا يوجد طلاب حتى الآن</td></tr>'; return; }
-            tbody.innerHTML = allStudents.map((s, i) => {
-                const arabicScore = s.testsArabic ? (s.scores.arabic || '-') : '-';
-                const statusClass = s.passed ? 'badge-success' : 'badge-danger';
-                const statusText = s.passed ? 'مقبول ✅' : 'غير مقبول ❌';
-                return `<tr class="hover:bg-gray-50"><td class="p-3">${i + 1}</td><td class="p-3 font-bold">${s.name}</td><td class="p-3 text-sm">${s.grade}</td><td class="p-3 font-bold text-amber-700">${s.scores.english || 0}/30</td><td class="p-3 font-bold text-blue-600">${s.scores.math || 0}/30</td><td class="p-3 font-bold text-green-600">${arabicScore}</td><td class="p-3 font-bold">${s.total}/${s.maxScore}</td><td class="p-3"><span class="px-3 py-1 rounded-full text-xs font-bold ${statusClass}">${statusText}</span></td><td class="p-3"><button onclick="viewStudentDetails('${s.id}')" class="btn-secondary px-3 py-1 rounded-lg text-xs"><i class="fas fa-eye"></i> عرض</button></td></tr>`;
-            }).join('');
+            const listContainer = document.getElementById('teacher-student-list');
+            if (allStudents.length === 0) { listContainer.innerHTML = '<div class="text-center text-gray-500 py-10"><i class="fas fa-inbox text-4xl mb-3"></i><p>لا يوجد طلاب حتى الآن</p></div>'; return; }
+            listContainer.innerHTML = allStudents.map((s, i) => `
+                <div class="student-item" onclick="showStudentDetail('${s.id}')">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <div class="font-bold text-gray-800">${s.name}</div>
+                            <div class="text-sm text-gray-600">${s.grade} - ${s.branch === 'child-gate' ? 'بوابة الطفل' : 'أجيال المعرفة'}</div>
+                        </div>
+                        <div class="text-left">
+                            <div class="font-bold text-amber-700">${s.total}/${s.maxScore}</div>
+                            <span class="px-2 py-1 rounded-full text-xs font-bold ${s.passed ? 'badge-success' : 'badge-danger'}">${s.passed ? 'مقبول' : 'غير مقبول'}</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
         }
 
-        function viewStudentDetails(studentId) {
+        function filterStudents() {
+            const searchTerm = document.getElementById('teacher-search').value.toLowerCase();
+            const items = document.querySelectorAll('.student-item');
+            items.forEach(item => {
+                const text = item.textContent.toLowerCase();
+                item.style.display = text.includes(searchTerm) ? 'block' : 'none';
+            });
+        }
+
+        function showStudentDetail(studentId) {
             const student = allStudents.find(s => s.id === studentId);
-            if (student) { alert(`📋 تفاصيل الطالب:\n\nالاسم: ${student.name}\nالمرحلة: ${student.grade}\nالجنسية: ${nationalityLabels[student.nationality]}\n\nالدرجات:\n- الإنجليزي: ${student.scores.english}/30\n- الرياضيات: ${student.scores.math}/30\n- العربي: ${student.testsArabic ? student.scores.arabic + '/30' : 'لا يختبر'}\n\nالمجموع: ${student.total}/${student.maxScore}\nالحالة: ${student.passed ? 'مقبول ✅' : 'غير مقبول ❌'}`); }
+            if (!student) return;
+            const detailPanel = document.getElementById('student-detail-panel');
+            const subjectNames = { english: 'اللغة الإنجليزية', math: 'الرياضيات', arabic: 'اللغة العربية' };
+            detailPanel.innerHTML = `
+                <div class="mb-6">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-2">${student.name}</h3>
+                    <div class="grid grid-cols-2 gap-4 text-sm">
+                        <div><span class="font-bold">المرحلة:</span> ${student.grade}</div>
+                        <div><span class="font-bold">الفرع:</span> ${student.branch === 'child-gate' ? 'بوابة الطفل' : 'أجيال المعرفة'}</div>
+                        <div><span class="font-bold">الجنسية:</span> ${nationalityLabels[student.nationality]}</div>
+                        <div><span class="font-bold">التاريخ:</span> ${student.date}</div>
+                    </div>
+                </div>
+                <div class="space-y-6">
+                    ${Object.entries(student.scores).map(([subj, score]) => `
+                        <div class="border-2 border-gray-200 rounded-xl p-4">
+                            <div class="flex justify-between items-center mb-4">
+                                <h4 class="text-xl font-bold text-gray-800">${subjectNames[subj]}</h4>
+                                <div class="text-2xl font-black ${score >= 15 ? 'text-green-600' : 'text-red-600'}">${score}/30</div>
+                            </div>
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <p class="text-gray-600">الدرجة النهائية: <span class="font-bold">${score}</span> من 30</p>
+                                <p class="text-gray-600">الحالة: <span class="font-bold ${score >= 15 ? 'text-green-600' : 'text-red-600'}">${score >= 15 ? 'مقبول ✅' : 'غير مقبول ❌'}</span></p>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            document.querySelectorAll('.student-item').forEach(item => item.classList.remove('active'));
+            event.currentTarget.classList.add('active');
         }
 
         // ============ تسجيل دخول مسؤول القبول ============
@@ -1189,7 +1185,7 @@
             const user = document.getElementById('r-username').value;
             const pass = document.getElementById('r-password').value;
             const errBox = document.getElementById('r-error');
-            if (user === 'registrar' && pass === 'registrar123') { errBox.classList.add('hidden'); document.getElementById('registrar-login-screen').classList.add('hidden-screen'); document.getElementById('registrar-panel').classList.remove('hidden-screen'); updateRegistrarPanel(); } else { errBox.textContent = 'اسم المستخدم أو كلمة المرور غير صحيحة'; errBox.classList.remove('hidden'); }
+            if (user === 'registrar' && pass === 'registrar123') { errBox.classList.add('hidden'); document.getElementById('registrar-login-screen').classList.add('hidden-screen'); document.getElementById('registrar-panel').classList.remove('hidden-screen'); updateRegistrarPanel(); showNotification('مرحباً بك في لوحة مسؤول القبول 📋', 'success'); } else { errBox.textContent = 'اسم المستخدم أو كلمة المرور غير صحيحة'; errBox.classList.remove('hidden'); }
         }
 
         function updateRegistrarPanel() {
@@ -1201,14 +1197,12 @@
             document.getElementById('r-failed').textContent = failed;
             document.getElementById('r-pending').textContent = pending;
             const tbody = document.getElementById('r-students-table');
-            if (allStudents.length === 0) { tbody.innerHTML = '<tr><td colspan="15" class="p-8 text-center text-gray-500">لا يوجد طلاب حتى الآن</td></tr>'; return; }
+            if (allStudents.length === 0) { tbody.innerHTML = '<tr><td colspan="8" class="p-8 text-center text-gray-500">لا يوجد طلاب حتى الآن</td></tr>'; return; }
             tbody.innerHTML = allStudents.map((s, i) => {
-                const branchName = s.branch === 'child-gate' ? 'بوابة الطفل' : 'أجيال المعرفة';
-                const genderName = s.gender === 'male' ? 'ذكر' : 'أنثى';
                 const arabicScore = s.testsArabic ? (s.scores.arabic || '-') : '-';
                 const statusClass = s.passed ? 'badge-success' : 'badge-danger';
                 const statusText = s.passed ? 'مقبول ✅' : 'غير مقبول ❌';
-                return `<tr class="hover:bg-gray-50"><td class="p-3">${i + 1}</td><td class="p-3 font-bold">${s.name}</td><td class="p-3 text-sm">${s.dob || '-'}</td><td class="p-3 text-sm">${s.idNumber || '-'}</td><td class="p-3 text-sm">${s.phone || '-'}</td><td class="p-3">${genderName}</td><td class="p-3 text-sm">${branchName}</td><td class="p-3">${s.grade}</td><td class="p-3 text-sm">${nationalityLabels[s.nationality] || s.nationality}</td><td class="p-3 font-bold text-amber-700">${s.scores.english || 0}/30</td><td class="p-3 font-bold text-blue-600">${s.scores.math || 0}/30</td><td class="p-3 font-bold text-green-600">${arabicScore}</td><td class="p-3 font-bold">${s.total}/${s.maxScore}</td><td class="p-3"><span class="px-3 py-1 rounded-full text-xs font-bold ${statusClass}">${statusText}</span></td><td class="p-3 text-xs">${s.date}</td></tr>`;
+                return `<tr class="hover:bg-gray-50"><td class="p-3">${i + 1}</td><td class="p-3 font-bold">${s.name}</td><td class="p-3">${s.grade}</td><td class="p-3 font-bold text-amber-700">${s.scores.english || 0}/30</td><td class="p-3 font-bold text-blue-600">${s.scores.math || 0}/30</td><td class="p-3 font-bold text-green-600">${arabicScore}</td><td class="p-3 font-bold">${s.total}/${s.maxScore}</td><td class="p-3"><span class="px-3 py-1 rounded-full text-xs font-bold ${statusClass}">${statusText}</span></td></tr>`;
             }).join('');
         }
 
@@ -1217,7 +1211,7 @@
             const user = document.getElementById('a-username').value;
             const pass = document.getElementById('a-password').value;
             const errBox = document.getElementById('a-error');
-            if (user === 'admin' && pass === 'admin123') { errBox.classList.add('hidden'); document.getElementById('admin-login-screen').classList.add('hidden-screen'); document.getElementById('admin-dashboard').classList.remove('hidden-screen'); updateAdminDashboard(); } else { errBox.textContent = 'بيانات الدخول غير صحيحة'; errBox.classList.remove('hidden'); }
+            if (user === 'admin' && pass === 'admin123') { errBox.classList.add('hidden'); document.getElementById('admin-login-screen').classList.add('hidden-screen'); document.getElementById('admin-dashboard').classList.remove('hidden-screen'); updateAdminDashboard(); showNotification('مرحباً بك في داشبورد المدير 📊', 'success'); } else { errBox.textContent = 'بيانات الدخول غير صحيحة'; errBox.classList.remove('hidden'); }
         }
 
         function updateAdminDashboard() {
@@ -1236,6 +1230,29 @@
                 const statusText = s.passed ? 'مقبول ✅' : 'غير مقبول ❌';
                 return `<tr class="hover:bg-gray-50"><td class="p-3">${i + 1}</td><td class="p-3 font-bold">${s.name}</td><td class="p-3">${s.grade}</td><td class="p-3 font-bold text-amber-700">${s.scores.english || 0}</td><td class="p-3 font-bold text-blue-600">${s.scores.math || 0}</td><td class="p-3 font-bold text-green-600">${arabicScore}</td><td class="p-3 font-bold">${s.total}</td><td class="p-3"><span class="px-3 py-1 rounded-full text-xs font-bold ${statusClass}">${statusText}</span></td></tr>`;
             }).join('');
+            
+            // Charts
+            setTimeout(() => {
+                if (charts.results) charts.results.destroy();
+                if (charts.subjects) charts.subjects.destroy();
+                
+                const ctx1 = document.getElementById('resultsChart').getContext('2d');
+                charts.results = new Chart(ctx1, {
+                    type: 'doughnut',
+                    data: { labels: ['مقبول', 'غير مقبول'], datasets: [{ data: [passed, failed], backgroundColor: ['#10B981', '#EF4444'] }] },
+                    options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+                });
+                
+                const ctx2 = document.getElementById('subjectsChart').getContext('2d');
+                const avgEnglish = total > 0 ? allStudents.reduce((sum, s) => sum + (s.scores.english || 0), 0) / total : 0;
+                const avgMath = total > 0 ? allStudents.reduce((sum, s) => sum + (s.scores.math || 0), 0) / total : 0;
+                const avgArabic = total > 0 ? allStudents.reduce((sum, s) => sum + (s.scores.arabic || 0), 0) / total : 0;
+                charts.subjects = new Chart(ctx2, {
+                    type: 'bar',
+                    data: { labels: ['الإنجليزي', 'الرياضيات', 'العربي'], datasets: [{ label: 'متوسط الدرجات', data: [avgEnglish, avgMath, avgArabic], backgroundColor: ['#FF6B9D', '#00BBF9', '#10B981'] }] },
+                    options: { responsive: true, scales: { y: { beginAtZero: true, max: 30 } } }
+                });
+            }, 100);
         }
 
         // ============ تصدير Excel ============
@@ -1246,6 +1263,7 @@
             const wb = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(wb, ws, 'نتائج الطلاب');
             XLSX.writeFile(wb, 'students_results.xlsx');
+            showNotification('تم تصدير Excel بنجاح! ', 'success');
         }
 
         function logout() { if (confirm('هل تريد تسجيل الخروج؟')) { location.reload(); } }
