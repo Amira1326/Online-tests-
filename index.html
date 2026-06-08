@@ -18,7 +18,7 @@
             position: relative;
         }
         
-        /* الخلفية الموحدة في كل الصفحات */
+        /* الخلفية الموحدة */
         body::before {
             content: '';
             position: fixed;
@@ -71,6 +71,17 @@
         .btn-secondary:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 25px rgba(210, 105, 30, 0.3);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, #DC2626 0%, #EF4444 100%);
+            color: white;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            padding: 1rem 2rem;
+            border-radius: 12px;
         }
         
         .branch-card, .role-card {
@@ -201,6 +212,55 @@
             to { transform: translateX(0); opacity: 1; }
         }
         
+        .teacher-split-screen {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 2rem;
+            height: calc(100vh - 200px);
+        }
+        .student-list-panel {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            overflow-y: auto;
+            border: 2px solid #E5E7EB;
+        }
+        .student-detail-panel {
+            background: white;
+            border-radius: 20px;
+            padding: 2.5rem;
+            overflow-y: auto;
+            border: 2px solid #E5E7EB;
+        }
+        .student-item {
+            padding: 1rem;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+            margin-bottom: 0.5rem;
+            background: white;
+        }
+        .student-item:hover {
+            background: #FFF8F0;
+            border-color: #8B4513;
+        }
+        .student-item.active {
+            background: #FFF8F0;
+            border-color: #8B4513;
+            box-shadow: 0 4px 12px rgba(139, 69, 19, 0.2);
+        }
+        
+        .chart-container {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        @media (max-width: 1024px) {
+            .teacher-split-screen { grid-template-columns: 1fr; }
+        }
         @media (max-width: 640px) {
             .glass-card { padding: 1rem; border-radius: 16px; }
         }
@@ -266,12 +326,12 @@
             </div>
             <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
                 <div onclick="selectRole('student')" id="role-student" class="role-card text-center">
-                    <div class="w-20 h-20 bg-gradient-to-br from-blue-500 to-blue-700 rounded-full flex items-center justify-center mx-auto mb-3 text-4xl"></div>
+                    <div class="w-20 h-20 bg-gradient-to-br from-blue-500 to-blue-700 rounded-full flex items-center justify-center mx-auto mb-3 text-4xl">🎓</div>
                     <h3 class="text-xl font-bold text-gray-800 mb-2">طالب</h3>
                     <p class="text-gray-600 text-sm">أداء الاختبارات</p>
                 </div>
                 <div onclick="selectRole('teacher')" id="role-teacher" class="role-card text-center">
-                    <div class="w-20 h-20 bg-gradient-to-br from-green-500 to-green-700 rounded-full flex items-center justify-center mx-auto mb-3 text-4xl">👨‍🏫</div>
+                    <div class="w-20 h-20 bg-gradient-to-br from-green-500 to-green-700 rounded-full flex items-center justify-center mx-auto mb-3 text-4xl">‍🏫</div>
                     <h3 class="text-xl font-bold text-gray-800 mb-2">معلم</h3>
                     <p class="text-gray-600 text-sm">تصحيح النتائج</p>
                 </div>
@@ -364,15 +424,15 @@
                     <select id="s-nationality" class="input-field" onchange="handleNationalityChange()">
                         <option value="">-- اختر الجنسية --</option>
                         <optgroup label="🌍 الجنسيات العربية">
-                            <option value="saudi">🇸 سعودي</option>
+                            <option value="saudi">🇸🇦 سعودي</option>
                             <option value="yemeni">🇾🇪 يمني</option>
-                            <option value="egyptian">🇪🇬 مصري</option>
+                            <option value="egyptian">🇬 مصري</option>
                             <option value="jordanian">🇯🇴 أردني</option>
                             <option value="other-arab">عربي آخر</option>
                         </optgroup>
                         <optgroup label="🌏 الجنسيات غير العربية">
-                            <option value="indian">🇮 هندي</option>
-                            <option value="pakistani">🇵🇰 باكستاني</option>
+                            <option value="indian">🇮🇳 هندي</option>
+                            <option value="pakistani">🇵 باكستاني</option>
                             <option value="filipino">🇵 فلبيني</option>
                             <option value="other-non-arab">أخرى</option>
                         </optgroup>
@@ -400,10 +460,307 @@
         </div>
     </div>
 
-    <!-- باقي الشاشات... (نفس الكود السابق) -->
+    <!-- ========== Teacher Login Screen ========== -->
+    <div id="teacher-login-screen" class="hidden-screen min-h-screen flex items-center justify-center p-4">
+        <div class="glass-card max-w-md w-full">
+            <div class="text-center mb-6">
+                <div class="w-24 h-24 bg-gradient-to-br from-green-500 to-green-700 rounded-full flex items-center justify-center mx-auto mb-4 text-5xl">👨‍🏫</div>
+                <h2 class="text-3xl font-black text-gray-800 mb-2">دخول المعلم</h2>
+                <p class="text-gray-600">تصحيح إجابات الطلاب</p>
+            </div>
+            <div class="space-y-4">
+                <input type="text" id="t-username" class="input-field" placeholder="اسم المستخدم">
+                <input type="password" id="t-password" class="input-field" placeholder="كلمة المرور">
+                <div id="t-error" class="hidden bg-red-50 border-2 border-red-300 text-red-700 p-3 rounded-xl text-sm font-bold"></div>
+                <div class="flex gap-3">
+                    <button onclick="backToRole()" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-4 rounded-xl">رجوع</button>
+                    <button onclick="loginTeacher()" class="flex-1 btn-secondary text-white font-bold py-4 rounded-xl">دخول</button>
+                </div>
+                <div class="text-center text-xs text-gray-500 bg-gray-50 p-2 rounded-lg">تجريبي: teacher / teacher123</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== Teacher Panel ========== -->
+    <div id="teacher-panel" class="hidden-screen min-h-screen p-4 md:p-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="glass-card p-6 mb-6">
+                <div class="flex justify-between items-center flex-wrap gap-4">
+                    <div>
+                        <h2 class="text-3xl font-black text-gray-800">👨‍🏫 لوحة المعلم - تصحيح الإجابات</h2>
+                        <p class="text-gray-600 mt-1">راجع إجابات الطلاب وأضف الدرجات</p>
+                    </div>
+                    <div class="flex gap-3">
+                        <button onclick="exportToExcel()" class="btn-secondary px-6 py-3 rounded-xl font-bold"><i class="fas fa-file-excel ml-2"></i>Excel</button>
+                        <button onclick="logout()" class="btn-danger px-6 py-3 rounded-xl font-bold"><i class="fas fa-sign-out-alt ml-2"></i>خروج</button>
+                    </div>
+                </div>
+            </div>
+            <div class="teacher-split-screen">
+                <div class="student-list-panel">
+                    <div class="search-box mb-4">
+                        <i class="fas fa-search" style="position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); color: #8B4513;"></i>
+                        <input type="text" id="teacher-search" class="input-field w-full p-3 rounded-xl" placeholder="ابحث بالاسم..." oninput="filterStudents()" style="padding-right: 3rem;">
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">📋 قائمة الطلاب</h3>
+                    <div id="teacher-student-list"></div>
+                </div>
+                <div class="student-detail-panel" id="student-detail-panel">
+                    <div class="text-center text-gray-500 py-20">
+                        <i class="fas fa-user-graduate text-6xl mb-4 opacity-30"></i>
+                        <p class="text-xl">اختر طالباً من القائمة لعرض إجاباته</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== Registrar Login Screen ========== -->
+    <div id="registrar-login-screen" class="hidden-screen min-h-screen flex items-center justify-center p-4">
+        <div class="glass-card max-w-md w-full">
+            <div class="text-center mb-6">
+                <div class="w-24 h-24 bg-gradient-to-br from-orange-500 to-orange-700 rounded-full flex items-center justify-center mx-auto mb-4 text-5xl">📋</div>
+                <h2 class="text-3xl font-black text-gray-800 mb-2">مسؤول القبول والتسجيل</h2>
+                <p class="text-gray-600">عرض جميع الطلاب</p>
+            </div>
+            <div class="space-y-4">
+                <input type="text" id="r-username" class="input-field" placeholder="اسم المستخدم">
+                <input type="password" id="r-password" class="input-field" placeholder="كلمة المرور">
+                <div id="r-error" class="hidden bg-red-50 border-2 border-red-300 text-red-700 p-3 rounded-xl text-sm font-bold"></div>
+                <div class="flex gap-3">
+                    <button onclick="backToRole()" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-4 rounded-xl">رجوع</button>
+                    <button onclick="loginRegistrar()" class="flex-1 btn-primary text-white font-bold py-4 rounded-xl">دخول</button>
+                </div>
+                <div class="text-center text-xs text-gray-500 bg-gray-50 p-2 rounded-lg">تجريبي: registrar / registrar123</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== Registrar Panel ========== -->
+    <div id="registrar-panel" class="hidden-screen min-h-screen p-4 md:p-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="glass-card p-6 mb-6">
+                <div class="flex justify-between items-center flex-wrap gap-4">
+                    <div>
+                        <h2 class="text-3xl font-black text-gray-800">📋 لوحة مسؤول القبول والتسجيل</h2>
+                        <p class="text-gray-600 mt-1">عرض جميع الطلاب المسجلين</p>
+                    </div>
+                    <div class="flex gap-3">
+                        <button onclick="exportToExcel()" class="btn-secondary px-6 py-3 rounded-xl font-bold"><i class="fas fa-file-excel ml-2"></i>تصدير Excel</button>
+                        <button onclick="logout()" class="btn-danger px-6 py-3 rounded-xl font-bold"><i class="fas fa-sign-out-alt ml-2"></i>خروج</button>
+                    </div>
+                </div>
+            </div>
+            <div class="grid md:grid-cols-4 gap-4 mb-6">
+                <div class="stat-card bg-gradient-to-br from-blue-500 to-blue-700 text-white p-5 shadow-lg rounded-2xl">
+                    <div class="text-3xl font-black" id="r-total">0</div>
+                    <p class="text-blue-100 text-sm">إجمالي الطلاب</p>
+                </div>
+                <div class="stat-card bg-gradient-to-br from-green-500 to-green-700 text-white p-5 shadow-lg rounded-2xl">
+                    <div class="text-3xl font-black" id="r-passed">0</div>
+                    <p class="text-green-100 text-sm">مقبول</p>
+                </div>
+                <div class="stat-card bg-gradient-to-br from-red-500 to-red-700 text-white p-5 shadow-lg rounded-2xl">
+                    <div class="text-3xl font-black" id="r-failed">0</div>
+                    <p class="text-red-100 text-sm">غير مقبول</p>
+                </div>
+                <div class="stat-card bg-gradient-to-br from-amber-500 to-amber-700 text-white p-5 shadow-lg rounded-2xl">
+                    <div class="text-3xl font-black" id="r-pending">0</div>
+                    <p class="text-amber-100 text-sm">بانتظار التصحيح</p>
+                </div>
+            </div>
+            <div class="glass-card p-6 overflow-x-auto">
+                <h3 class="text-2xl font-bold text-gray-800 mb-4">📋 جميع الطلاب المسجلين</h3>
+                <table class="w-full">
+                    <thead class="bg-amber-50 border-b-2 border-amber-200">
+                        <tr>
+                            <th class="p-3 text-right font-bold text-gray-700">#</th>
+                            <th class="p-3 text-right font-bold text-gray-700">الاسم</th>
+                            <th class="p-3 text-right font-bold text-gray-700">المرحلة</th>
+                            <th class="p-3 text-right font-bold text-gray-700">الإنجليزي</th>
+                            <th class="p-3 text-right font-bold text-gray-700">الرياضيات</th>
+                            <th class="p-3 text-right font-bold text-gray-700">العربي</th>
+                            <th class="p-3 text-right font-bold text-gray-700">المجموع</th>
+                            <th class="p-3 text-right font-bold text-gray-700">الحالة</th>
+                        </tr>
+                    </thead>
+                    <tbody id="r-students-table" class="divide-y divide-gray-200"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== Admin Login Screen ========== -->
+    <div id="admin-login-screen" class="hidden-screen min-h-screen flex items-center justify-center p-4">
+        <div class="glass-card max-w-md w-full">
+            <div class="text-center mb-6">
+                <div class="w-24 h-24 bg-gradient-to-br from-purple-500 to-purple-700 rounded-full flex items-center justify-center mx-auto mb-4 text-5xl">👔</div>
+                <h2 class="text-3xl font-black text-gray-800 mb-2">مدير النظام</h2>
+                <p class="text-gray-600">منطقة إدارية محمية</p>
+            </div>
+            <div class="space-y-4">
+                <input type="text" id="a-username" class="input-field" placeholder="اسم المستخدم">
+                <input type="password" id="a-password" class="input-field" placeholder="كلمة المرور">
+                <div id="a-error" class="hidden bg-red-50 border-2 border-red-300 text-red-700 p-3 rounded-xl text-sm font-bold"></div>
+                <div class="flex gap-3">
+                    <button onclick="backToRole()" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-4 rounded-xl">رجوع</button>
+                    <button onclick="loginAdmin()" class="flex-1 btn-primary text-white font-bold py-4 rounded-xl">دخول</button>
+                </div>
+                <div class="text-center text-xs text-gray-500 bg-gray-50 p-2 rounded-lg">تجريبي: admin / admin123</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== Admin Dashboard ========== -->
+    <div id="admin-dashboard" class="hidden-screen min-h-screen p-4 md:p-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="glass-card p-6 mb-6">
+                <div class="flex justify-between items-center flex-wrap gap-4">
+                    <div>
+                        <h2 class="text-3xl font-black text-gray-800">📊 داشبورد مدير النظام</h2>
+                        <p class="text-gray-600 mt-1">نظرة شاملة على أداء المنصة</p>
+                    </div>
+                    <div class="flex gap-3">
+                        <button onclick="exportToExcel()" class="btn-secondary px-6 py-3 rounded-xl font-bold"><i class="fas fa-file-excel ml-2"></i>Excel</button>
+                        <button onclick="logout()" class="btn-danger px-6 py-3 rounded-xl font-bold"><i class="fas fa-sign-out-alt ml-2"></i>خروج</button>
+                    </div>
+                </div>
+            </div>
+            <div class="grid md:grid-cols-4 gap-4 mb-6">
+                <div class="stat-card bg-gradient-to-br from-blue-500 to-blue-700 text-white p-5 shadow-lg rounded-2xl">
+                    <div class="text-3xl font-black" id="a-total">0</div>
+                    <p class="text-blue-100 text-sm">إجمالي الطلاب</p>
+                </div>
+                <div class="stat-card bg-gradient-to-br from-green-500 to-green-700 text-white p-5 shadow-lg rounded-2xl">
+                    <div class="text-3xl font-black" id="a-passed">0</div>
+                    <p class="text-green-100 text-sm">مقبول</p>
+                </div>
+                <div class="stat-card bg-gradient-to-br from-red-500 to-red-700 text-white p-5 shadow-lg rounded-2xl">
+                    <div class="text-3xl font-black" id="a-failed">0</div>
+                    <p class="text-red-100 text-sm">غير مقبول</p>
+                </div>
+                <div class="stat-card bg-gradient-to-br from-amber-500 to-amber-700 text-white p-5 shadow-lg rounded-2xl">
+                    <div class="text-3xl font-black" id="a-rate">0%</div>
+                    <p class="text-amber-100 text-sm">نسبة القبول</p>
+                </div>
+            </div>
+            <div class="grid md:grid-cols-2 gap-6 mb-6">
+                <div class="chart-container">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">📊 توزيع النتائج</h3>
+                    <canvas id="resultsChart"></canvas>
+                </div>
+                <div class="chart-container">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">📈 أداء المواد</h3>
+                    <canvas id="subjectsChart"></canvas>
+                </div>
+            </div>
+            <div class="glass-card p-6 overflow-x-auto">
+                <h3 class="text-xl font-bold text-gray-800 mb-4"> جميع الطلاب</h3>
+                <table class="w-full">
+                    <thead class="bg-amber-50 border-b-2 border-amber-200">
+                        <tr>
+                            <th class="p-3 text-right font-bold text-gray-700">#</th>
+                            <th class="p-3 text-right font-bold text-gray-700">الاسم</th>
+                            <th class="p-3 text-right font-bold text-gray-700">المرحلة</th>
+                            <th class="p-3 text-right font-bold text-gray-700">الإنجليزي</th>
+                            <th class="p-3 text-right font-bold text-gray-700">الرياضيات</th>
+                            <th class="p-3 text-right font-bold text-gray-700">العربي</th>
+                            <th class="p-3 text-right font-bold text-gray-700">المجموع</th>
+                            <th class="p-3 text-right font-bold text-gray-700">الحالة</th>
+                        </tr>
+                    </thead>
+                    <tbody id="a-students-table" class="divide-y divide-gray-200"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== Exam Screen ========== -->
+    <div id="exam-screen" class="hidden-screen min-h-screen p-4">
+        <div class="max-w-6xl mx-auto">
+            <div class="glass-card p-6 mb-6">
+                <div class="flex justify-between items-center flex-wrap gap-6">
+                    <div class="flex items-center gap-6">
+                        <div class="w-20 h-20 bg-gradient-to-br from-amber-600 to-amber-700 rounded-full flex items-center justify-center text-white text-4xl shadow-2xl">📝</div>
+                        <div>
+                            <h2 id="exam-subject" class="text-3xl font-bold text-gray-800"></h2>
+                            <p class="text-gray-600 text-lg">
+                                السؤال <span id="q-num" class="font-bold text-amber-700 text-2xl">1</span> من <span id="q-total" class="font-bold text-amber-700 text-2xl">5</span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="text-left">
+                        <p class="text-sm text-gray-600">الطالب:</p>
+                        <p id="exam-student-name" class="font-bold text-amber-700 text-xl"></p>
+                    </div>
+                </div>
+            </div>
+            <div class="glass-card p-4 mb-6">
+                <div class="flex justify-center gap-4 flex-wrap" id="subject-tabs"></div>
+            </div>
+            <div class="glass-card p-4 mb-6">
+                <div class="progress-container">
+                    <div id="progress-bar" class="progress-bar" style="width: 0%"></div>
+                </div>
+            </div>
+            <div id="question-area" class="glass-card p-8 mb-6"></div>
+            <div class="glass-card p-6 flex justify-between gap-4 flex-wrap">
+                <button onclick="prevQuestion()" id="btn-prev" class="bg-gray-200 hover:bg-gray-300 disabled:opacity-40 px-8 py-4 rounded-xl font-bold text-lg transition-all" disabled>
+                    <i class="fas fa-arrow-right ml-3"></i>السابق
+                </button>
+                <button onclick="nextQuestion()" id="btn-next" class="btn-primary text-white px-8 py-4 rounded-xl font-bold text-lg shadow-xl">
+                    التالي<i class="fas fa-arrow-left mr-3"></i>
+                </button>
+                <button onclick="submitExam()" id="btn-submit" class="hidden btn-secondary text-white px-8 py-4 rounded-xl font-bold text-lg shadow-xl">
+                    تسليم الاختبار <i class="fas fa-check-circle mr-3"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== Results Screen ========== -->
+    <div id="results-screen" class="hidden-screen min-h-screen p-4">
+        <div class="max-w-6xl mx-auto">
+            <div class="glass-card p-12 text-center">
+                <div class="w-40 h-40 bg-gradient-to-br from-amber-600 to-amber-700 rounded-full flex items-center justify-center mx-auto mb-6 shadow-2xl text-8xl">🏆</div>
+                <h2 class="text-5xl font-black text-gray-800 mb-3">نتيجة الاختبار</h2>
+                <p id="result-student-name" class="text-2xl text-amber-700 font-bold mb-8"></p>
+                <div id="result-subjects" class="grid md:grid-cols-3 gap-6 mb-8"></div>
+                <div class="bg-gradient-to-r from-amber-50 to-orange-50 rounded-3xl p-8 mb-8 border-3 border-amber-200">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-6">النتيجة الإجمالية</h3>
+                    <div class="grid grid-cols-3 gap-6">
+                        <div>
+                            <div class="text-5xl font-black text-amber-700" id="result-total">0</div>
+                            <p class="text-gray-600 text-base mt-2">المجموع</p>
+                        </div>
+                        <div>
+                            <div class="text-5xl font-black text-amber-700" id="result-percentage">0%</div>
+                            <p class="text-gray-600 text-base mt-2">النسبة</p>
+                        </div>
+                        <div>
+                            <div id="result-status" class="text-3xl font-black"></div>
+                            <p class="text-gray-600 text-base mt-2">الحالة النهائية</p>
+                        </div>
+                    </div>
+                </div>
+                <div id="result-badges" class="mb-8"></div>
+                <div id="result-message" class="mb-8 p-6 rounded-2xl font-bold text-2xl"></div>
+                <div class="flex gap-4">
+                    <button onclick="downloadPDF()" class="btn-gold text-white px-8 py-5 rounded-xl text-xl font-bold flex-1 shadow-2xl" style="background: linear-gradient(135deg, #FFD700, #FFA500);">
+                        <i class="fas fa-file-pdf ml-3"></i>تحميل الشهادة PDF
+                    </button>
+                    <button onclick="location.reload()" class="btn-primary text-white px-8 py-5 rounded-xl text-xl font-bold flex-1 shadow-2xl">
+                        <i class="fas fa-redo ml-3"></i>اختبار جديد
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
 </body>
 <script src="questions.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
     // EmailJS Configuration
@@ -414,6 +771,7 @@
     let currentBranch = '', currentRole = '', currentStudent = {}, currentSubject = '', currentQIndex = 0;
     let questions = [], answers = {}, questionScores = {}, subjectScores = { english: 0, math: 0, arabic: 0 };
     let examSubjects = [], allStudents = JSON.parse(localStorage.getItem('exam_students')) || [];
+    let charts = {};
 
     const gradeOptions = {
         'child-gate': [
@@ -440,6 +798,7 @@
     window.addEventListener('load', () => {
         setTimeout(() => {
             document.getElementById('welcome-screen').style.opacity = '0';
+            document.getElementById('welcome-screen').style.transition = 'opacity 0.5s';
             setTimeout(() => {
                 document.getElementById('welcome-screen').classList.add('hidden-screen');
                 document.getElementById('branch-screen').classList.remove('hidden-screen');
@@ -516,7 +875,7 @@
         const noticeText = document.getElementById('subjects-notice-text');
         if (nationality) {
             notice.classList.remove('hidden');
-            noticeText.textContent = testsArabic ? '📚 سيختبر: الإنجليزي + الرياضيات + العربي' : '📚 سيختبر: الإنجليزي + الرياضيات فقط';
+            noticeText.textContent = testsArabic ? ' سيختبر: الإنجليزي + الرياضيات + العربي' : '📚 سيختبر: الإنجليزي + الرياضيات فقط';
         } else { 
             notice.classList.add('hidden'); 
         }
@@ -558,14 +917,13 @@
         setTimeout(() => notification.remove(), 3000);
     }
 
-    // باقي الدوال (نفس الكود السابق)
     function startSubject(subject) {
         currentSubject = subject;
         currentQIndex = 0;
         answers = {};
         questionScores = {};
         
-        const subjectNames = { english: 'اللغة الإنجليزية 🇬🇧', math: 'الرياضيات 🔢', arabic: 'اللغة العربية 🇸🇦' };
+        const subjectNames = { english: 'اللغة الإنجليزية 🇬', math: 'الرياضيات 🔢', arabic: 'اللغة العربية 🇸' };
         document.getElementById('exam-subject').textContent = subjectNames[subject];
         updateSubjectTabs();
         loadQuestions(subject);
@@ -575,7 +933,7 @@
 
     function updateSubjectTabs() {
         const tabsContainer = document.getElementById('subject-tabs');
-        const subjectNames = { english: '🇬🇧 الإنجليزي', math: '🔢 الرياضيات', arabic: '🇸🇦 العربي' };
+        const subjectNames = { english: '🇬🇧 الإنجليزي', math: ' الرياضيات', arabic: '🇸🇦 العربي' };
         tabsContainer.innerHTML = examSubjects.map(subj => {
             let className = 'subject-tab ';
             if (subj === currentSubject) { className += 'active'; } 
@@ -597,14 +955,27 @@
                     { question: "2 + 3 = ?", options: ["4", "5", "6"], correct: 1 },
                     { question: "7 - 2 = ?", options: ["4", "5", "6"], correct: 1 },
                     { question: "أي عدد أكبر؟", options: ["5", "8", "3"], correct: 1 }
-                ], needs_manual: false }
+                ], needs_manual: false },
+                { id: "math_2", type: "mcq", question: "اختر الإجابة الصحيحة:", marks: 10, subQuestions: [
+                    { question: "4 × 2 = ?", options: ["6", "8", "10"], correct: 1 },
+                    { question: "10 ÷ 2 = ?", options: ["4", "5", "6"], correct: 1 },
+                    { question: "9 - 4 = ?", options: ["4", "5", "6"], correct: 1 }
+                ], needs_manual: false },
+                { id: "math_3", type: "upload", question: "حل المسائل التالية في ورقة ثم ارفع الصورة:", marks: 10, subQuestions: ["15 + 27 = ?", "45 - 18 = ?", "6 × 7 = ?"], needs_manual: true }
             ];
         } else if (subject === 'arabic') {
             questions = [
                 { id: "arabic_1", type: "mcq", question: "اختر الإجابة الصحيحة:", marks: 10, subQuestions: [
                     { question: "الحرف الأول من 'تفاحة':", options: ["ت", "ف", "ا"], correct: 0 },
-                    { question: "الحرف الأول من 'عنب':", options: ["ن", "ب", "ع"], correct: 2 }
-                ], needs_manual: false }
+                    { question: "الحرف الأول من 'عنب':", options: ["ن", "ب", "ع"], correct: 2 },
+                    { question: "اختر الحرف المشابه لـ 'م':", options: ["ن", "م", "هـ"], correct: 1 }
+                ], needs_manual: false },
+                { id: "arabic_2", type: "mcq", question: "اختر الإجابة الصحيحة:", marks: 10, subQuestions: [
+                    { question: "الحرف الأول من 'قلم':", options: ["ل", "م", "ق"], correct: 2 },
+                    { question: "الحرف الأول من 'كتاب':", options: ["ك", "ت", "ا"], correct: 0 },
+                    { question: "اختر الحرف المشابه لـ 'ب':", options: ["ت", "ب", "ث"], correct: 1 }
+                ], needs_manual: false },
+                { id: "arabic_3", type: "upload", question: "اكتب الحروف العربية في ورقة ثم ارفع الصورة:", marks: 10, subQuestions: ["ا ب ت ث ج ح خ", "د ذ ر ز س ش ص"], needs_manual: true }
             ];
         } else { questions = []; }
     }
@@ -819,7 +1190,7 @@
             '<span class="badge-danger" style="font-size: 1.2rem; padding: 0.5rem 2rem;">غير مقبول ❌</span>';
         
         const container = document.getElementById('result-subjects');
-        const subjectNames = { english: '🇬🇧 اللغة الإنجليزية', math: '🔢 الرياضيات', arabic: '🇸 اللغة العربية' };
+        const subjectNames = { english: '🇬🇧 اللغة الإنجليزية', math: '🔢 الرياضيات', arabic: '🇦 اللغة العربية' };
         container.innerHTML = Object.entries(data.scores).map(([subj, score]) => {
             const passed = score >= PASSING_SCORE;
             const statusText = passed ? 'مقبول ✅' : 'غير مقبول ❌';
@@ -829,7 +1200,7 @@
         const msgBox = document.getElementById('result-message');
         if (data.passed) { 
             msgBox.className = 'mb-6 p-4 rounded-xl font-bold text-xl bg-green-100 text-green-800 border-2 border-green-300'; 
-            msgBox.innerHTML = '🎉 لقد اجتزت الاختبار بنجاح - تم قبولك'; 
+            msgBox.innerHTML = ' لقد اجتزت الاختبار بنجاح - تم قبولك'; 
         } else { 
             msgBox.className = 'mb-6 p-4 rounded-xl font-bold text-xl bg-red-100 text-red-800 border-2 border-red-300'; 
             msgBox.innerHTML = 'لم تجتز الاختبار - يرجى المحاولة مرة أخرى'; 
@@ -862,7 +1233,7 @@
             document.getElementById('teacher-login-screen').classList.add('hidden-screen'); 
             document.getElementById('teacher-panel').classList.remove('hidden-screen'); 
             updateTeacherPanel(); 
-            showNotification('مرحباً بك في لوحة المعلم 👨‍', 'success'); 
+            showNotification('مرحباً بك في لوحة المعلم 👨‍🏫', 'success'); 
         } else { 
             errBox.textContent = 'اسم المستخدم أو كلمة المرور غير صحيحة'; 
             errBox.classList.remove('hidden'); 
@@ -876,7 +1247,7 @@
             return; 
         }
         listContainer.innerHTML = allStudents.map((s, i) => `
-            <div class="student-item" onclick="showStudentDetail('${s.id}')" style="padding: 1rem; border-radius: 12px; cursor: pointer; transition: all 0.3s; border: 2px solid transparent; margin-bottom: 0.5rem; background: white;">
+            <div class="student-item" onclick="showStudentDetail('${s.id}')">
                 <div class="flex justify-between items-center">
                     <div>
                         <div class="font-bold text-gray-800 text-lg">${s.name}</div>
@@ -889,6 +1260,15 @@
                 </div>
             </div>
         `).join('');
+    }
+
+    function filterStudents() {
+        const searchTerm = document.getElementById('teacher-search').value.toLowerCase();
+        const items = document.querySelectorAll('.student-item');
+        items.forEach(item => {
+            const text = item.textContent.toLowerCase();
+            item.style.display = text.includes(searchTerm) ? 'block' : 'none';
+        });
     }
 
     function showStudentDetail(studentId) {
@@ -923,6 +1303,117 @@
         `;
         document.querySelectorAll('.student-item').forEach(item => item.classList.remove('active'));
         event.currentTarget.classList.add('active');
+    }
+
+    function loginRegistrar() {
+        const user = document.getElementById('r-username').value;
+        const pass = document.getElementById('r-password').value;
+        const errBox = document.getElementById('r-error');
+        if (user === 'registrar' && pass === 'registrar123') { 
+            errBox.classList.add('hidden'); 
+            document.getElementById('registrar-login-screen').classList.add('hidden-screen'); 
+            document.getElementById('registrar-panel').classList.remove('hidden-screen'); 
+            updateRegistrarPanel(); 
+            showNotification('مرحباً بك في لوحة مسؤول القبول 📋', 'success'); 
+        } else { 
+            errBox.textContent = 'اسم المستخدم أو كلمة المرور غير صحيحة'; 
+            errBox.classList.remove('hidden'); 
+        }
+    }
+
+    function updateRegistrarPanel() {
+        document.getElementById('r-total').textContent = allStudents.length;
+        const passed = allStudents.filter(s => s.passed).length;
+        const failed = allStudents.length - passed;
+        const pending = allStudents.filter(s => Object.values(s.scores).some(score => score === 0)).length;
+        document.getElementById('r-passed').textContent = passed;
+        document.getElementById('r-failed').textContent = failed;
+        document.getElementById('r-pending').textContent = pending;
+        const tbody = document.getElementById('r-students-table');
+        if (allStudents.length === 0) { 
+            tbody.innerHTML = '<tr><td colspan="8" class="p-8 text-center text-gray-500">لا يوجد طلاب حتى الآن</td></tr>'; 
+            return; 
+        }
+        tbody.innerHTML = allStudents.map((s, i) => {
+            const arabicScore = s.testsArabic ? (s.scores.arabic || '-') : '-';
+            const statusClass = s.passed ? 'badge-success' : 'badge-danger';
+            const statusText = s.passed ? 'مقبول ✅' : 'غير مقبول ❌';
+            return `<tr class="hover:bg-gray-50"><td class="p-3">${i + 1}</td><td class="p-3 font-bold">${s.name}</td><td class="p-3">${s.grade}</td><td class="p-3 font-bold text-amber-700">${s.scores.english || 0}/30</td><td class="p-3 font-bold text-blue-600">${s.scores.math || 0}/30</td><td class="p-3 font-bold text-green-600">${arabicScore}</td><td class="p-3 font-bold">${s.total}/${s.maxScore}</td><td class="p-3"><span class="${statusClass}">${statusText}</span></td></tr>`;
+        }).join('');
+    }
+
+    function loginAdmin() {
+        const user = document.getElementById('a-username').value;
+        const pass = document.getElementById('a-password').value;
+        const errBox = document.getElementById('a-error');
+        if (user === 'admin' && pass === 'admin123') { 
+            errBox.classList.add('hidden'); 
+            document.getElementById('admin-login-screen').classList.add('hidden-screen'); 
+            document.getElementById('admin-dashboard').classList.remove('hidden-screen'); 
+            updateAdminDashboard(); 
+            showNotification('مرحباً بك في داشبورد المدير 📊', 'success'); 
+        } else { 
+            errBox.textContent = 'بيانات الدخول غير صحيحة'; 
+            errBox.classList.remove('hidden'); 
+        }
+    }
+
+    function updateAdminDashboard() {
+        const total = allStudents.length;
+        const passed = allStudents.filter(s => s.passed).length;
+        const failed = total - passed;
+        const rate = total > 0 ? Math.round((passed / total) * 100) : 0;
+        document.getElementById('a-total').textContent = total;
+        document.getElementById('a-passed').textContent = passed;
+        document.getElementById('a-failed').textContent = failed;
+        document.getElementById('a-rate').textContent = rate + '%';
+        
+        const tbody = document.getElementById('a-students-table');
+        tbody.innerHTML = allStudents.map((s, i) => {
+            const arabicScore = s.testsArabic ? (s.scores.arabic || '-') : '-';
+            const statusClass = s.passed ? 'badge-success' : 'badge-danger';
+            const statusText = s.passed ? 'مقبول ✅' : 'غير مقبول ❌';
+            return `<tr class="hover:bg-gray-50"><td class="p-3">${i + 1}</td><td class="p-3 font-bold">${s.name}</td><td class="p-3">${s.grade}</td><td class="p-3 font-bold text-amber-700">${s.scores.english || 0}</td><td class="p-3 font-bold text-blue-600">${s.scores.math || 0}</td><td class="p-3 font-bold text-green-600">${arabicScore}</td><td class="p-3 font-bold">${s.total}</td><td class="p-3"><span class="${statusClass}">${statusText}</span></td></tr>`;
+        }).join('');
+        
+        // Charts
+        setTimeout(() => {
+            if (charts.results) charts.results.destroy();
+            if (charts.subjects) charts.subjects.destroy();
+            
+            const ctx1 = document.getElementById('resultsChart').getContext('2d');
+            charts.results = new Chart(ctx1, {
+                type: 'doughnut',
+                data: { 
+                    labels: ['مقبول', 'غير مقبول'], 
+                    datasets: [{ data: [passed, failed], backgroundColor: ['#10B981', '#EF4444'] }] 
+                },
+                options: { 
+                    responsive: true, 
+                    plugins: { legend: { position: 'bottom' } }
+                }
+            });
+            
+            const ctx2 = document.getElementById('subjectsChart').getContext('2d');
+            const avgEnglish = total > 0 ? allStudents.reduce((sum, s) => sum + (s.scores.english || 0), 0) / total : 0;
+            const avgMath = total > 0 ? allStudents.reduce((sum, s) => sum + (s.scores.math || 0), 0) / total : 0;
+            const avgArabic = total > 0 ? allStudents.reduce((sum, s) => sum + (s.scores.arabic || 0), 0) / total : 0;
+            charts.subjects = new Chart(ctx2, {
+                type: 'bar',
+                data: { 
+                    labels: ['الإنجليزي', 'الرياضيات', 'العربي'], 
+                    datasets: [{ 
+                        label: 'متوسط الدرجات', 
+                        data: [avgEnglish, avgMath, avgArabic], 
+                        backgroundColor: ['#FF6B9D', '#00BBF9', '#10B981'] 
+                    }] 
+                },
+                options: { 
+                    responsive: true, 
+                    scales: { y: { beginAtZero: true, max: 30 } }
+                }
+            });
+        }, 100);
     }
 
     function exportToExcel() {
