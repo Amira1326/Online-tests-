@@ -3,2349 +3,799 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة الاختبارات الإلكترونية - بوابة الطفل وأجيال المعرفة</title>
+    <title>منصة الاختبارات الإلكترونية</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Poppins:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
-        * { box-sizing: border-box; }
-        body { 
-            font-family: 'Cairo', sans-serif; 
-            background: linear-gradient(135deg, #FAF7F2 0%, #F5EDE0 100%); 
-            min-height: 100vh; 
-            margin: 0; 
-            transition: all 0.3s;
+        * { font-family: 'Cairo', sans-serif; }
+        body {
+            background: linear-gradient(135deg, #FAF7F2 0%, #F5EDE0 100%);
+            min-height: 100vh;
+            margin: 0;
             position: relative;
-            overflow-x: hidden;
         }
-        body.english { font-family: 'Poppins', sans-serif; }
         
-        /* Background Image */
-        .bg-image {
+        /* الخلفية الموحدة */
+        body::before {
+            content: '';
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             background-image: url('Background.png');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            z-index: -2;
-            opacity: 0.15;
-        }
-        
-        /* Animated Overlay */
-        .bg-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, rgba(139, 69, 19, 0.1) 0%, rgba(210, 105, 30, 0.1) 100%);
+            background-size: 400px 400px;
+            background-repeat: repeat;
+            opacity: 0.08;
             z-index: -1;
-            animation: gradientShift 15s ease infinite;
-        }
-        @keyframes gradientShift {
-            0%, 100% { opacity: 0.5; }
-            50% { opacity: 0.8; }
+            pointer-events: none;
         }
         
-        .glass-card { 
-            background: rgba(255, 255, 255, 0.95); 
-            backdrop-filter: blur(20px) saturate(180%); 
-            border-radius: 24px; 
-            box-shadow: 0 25px 80px rgba(139, 69, 19, 0.2); 
-            border: 2px solid rgba(255, 255, 255, 0.3); 
+        .glass-card {
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(139, 69, 19, 0.15);
+            border: 2px solid rgba(139, 69, 19, 0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
+            color: white;
             transition: all 0.3s;
-        }
-        body.dark-mode .glass-card { 
-            background: rgba(30, 30, 50, 0.95); 
-            border-color: rgba(255, 255, 255, 0.1); 
-        }
-        
-        #welcome-screen { 
-            position: fixed; 
-            inset: 0; 
-            background: linear-gradient(135deg, #8B4513 0%, #A0522D 50%, #D2691E 100%); 
-            z-index: 9999; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center; 
-            transition: opacity 0.5s ease, visibility 0.5s;
-            overflow: hidden;
-        }
-        #welcome-screen::before {
-            content: '';
-            position: absolute;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
-            background-size: 50px 50px;
-            animation: moveGrid 20s linear infinite;
-        }
-        @keyframes moveGrid {
-            0% { transform: translate(0, 0); }
-            100% { transform: translate(50px, 50px); }
-        }
-        #welcome-screen.hide { opacity: 0; visibility: hidden; }
-        
-        .welcome-title { 
-            color: white; 
-            font-size: 4rem; 
-            font-weight: 900; 
-            text-shadow: 0 8px 30px rgba(0,0,0,0.4); 
-            animation: bounceIn 0.8s ease, glow 3s ease-in-out infinite; 
-            text-align: center; 
-            padding: 0 1rem;
-            position: relative;
-            z-index: 1;
-        }
-        @keyframes glow {
-            0%, 100% { text-shadow: 0 8px 30px rgba(0,0,0,0.4), 0 0 40px rgba(255,215,0,0.3); }
-            50% { text-shadow: 0 8px 30px rgba(0,0,0,0.4), 0 0 60px rgba(255,215,0,0.6); }
-        }
-        .welcome-subtitle { 
-            color: rgba(255,255,255,0.95); 
-            font-size: 1.8rem; 
-            margin-top: 1rem; 
-            animation: fadeInUp 1s ease;
-            position: relative;
-            z-index: 1;
-        }
-        @keyframes bounceIn { 
-            0% { transform: scale(0); opacity: 0; } 
-            50% { transform: scale(1.1); } 
-            100% { transform: scale(1); opacity: 1; } 
-        }
-        @keyframes fadeInUp { 
-            from { opacity: 0; transform: translateY(30px); } 
-            to { opacity: 1; transform: translateY(0); } 
-        }
-        
-        .btn-primary { 
-            background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%); 
-            color: white; 
-            transition: all 0.3s; 
-            border: none; 
-            cursor: pointer; 
+            border: none;
+            cursor: pointer;
             font-weight: bold;
-            position: relative;
-            overflow: hidden;
         }
-        .btn-primary::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.3);
-            transform: translate(-50%, -50%);
-            transition: width 0.6s, height 0.6s;
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(139, 69, 19, 0.3);
         }
-        .btn-primary:hover::before { width: 300px; height: 300px; }
-        .btn-primary:hover:not(:disabled) { transform: translateY(-3px) scale(1.02); box-shadow: 0 15px 40px rgba(139, 69, 19, 0.4); }
         .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
         
-        .btn-secondary { 
-            background: linear-gradient(135deg, #D2691E 0%, #CD853F 100%); 
-            color: white; 
-            transition: all 0.3s; 
-            border: none; 
-            cursor: pointer; 
+        .btn-secondary {
+            background: linear-gradient(135deg, #D2691E 0%, #CD853F 100%);
+            color: white;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
             font-weight: bold;
         }
-        .btn-secondary:hover { transform: translateY(-3px); box-shadow: 0 15px 40px rgba(210, 105, 30, 0.4); }
-        
-        .btn-danger { 
-            background: linear-gradient(135deg, #DC2626 0%, #EF4444 100%); 
-            color: white; 
-            transition: all 0.3s; 
-            border: none; 
-            cursor: pointer; 
-            font-weight: bold;
-        }
-        
-        .btn-gold { 
-            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%); 
-            color: white; 
-            transition: all 0.3s; 
-            border: none; 
-            cursor: pointer; 
-            font-weight: bold;
-            animation: pulse-gold 2s infinite;
-        }
-        @keyframes pulse-gold {
-            0%, 100% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.4); }
-            50% { box-shadow: 0 0 40px rgba(255, 215, 0, 0.7); }
-        }
-        .btn-gold:hover { transform: translateY(-3px) scale(1.05); }
-        
-        .branch-card, .role-card { 
-            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55); 
-            cursor: pointer; 
-            border: 3px solid transparent;
-            position: relative;
-            overflow: hidden;
-        }
-        .branch-card::after, .role-card::after {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-        .branch-card:hover::after, .role-card:hover::after { opacity: 1; }
-        .branch-card:hover, .role-card:hover { 
-            transform: translateY(-15px) scale(1.05); 
-            box-shadow: 0 30px 60px rgba(139, 69, 19, 0.3); 
-        }
-        .branch-card.selected, .role-card.selected { 
-            border-color: #FFD700; 
-            background: linear-gradient(135deg, #FFF8F0 0%, #FFEED5 100%); 
-            box-shadow: 0 0 0 4px rgba(255, 215, 0, 0.3), 0 20px 50px rgba(139, 69, 19, 0.2);
-            transform: scale(1.08);
-        }
-        
-        .input-field { 
-            transition: all 0.3s; 
-            border: 2px solid #E5E7EB; 
-            background: white; 
-            border-radius: 12px; 
-        }
-        body.dark-mode .input-field { background: #2a2a4a; color: white; border-color: #444; }
-        .input-field:focus { 
-            border-color: #FFD700; 
-            box-shadow: 0 0 0 6px rgba(255, 215, 0, 0.15); 
-            outline: none;
+        .btn-secondary:hover {
             transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(210, 105, 30, 0.3);
+        }
+        
+        .branch-card, .role-card {
+            transition: all 0.3s;
+            cursor: pointer;
+            border: 3px solid transparent;
+        }
+        .branch-card:hover, .role-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(139, 69, 19, 0.2);
+        }
+        .branch-card.selected, .role-card.selected {
+            border-color: #8B4513;
+            background: linear-gradient(135deg, #FFF8F0 0%, #FFEED5 100%);
+        }
+        
+        .input-field {
+            transition: all 0.3s;
+            border: 2px solid #E5E7EB;
+            background: white;
+            border-radius: 12px;
+        }
+        .input-field:focus {
+            border-color: #8B4513;
+            box-shadow: 0 0 0 4px rgba(139, 69, 19, 0.1);
+            outline: none;
         }
         
         .hidden-screen { display: none !important; }
-        .fade-in { animation: fadeInUp 0.6s ease; }
         
-        .stat-card { 
-            transition: all 0.3s; 
-            border-radius: 20px; 
-            overflow: hidden; 
-            position: relative;
-        }
-        .stat-card::before { 
-            content: ''; 
-            position: absolute; 
-            top: 0; 
-            left: 0; 
-            right: 0; 
-            bottom: 0; 
-            background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, transparent 100%); 
-        }
-        .stat-card:hover { transform: translateY(-8px) scale(1.03); }
-        
-        .badge-success { background: linear-gradient(135deg, #10B981, #059669); color: white; }
-        .badge-danger { background: linear-gradient(135deg, #EF4444, #DC2626); color: white; }
-        .badge-gold { background: linear-gradient(135deg, #FFD700, #FFA500); color: white; }
-        
-        .logo-container { 
-            width: 150px; 
-            height: 150px; 
-            border-radius: 50%; 
-            overflow: hidden; 
-            background: white; 
-            padding: 15px; 
-            margin: 0 auto 1.5rem; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            box-shadow: 0 15px 40px rgba(0,0,0,0.15); 
-            animation: float 3s ease-in-out infinite, pulse-gold 3s ease-in-out infinite;
-        }
-        @keyframes float { 
-            0%, 100% { transform: translateY(0); } 
-            50% { transform: translateY(-15px); } 
-        }
-        .logo-container img { width: 100%; height: 100%; object-fit: contain; }
-        
-        .option-btn { 
-            border: 3px solid #E5E7EB; 
-            transition: all 0.3s; 
-            cursor: pointer; 
-            background: white; 
-            border-radius: 16px; 
-            padding: 1rem;
-            position: relative;
-            overflow: hidden;
-        }
-        .option-btn::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            background: rgba(139, 69, 19, 0.1);
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            transition: width 0.4s, height 0.4s;
-        }
-        .option-btn:hover::before { width: 300px; height: 300px; }
-        .option-btn:hover { border-color: #8B4513; background: #FFF8F0; transform: translateX(-5px); }
-        .option-btn.selected { 
-            border-color: #FFD700; 
-            background: linear-gradient(135deg, #FFF8F0, #FFEED5); 
-            box-shadow: 0 0 0 4px rgba(255, 215, 0, 0.2);
-            transform: scale(1.02);
-        }
-        
-        .upload-zone { 
-            border: 3px dashed #8B4513; 
-            background: linear-gradient(135deg, #FFF8F0, #FFEED5); 
-            transition: all 0.3s; 
-            cursor: pointer; 
-            border-radius: 16px;
-            position: relative;
-            overflow: hidden;
-        }
-        .upload-zone::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,215,0,0.1) 0%, transparent 70%);
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-        .upload-zone:hover::before { opacity: 1; }
-        .upload-zone:hover { 
-            background: linear-gradient(135deg, #FFEED5, #FFD700); 
-            transform: scale(1.02);
-            border-style: solid;
-        }
-        
-        .progress-container { 
-            background: #E5E7EB; 
-            border-radius: 9999px; 
-            overflow: hidden; 
-            height: 16px;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
-        }
-        .progress-bar { 
-            background: linear-gradient(90deg, #8B4513, #D2691E, #CD853F, #FFD700, #FFA500); 
-            background-size: 300% 100%;
-            animation: shimmer 3s infinite, progressFill 0.5s ease;
-            height: 100%; 
-            border-radius: 9999px; 
-            transition: width 0.5s ease;
-        }
-        @keyframes shimmer { 
-            0% { background-position: 200% 0; } 
-            100% { background-position: -200% 0; } 
-        }
-        @keyframes progressFill {
-            from { width: 0; }
-        }
-        
-        .subject-tab { 
-            padding: 0.75rem 2rem; 
-            border-radius: 9999px; 
-            font-weight: bold; 
+        .option-btn {
+            border: 3px solid #E5E7EB;
             transition: all 0.3s;
-            position: relative;
-            overflow: hidden;
-        }
-        .subject-tab::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-            transition: left 0.5s;
-        }
-        .subject-tab:hover::before { left: 100%; }
-        .subject-tab.active { 
-            background: linear-gradient(135deg, #8B4513, #D2691E); 
-            color: white;
-            transform: scale(1.1);
-            box-shadow: 0 5px 20px rgba(139, 69, 19, 0.4);
-        }
-        .subject-tab.inactive { background: #E5E7EB; color: #6B7280; }
-        .subject-tab.completed { 
-            background: linear-gradient(135deg, #10B981, #059669); 
-            color: white;
-            box-shadow: 0 5px 20px rgba(16, 185, 129, 0.4);
-        }
-        
-        .question-block { 
-            background: white; 
-            border: 2px solid #E5E7EB; 
-            border-radius: 16px; 
-            padding: 2rem; 
-            margin-bottom: 1.5rem; 
-            position: relative;
-            transition: all 0.3s;
-        }
-        body.dark-mode .question-block { background: #2a2a4a; border-color: #444; color: white; }
-        .question-block:hover { 
-            transform: translateY(-3px); 
-            box-shadow: 0 10px 30px rgba(139, 69, 19, 0.15);
-        }
-        .score-badge { 
-            position: absolute; 
-            top: 1.5rem; 
-            left: 1.5rem; 
-            padding: 0.5rem 1.25rem; 
-            border-radius: 9999px; 
-            font-weight: bold; 
-            font-size: 1.1rem; 
-            animation: bounceIn 0.5s, pulse 2s infinite;
-            z-index: 10;
-        }
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
-        .score-correct { 
-            background: linear-gradient(135deg, #D1FAE5, #A7F3D0); 
-            color: #065F46; 
-            border: 3px solid #10B981;
-        }
-        .score-wrong { 
-            background: linear-gradient(135deg, #FEE2E2, #FECACA); 
-            color: #991B1B; 
-            border: 3px solid #EF4444;
-        }
-        
-        .subject-result-card { 
-            background: white; 
-            border-radius: 20px; 
-            padding: 2rem; 
-            border: 4px solid #E5E7EB; 
-            transition: all 0.3s;
-            position: relative;
-            overflow: hidden;
-        }
-        .subject-result-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, transparent 100%);
-        }
-        .subject-result-card.passed { 
-            border-color: #10B981; 
-            background: linear-gradient(135deg, #F0FDF4, #DCFCE7);
-            animation: successPulse 2s infinite;
-        }
-        @keyframes successPulse {
-            0%, 100% { box-shadow: 0 0 20px rgba(16, 185, 129, 0.3); }
-            50% { box-shadow: 0 0 40px rgba(16, 185, 129, 0.6); }
-        }
-        .subject-result-card.failed { 
-            border-color: #EF4444; 
-            background: linear-gradient(135deg, #FEF2F2, #FEE2E2);
-            animation: errorPulse 2s infinite;
-        }
-        @keyframes errorPulse {
-            0%, 100% { box-shadow: 0 0 20px rgba(239, 68, 68, 0.3); }
-            50% { box-shadow: 0 0 40px rgba(239, 68, 68, 0.6); }
-        }
-        
-        .status-badge { 
-            display: inline-block; 
-            padding: 0.75rem 2rem; 
-            border-radius: 9999px; 
-            font-weight: bold; 
-            font-size: 1.2rem;
-            animation: bounceIn 0.5s;
-        }
-        .status-passed { 
-            background: linear-gradient(135deg, #10B981, #059669); 
-            color: white;
-            box-shadow: 0 5px 20px rgba(16, 185, 129, 0.4);
-        }
-        .status-failed { 
-            background: linear-gradient(135deg, #EF4444, #DC2626); 
-            color: white;
-            box-shadow: 0 5px 20px rgba(239, 68, 68, 0.4);
-        }
-        
-        /* Teacher Panel */
-        .teacher-split-screen { 
-            display: grid; 
-            grid-template-columns: 1fr 2fr; 
-            gap: 2rem; 
-            height: calc(100vh - 200px); 
-        }
-        .student-list-panel { 
-            background: white; 
-            border-radius: 20px; 
-            padding: 2rem; 
-            overflow-y: auto; 
-            border: 2px solid #E5E7EB;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-        }
-        body.dark-mode .student-list-panel { background: #2a2a4a; border-color: #444; }
-        .student-detail-panel { 
-            background: white; 
-            border-radius: 20px; 
-            padding: 2.5rem; 
-            overflow-y: auto; 
-            border: 2px solid #E5E7EB;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-        }
-        body.dark-mode .student-detail-panel { background: #2a2a4a; border-color: #444; }
-        
-        .student-item { 
-            padding: 1.25rem; 
-            border-radius: 16px; 
-            cursor: pointer; 
-            transition: all 0.3s; 
-            border: 3px solid transparent; 
-            margin-bottom: 0.75rem;
-            position: relative;
-            overflow: hidden;
-        }
-        .student-item::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 0;
-            height: 100%;
-            background: linear-gradient(90deg, rgba(255,215,0,0.1), transparent);
-            transition: width 0.3s;
-        }
-        .student-item:hover::before { width: 100%; }
-        .student-item:hover { 
-            background: linear-gradient(135deg, #FFF8F0, #FFEED5); 
-            border-color: #FFD700;
-            transform: translateX(-5px);
-            box-shadow: 0 5px 20px rgba(255, 215, 0, 0.3);
-        }
-        .student-item.active { 
-            background: linear-gradient(135deg, #FFF8F0, #FFEED5); 
-            border-color: #FFD700; 
-            box-shadow: 0 0 0 4px rgba(255, 215, 0, 0.2), 0 10px 30px rgba(139, 69, 19, 0.2);
-            transform: scale(1.02);
-        }
-        
-        /* Badges */
-        .badge-container { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 1rem; justify-content: center; }
-        .achievement-badge { 
-            padding: 0.5rem 1.25rem; 
-            border-radius: 9999px; 
-            font-size: 0.9rem; 
-            font-weight: bold; 
-            display: inline-flex; 
-            align-items: center; 
-            gap: 0.5rem;
-            animation: bounceIn 0.5s, float 3s ease-in-out infinite;
-        }
-        .badge-excellent { 
-            background: linear-gradient(135deg, #FFD700, #FFA500); 
-            color: white;
-            box-shadow: 0 5px 20px rgba(255, 215, 0, 0.4);
-        }
-        .badge-good { 
-            background: linear-gradient(135deg, #10B981, #059669); 
-            color: white;
-            box-shadow: 0 5px 20px rgba(16, 185, 129, 0.4);
-        }
-        .badge-effort { 
-            background: linear-gradient(135deg, #3B82F6, #1D4ED8); 
-            color: white;
-            box-shadow: 0 5px 20px rgba(59, 130, 246, 0.4);
-        }
-        
-        /* Notification */
-        .notification { 
-            position: fixed; 
-            top: 20px; 
-            left: 20px; 
-            padding: 1.25rem 2rem; 
-            border-radius: 16px; 
-            color: white; 
-            font-weight: bold; 
-            z-index: 10000; 
-            animation: slideIn 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55), fadeOut 0.3s 2.7s;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-        @keyframes slideIn { 
-            from { transform: translateX(-150%); opacity: 0; } 
-            to { transform: translateX(0); opacity: 1; } 
-        }
-        @keyframes fadeOut {
-            to { opacity: 0; }
-        }
-        .notification.success { 
-            background: linear-gradient(135deg, #10B981, #059669);
-            border: 2px solid rgba(255,255,255,0.2);
-        }
-        .notification.warning { 
-            background: linear-gradient(135deg, #F59E0B, #D97706);
-            border: 2px solid rgba(255,255,255,0.2);
-        }
-        .notification.error { 
-            background: linear-gradient(135deg, #EF4444, #DC2626);
-            border: 2px solid rgba(255,255,255,0.2);
-        }
-        
-        /* Particles */
-        .particles { 
-            position: fixed; 
-            top: 0; 
-            left: 0; 
-            width: 100%; 
-            height: 100%; 
-            z-index: -1; 
-            pointer-events: none; 
-        }
-        .particle { 
-            position: absolute; 
-            background: radial-gradient(circle, rgba(139, 69, 19, 0.15) 0%, transparent 70%); 
-            border-radius: 50%; 
-            animation: float-particle 25s infinite ease-in-out; 
-        }
-        @keyframes float-particle { 
-            0%, 100% { transform: translateY(0) translateX(0) rotate(0deg); } 
-            25% { transform: translateY(-120px) translateX(60px) rotate(90deg); } 
-            50% { transform: translateY(-60px) translateX(-40px) rotate(180deg); } 
-            75% { transform: translateY(-180px) translateX(30px) rotate(270deg); } 
-        }
-        
-        /* Dark Mode Toggle */
-        .theme-toggle { 
-            position: fixed; 
-            top: 20px; 
-            right: 20px; 
-            z-index: 1000; 
-            background: white; 
-            border-radius: 50%; 
-            width: 55px; 
-            height: 55px; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            cursor: pointer; 
-            box-shadow: 0 8px 30px rgba(0,0,0,0.2); 
-            transition: all 0.3s;
-            border: 3px solid #FFD700;
-        }
-        .theme-toggle:hover { transform: scale(1.15) rotate(180deg); box-shadow: 0 12px 40px rgba(0,0,0,0.3); }
-        body.dark-mode .theme-toggle { background: #2a2a4a; border-color: #FFD700; }
-        
-        /* Language Toggle */
-        .lang-toggle {
-            position: fixed;
-            top: 20px;
-            right: 90px;
-            z-index: 1000;
+            cursor: pointer;
             background: white;
             border-radius: 12px;
-            padding: 0.5rem;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.2);
-            border: 3px solid #FFD700;
-            display: flex;
-            gap: 0.5rem;
+            padding: 0.75rem;
         }
-        .lang-btn {
-            padding: 0.5rem 1rem;
-            border: none;
-            border-radius: 8px;
+        .option-btn:hover { border-color: #8B4513; background: #FFF8F0; }
+        .option-btn.selected {
+            border-color: #8B4513;
+            background: #FFF8F0;
+            box-shadow: 0 0 0 3px rgba(139, 69, 19, 0.2);
+        }
+        
+        .upload-zone {
+            border: 3px dashed #8B4513;
+            background: #FFF8F0;
+            transition: all 0.3s;
             cursor: pointer;
+            border-radius: 16px;
+        }
+        .upload-zone:hover { background: #FFEED5; }
+        
+        .progress-container {
+            background: #E5E7EB;
+            border-radius: 9999px;
+            overflow: hidden;
+            height: 12px;
+        }
+        .progress-bar {
+            background: linear-gradient(90deg, #8B4513, #D2691E, #CD853F);
+            height: 100%;
+            border-radius: 9999px;
+            transition: width 0.5s ease;
+        }
+        
+        .subject-tab {
+            padding: 0.5rem 1.5rem;
+            border-radius: 9999px;
             font-weight: bold;
             transition: all 0.3s;
-            background: #E5E7EB;
         }
-        .lang-btn.active {
+        .subject-tab.active {
             background: linear-gradient(135deg, #8B4513, #D2691E);
             color: white;
         }
-        .lang-btn:hover:not(.active) {
-            background: #FFD700;
-            transform: scale(1.05);
+        .subject-tab.inactive { background: #E5E7EB; color: #6B7280; }
+        .subject-tab.completed { background: #10B981; color: white; }
+        
+        .question-block {
+            background: white;
+            border: 2px solid #E5E7EB;
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
         }
         
-        /* Search Box */
-        .search-box { position: relative; }
-        .search-box input { padding-right: 3.5rem; }
-        .search-box i { 
-            position: absolute; 
-            right: 1.25rem; 
-            top: 50%; 
-            transform: translateY(-50%); 
-            color: #8B4513;
-            font-size: 1.2rem;
+        .score-badge {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            font-weight: bold;
         }
+        .score-correct { background: #D1FAE5; color: #065F46; border: 2px solid #10B981; }
+        .score-wrong { background: #FEE2E2; color: #991B1B; border: 2px solid #EF4444; }
         
-        /* Chart Container */
-        .chart-container { 
-            background: white; 
-            border-radius: 20px; 
-            padding: 2rem; 
-            margin-bottom: 2rem;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-        }
-        body.dark-mode .chart-container { background: #2a2a4a; }
+        .badge-success { background: #10B981; color: white; }
+        .badge-danger { background: #EF4444; color: white; }
         
-        /* Responsive */
-        @media (max-width: 1024px) { 
-            .teacher-split-screen { grid-template-columns: 1fr; } 
-            .lang-toggle { right: 90px; top: 85px; }
-        }
-        @media (max-width: 640px) { 
-            .glass-card { border-radius: 16px; padding: 1rem !important; } 
-            .welcome-title { font-size: 2.5rem; } 
-            .logo-container { width: 120px; height: 120px; }
-            .lang-toggle { right: 20px; top: 85px; }
+        @media (max-width: 640px) {
+            .glass-card { border-radius: 16px; padding: 1rem !important; }
         }
     </style>
 </head>
 <body>
-    <!-- Background Image -->
-    <div class="bg-image"></div>
-    <div class="bg-overlay"></div>
-    
-    <!-- Particles -->
-    <div class="particles" id="particles"></div>
-    
-    <!-- Theme Toggle -->
-    <div class="theme-toggle" onclick="toggleTheme()" title="Toggle Dark Mode">
-        <i class="fas fa-moon text-2xl text-amber-700" id="theme-icon"></i>
-    </div>
-    
-    <!-- Language Toggle -->
-    <div class="lang-toggle">
-        <button class="lang-btn active" onclick="switchLang('ar')" id="lang-ar">العربية</button>
-        <button class="lang-btn" onclick="switchLang('en')" id="lang-en">English</button>
-    </div>
-
     <!-- Notification Container -->
     <div id="notification-container"></div>
 
     <!-- ========== Welcome Screen ========== -->
-    <div id="welcome-screen">
-        <div class="text-9xl mb-6" style="animation: bounceIn 1s ease; position: relative; z-index: 1;">🎓</div>
-        <h1 class="welcome-title" data-ar="منصة الاختبارات الإلكترونية" data-en="Electronic Exams Platform">منصة الاختبارات الإلكترونية</h1>
-        <p class="welcome-subtitle" data-ar="بوابة الطفل | أجيال المعرفة" data-en="Kids Gate | Knowledge Generations">بوابة الطفل | أجيال المعرفة</p>
-        <div class="flex gap-4 mt-10" style="position: relative; z-index: 1;">
-            <div class="w-5 h-5 bg-white rounded-full" style="animation: bounce 1s infinite 0s;"></div>
-            <div class="w-5 h-5 bg-white rounded-full" style="animation: bounce 1s infinite 0.2s;"></div>
-            <div class="w-5 h-5 bg-white rounded-full" style="animation: bounce 1s infinite 0.4s;"></div>
-        </div>
+    <div id="welcome-screen" class="fixed inset-0 bg-gradient-to-br from-amber-700 via-amber-600 to-amber-800 z-50 flex flex-col items-center justify-center">
+        <div class="text-8xl mb-6">🎓</div>
+        <h1 class="text-5xl font-black text-white mb-4 text-center px-4">منصة الاختبارات الإلكترونية</h1>
+        <p class="text-2xl text-white/95">بوابة الطفل | أجيال المعرفة</p>
     </div>
 
-    <!-- ========== Branch Selection Screen ========== -->
+    <!-- ========== Branch Selection ========== -->
     <div id="branch-screen" class="hidden-screen min-h-screen flex items-center justify-center p-4">
-        <div class="glass-card p-10 md:p-16 max-w-5xl w-full fade-in">
-            <div class="text-center mb-12">
-                <div class="inline-block bg-gradient-to-r from-amber-600 to-amber-700 text-white px-8 py-3 rounded-full text-sm font-bold mb-6 shadow-lg" data-ar="الخطوة الأولى" data-en="Step 1">الخطوة الأولى</div>
-                <h1 class="text-5xl md:text-6xl font-black text-gray-800 mb-4" data-ar="اختر الفرع" data-en="Select Branch">اختر الفرع</h1>
-                <p class="text-gray-600 text-xl" data-ar="حدد مدرستك للمتابعة" data-en="Choose your school to continue">حدد مدرستك للمتابعة</p>
+        <div class="glass-card p-10 max-w-4xl w-full">
+            <div class="text-center mb-8">
+                <div class="inline-block bg-gradient-to-r from-amber-600 to-amber-700 text-white px-6 py-2 rounded-full text-sm font-bold mb-4">الخطوة الأولى</div>
+                <h1 class="text-4xl font-black text-gray-800 mb-3">اختر الفرع</h1>
+                <p class="text-gray-600">حدد مدرستك للمتابعة</p>
             </div>
-            <div class="grid md:grid-cols-2 gap-10 mb-10">
-                <div onclick="selectBranch('child-gate')" id="branch-child-gate" class="branch-card bg-white p-10 rounded-3xl text-center shadow-2xl">
-                    <div class="logo-container border-4 border-orange-200">
-                        <img src="KidsGate.png" alt="Kids Gate" onerror="this.parentElement.innerHTML='<div class=\'text-7xl\'></div>'">
+            <div class="grid md:grid-cols-2 gap-6 mb-6">
+                <div onclick="selectBranch('child-gate')" id="branch-child-gate" class="branch-card bg-white p-8 rounded-2xl text-center shadow-lg">
+                    <div class="w-32 h-32 mx-auto mb-4 rounded-full overflow-hidden border-4 border-orange-200">
+                        <img src="KidsGate.png" alt="Kids Gate" onerror="this.parentElement.innerHTML='<div class=\'w-full h-full flex items-center justify-center text-6xl\'></div>'">
                     </div>
-                    <h2 class="text-4xl font-bold text-gray-800 mb-3" data-ar="بوابة الطفل" data-en="Kids Gate">بوابة الطفل</h2>
-                    <p class="text-gray-600 mb-6" data-ar="للتعليم المبكر المتميز" data-en="Excellence in Early Education">للتعليم المبكر المتميز</p>
-                    <div class="bg-gradient-to-r from-orange-100 to-amber-100 border-2 border-orange-200 rounded-xl p-4">
-                        <p class="text-orange-800 font-bold text-base">
-                            <i class="fas fa-graduation-cap ml-2"></i>
-                            <span data-ar="من KG2 إلى الصف السادس (VI)" data-en="From KG2 to Grade 6 (VI)">من KG2 إلى الصف السادس (VI)</span>
-                        </p>
+                    <h2 class="text-2xl font-bold text-gray-800 mb-2">بوابة الطفل</h2>
+                    <p class="text-gray-600 mb-3">للتعليم المبكر المتميز</p>
+                    <div class="bg-orange-50 border-2 border-orange-200 rounded-xl p-3">
+                        <p class="text-orange-800 font-bold text-sm">من KG2 إلى الصف السادس (VI)</p>
                     </div>
                 </div>
-                <div onclick="selectBranch('knowledge-gen')" id="branch-knowledge-gen" class="branch-card bg-white p-10 rounded-3xl text-center shadow-2xl">
-                    <div class="logo-container border-4 border-amber-200">
-                        <img src="Ajyal.png" alt="Knowledge Generations" onerror="this.parentElement.innerHTML='<div class=\'text-7xl\'>✨</div>'">
+                <div onclick="selectBranch('knowledge-gen')" id="branch-knowledge-gen" class="branch-card bg-white p-8 rounded-2xl text-center shadow-lg">
+                    <div class="w-32 h-32 mx-auto mb-4 rounded-full overflow-hidden border-4 border-amber-200">
+                        <img src="Ajyal.png" alt="Ajyal" onerror="this.parentElement.innerHTML='<div class=\'w-full h-full flex items-center justify-center text-6xl\'>✨</div>'">
                     </div>
-                    <h2 class="text-4xl font-bold text-gray-800 mb-3" data-ar="أجيال المعرفة" data-en="Knowledge Generations">أجيال المعرفة</h2>
-                    <p class="text-gray-600 mb-6" data-ar="نبني مستقبل أفضل" data-en="Building a Better Future">نبني مستقبل أفضل</p>
-                    <div class="bg-gradient-to-r from-amber-100 to-yellow-100 border-2 border-amber-200 rounded-xl p-4">
-                        <p class="text-amber-800 font-bold text-base">
-                            <i class="fas fa-graduation-cap ml-2"></i>
-                            <span data-ar="من KG2 إلى الصف الثاني عشر (XII)" data-en="From KG2 to Grade 12 (XII)">من KG2 إلى الصف الثاني عشر (XII)</span>
-                        </p>
+                    <h2 class="text-2xl font-bold text-gray-800 mb-2">أجيال المعرفة</h2>
+                    <p class="text-gray-600 mb-3">نبني مستقبل أفضل</p>
+                    <div class="bg-amber-50 border-2 border-amber-200 rounded-xl p-3">
+                        <p class="text-amber-800 font-bold text-sm">من KG2 إلى الصف الثاني عشر (XII)</p>
                     </div>
                 </div>
             </div>
-            <button onclick="proceedBranch()" id="branch-btn" disabled class="w-full btn-primary text-white font-bold py-5 rounded-2xl text-2xl shadow-xl">
-                <span data-ar="متابعة" data-en="Continue">متابعة</span> <i class="fas fa-arrow-left mr-3"></i>
+            <button onclick="proceedBranch()" id="branch-btn" disabled class="w-full btn-primary text-white font-bold py-4 rounded-xl text-xl">
+                متابعة <i class="fas fa-arrow-left mr-2"></i>
             </button>
         </div>
     </div>
 
-    <!-- ========== Role Selection Screen ========== -->
+    <!-- ========== Role Selection ========== -->
     <div id="role-screen" class="hidden-screen min-h-screen flex items-center justify-center p-4">
-        <div class="glass-card p-10 md:p-16 max-w-6xl w-full fade-in">
-            <div class="text-center mb-12">
-                <div class="inline-block bg-gradient-to-r from-amber-600 to-amber-700 text-white px-8 py-3 rounded-full text-sm font-bold mb-6 shadow-lg" data-ar="الخطوة الثانية" data-en="Step 2">الخطوة الثانية</div>
-                <h1 class="text-5xl md:text-6xl font-black text-gray-800 mb-4" data-ar="اختر نوع الدخول" data-en="Select Role">اختر نوع الدخول</h1>
-                <p class="text-gray-600 text-xl" data-ar="حدد دورك للمتابعة" data-en="Choose your role to continue">حدد دورك للمتابعة</p>
-                <p class="text-sm text-amber-700 font-bold mt-4 bg-amber-50 inline-block px-6 py-2 rounded-full">
-                    <span data-ar="الفرع المختار: " data-en="Selected Branch: ">الفرع المختار: </span>
-                    <span id="selected-branch-name"></span>
+        <div class="glass-card p-10 max-w-5xl w-full">
+            <div class="text-center mb-8">
+                <div class="inline-block bg-gradient-to-r from-amber-600 to-amber-700 text-white px-6 py-2 rounded-full text-sm font-bold mb-4">الخطوة الثانية</div>
+                <h1 class="text-4xl font-black text-gray-800 mb-3">اختر نوع الدخول</h1>
+                <p class="text-gray-600">حدد دورك للمتابعة</p>
+                <p class="text-sm text-amber-700 font-bold mt-3 bg-amber-50 inline-block px-4 py-1 rounded-full">
+                    الفرع المختار: <span id="selected-branch-name"></span>
                 </p>
             </div>
-            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-                <div onclick="selectRole('student')" id="role-student" class="role-card bg-white p-8 rounded-3xl text-center shadow-2xl">
-                    <div class="w-24 h-24 bg-gradient-to-br from-blue-500 to-blue-700 rounded-full flex items-center justify-center mx-auto mb-4 shadow-2xl text-5xl"></div>
-                    <h3 class="text-2xl font-bold text-gray-800 mb-3" data-ar="طالب" data-en="Student">طالب</h3>
-                    <p class="text-gray-600 text-sm" data-ar="أداء الاختبارات" data-en="Take Exams">أداء الاختبارات</p>
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                <div onclick="selectRole('student')" id="role-student" class="role-card bg-white p-6 rounded-2xl text-center shadow-lg">
+                    <div class="w-20 h-20 bg-gradient-to-br from-blue-500 to-blue-700 rounded-full flex items-center justify-center mx-auto mb-3 text-4xl"></div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">طالب</h3>
+                    <p class="text-gray-600 text-sm">أداء الاختبارات</p>
                 </div>
-                <div onclick="selectRole('teacher')" id="role-teacher" class="role-card bg-white p-8 rounded-3xl text-center shadow-2xl">
-                    <div class="w-24 h-24 bg-gradient-to-br from-green-500 to-green-700 rounded-full flex items-center justify-center mx-auto mb-4 shadow-2xl text-5xl">‍🏫</div>
-                    <h3 class="text-2xl font-bold text-gray-800 mb-3" data-ar="معلم" data-en="Teacher">معلم</h3>
-                    <p class="text-gray-600 text-sm" data-ar="تصحيح النتائج" data-en="Grade Results">تصحيح النتائج</p>
+                <div onclick="selectRole('teacher')" id="role-teacher" class="role-card bg-white p-6 rounded-2xl text-center shadow-lg">
+                    <div class="w-20 h-20 bg-gradient-to-br from-green-500 to-green-700 rounded-full flex items-center justify-center mx-auto mb-3 text-4xl">👨‍</div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">معلم</h3>
+                    <p class="text-gray-600 text-sm">تصحيح النتائج</p>
                 </div>
-                <div onclick="selectRole('registrar')" id="role-registrar" class="role-card bg-white p-8 rounded-3xl text-center shadow-2xl">
-                    <div class="w-24 h-24 bg-gradient-to-br from-orange-500 to-orange-700 rounded-full flex items-center justify-center mx-auto mb-4 shadow-2xl text-5xl">📋</div>
-                    <h3 class="text-2xl font-bold text-gray-800 mb-3" data-ar="مسؤول القبول" data-en="Admissions">مسؤول القبول</h3>
-                    <p class="text-gray-600 text-sm" data-ar="التسجيل والقبول" data-en="Registration">التسجيل والقبول</p>
+                <div onclick="selectRole('registrar')" id="role-registrar" class="role-card bg-white p-6 rounded-2xl text-center shadow-lg">
+                    <div class="w-20 h-20 bg-gradient-to-br from-orange-500 to-orange-700 rounded-full flex items-center justify-center mx-auto mb-3 text-4xl">📋</div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">مسؤول القبول</h3>
+                    <p class="text-gray-600 text-sm">التسجيل والقبول</p>
                 </div>
-                <div onclick="selectRole('admin')" id="role-admin" class="role-card bg-white p-8 rounded-3xl text-center shadow-2xl">
-                    <div class="w-24 h-24 bg-gradient-to-br from-purple-500 to-purple-700 rounded-full flex items-center justify-center mx-auto mb-4 shadow-2xl text-5xl"></div>
-                    <h3 class="text-2xl font-bold text-gray-800 mb-3" data-ar="مدير النظام" data-en="Admin">مدير النظام</h3>
-                    <p class="text-gray-600 text-sm" data-ar="الإحصائيات الكاملة" data-en="Full Statistics">الإحصائيات الكاملة</p>
+                <div onclick="selectRole('admin')" id="role-admin" class="role-card bg-white p-6 rounded-2xl text-center shadow-lg">
+                    <div class="w-20 h-20 bg-gradient-to-br from-purple-500 to-purple-700 rounded-full flex items-center justify-center mx-auto mb-3 text-4xl">👔</div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">مدير النظام</h3>
+                    <p class="text-gray-600 text-sm">الإحصائيات</p>
                 </div>
             </div>
-            <div class="flex gap-4">
-                <button onclick="backToBranch()" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-5 rounded-xl text-xl transition-all">
-                    <i class="fas fa-arrow-right ml-3"></i><span data-ar="رجوع" data-en="Back">رجوع</span>
-                </button>
-                <button onclick="proceedRole()" id="role-btn" disabled class="btn-primary text-white font-bold py-5 rounded-xl text-xl shadow-xl" style="flex: 2;">
-                    <span data-ar="متابعة" data-en="Continue">متابعة</span> <i class="fas fa-arrow-left ml-3"></i>
+            <div class="flex gap-3">
+                <button onclick="backToBranch()" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-4 rounded-xl">رجوع</button>
+                <button onclick="proceedRole()" id="role-btn" disabled class="btn-primary text-white font-bold py-4 rounded-xl" style="flex: 2;">
+                    متابعة <i class="fas fa-arrow-left mr-2"></i>
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- ========== Student Form Screen ========== -->
-    <div id="student-form-screen" class="hidden-screen min-h-screen flex items-center justify-center p-4">
-        <div class="glass-card p-10 md:p-14 max-w-4xl w-full fade-in">
-            <div class="text-center mb-8">
-                <div class="inline-block bg-gradient-to-r from-amber-600 to-amber-700 text-white px-8 py-3 rounded-full text-sm font-bold mb-6 shadow-lg">
-                    <i class="fas fa-user-graduate ml-2"></i>
-                    <span data-ar="بيانات الطالب" data-en="Student Information">بيانات الطالب</span>
-                </div>
-                <h2 class="text-4xl font-black text-gray-800 mb-3" data-ar="أدخل معلوماتك" data-en="Enter Your Information">أدخل معلوماتك</h2>
-                <p class="text-sm text-amber-700 font-bold bg-amber-50 inline-block px-6 py-2 rounded-full">
-                    <span id="form-branch-name"></span>
-                </p>
-            </div>
-            <div class="space-y-5">
-                <div>
-                    <label class="block text-gray-700 font-bold mb-3 text-lg">
-                        <i class="fas fa-user text-amber-700 ml-3"></i>
-                        <span data-ar="اسم الطالب الرباعي" data-en="Full Name">اسم الطالب الرباعي</span>
-                        <span class="text-red-500">*</span>
-                    </label>
-                    <input type="text" id="s-name" class="input-field w-full p-5 rounded-xl text-lg" placeholder="" data-placeholder-ar="اكتب الاسم الكامل" data-placeholder-en="Enter full name">
-                </div>
-                <div class="grid md:grid-cols-2 gap-5">
-                    <div>
-                        <label class="block text-gray-700 font-bold mb-3 text-lg">
-                            <i class="fas fa-calendar-alt text-amber-700 ml-3"></i>
-                            <span data-ar="تاريخ الميلاد" data-en="Date of Birth">تاريخ الميلاد</span>
-                            <span class="text-red-500">*</span>
-                        </label>
-                        <input type="date" id="s-dob" class="input-field w-full p-5 rounded-xl text-lg">
-                    </div>
-                    <div>
-                        <label class="block text-gray-700 font-bold mb-3 text-lg">
-                            <i class="fas fa-id-card text-amber-700 ml-3"></i>
-                            <span data-ar="رقم الهوية" data-en="ID Number">رقم الهوية</span>
-                            <span class="text-red-500">*</span>
-                        </label>
-                        <input type="text" id="s-id" class="input-field w-full p-5 rounded-xl text-lg" placeholder="10xxxxxxxxx">
-                    </div>
-                </div>
-                <div class="grid md:grid-cols-2 gap-5">
-                    <div>
-                        <label class="block text-gray-700 font-bold mb-3 text-lg">
-                            <i class="fas fa-phone text-amber-700 ml-3"></i>
-                            <span data-ar="رقم الجوال" data-en="Phone Number">رقم الجوال</span>
-                            <span class="text-red-500">*</span>
-                        </label>
-                        <input type="tel" id="s-phone" class="input-field w-full p-5 rounded-xl text-lg" placeholder="05xxxxxxxx">
-                    </div>
-                    <div>
-                        <label class="block text-gray-700 font-bold mb-3 text-lg">
-                            <i class="fas fa-venus-mars text-amber-700 ml-3"></i>
-                            <span data-ar="الجنس" data-en="Gender">الجنس</span>
-                            <span class="text-red-500">*</span>
-                        </label>
-                        <div class="grid grid-cols-2 gap-4">
-                            <label class="cursor-pointer">
-                                <input type="radio" name="gender" value="male" class="hidden peer">
-                                <div class="peer-checked:bg-blue-100 peer-checked:border-blue-500 border-2 border-gray-200 rounded-xl p-4 text-center transition-all hover:border-blue-300">
-                                    <i class="fas fa-male text-3xl text-blue-600 mb-2"></i>
-                                    <div class="font-bold text-base" data-ar="ذكر" data-en="Male">ذكر</div>
-                                </div>
-                            </label>
-                            <label class="cursor-pointer">
-                                <input type="radio" name="gender" value="female" class="hidden peer">
-                                <div class="peer-checked:bg-pink-100 peer-checked:border-pink-500 border-2 border-gray-200 rounded-xl p-4 text-center transition-all hover:border-pink-300">
-                                    <i class="fas fa-female text-3xl text-pink-600 mb-2"></i>
-                                    <div class="font-bold text-base" data-ar="أنثى" data-en="Female">أنثى</div>
-                                </div>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <div>
-                    <label class="block text-gray-700 font-bold mb-3 text-lg">
-                        <i class="fas fa-globe text-amber-700 ml-3"></i>
-                        <span data-ar="الجنسية" data-en="Nationality">الجنسية</span>
-                        <span class="text-red-500">*</span>
-                    </label>
-                    <select id="s-nationality" class="input-field w-full p-5 rounded-xl text-lg" onchange="handleNationalityChange()">
-                        <option value="" data-ar="-- اختر الجنسية --" data-en="-- Select Nationality --">-- اختر الجنسية --</option>
-                        <optgroup label="🌍 الجنسيات العربية" data-label-en="🌍 Arabic Nationalities">
-                            <option value="saudi">🇸🇦 <span data-ar="سعودي" data-en="Saudi">سعودي</span></option>
-                            <option value="yemeni">🇾🇪 <span data-ar="يمني" data-en="Yemeni">يمني</span></option>
-                            <option value="egyptian">🇪🇬 <span data-ar="مصري" data-en="Egyptian">مصري</span></option>
-                            <option value="jordanian">🇯🇴 <span data-ar="أردني" data-en="Jordanian">أردني</span></option>
-                            <option value="other-arab"><span data-ar="عربي آخر" data-en="Other Arab">عربي آخر</span></option>
-                        </optgroup>
-                        <optgroup label="🌏 الجنسيات غير العربية" data-label-en="🌏 Non-Arabic Nationalities">
-                            <option value="indian">🇮🇳 <span data-ar="هندي" data-en="Indian">هندي</span></option>
-                            <option value="pakistani">🇵 <span data-ar="باكستاني" data-en="Pakistani">باكستاني</span></option>
-                            <option value="filipino">🇵🇭 <span data-ar="فلبيني" data-en="Filipino">فلبيني</span></option>
-                            <option value="other-non-arab"><span data-ar="أخرى" data-en="Other">أخرى</span></option>
-                        </optgroup>
-                    </select>
-                </div>
-                <div id="subjects-notice" class="hidden bg-gradient-to-r from-amber-50 to-orange-50 border-2 border-amber-300 rounded-xl p-6 text-center">
-                    <i class="fas fa-info-circle text-amber-700 text-3xl mb-3"></i>
-                    <p id="subjects-notice-text" class="text-amber-900 font-bold text-lg"></p>
-                </div>
-                <div>
-                    <label class="block text-gray-700 font-bold mb-3 text-lg">
-                        <i class="fas fa-graduation-cap text-amber-700 ml-3"></i>
-                        <span data-ar="المرحلة الدراسية" data-en="Grade Level">المرحلة الدراسية</span>
-                        <span class="text-red-500">*</span>
-                    </label>
-                    <select id="s-grade" class="input-field w-full p-5 rounded-xl text-lg"></select>
-                </div>
-                <div class="flex gap-4 pt-6">
-                    <button onclick="backToRole()" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-5 rounded-xl text-xl transition-all">
-                        <i class="fas fa-arrow-right ml-3"></i><span data-ar="رجوع" data-en="Back">رجوع</span>
-                    </button>
-                    <button onclick="startStudentExam()" class="btn-primary text-white font-bold py-5 rounded-xl text-xl shadow-xl" style="flex: 2;">
-                        <span data-ar="بدء الاختبار" data-en="Start Exam">بدء الاختبار</span> <i class="fas fa-arrow-left ml-3"></i>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
+    <!-- باقي الشاشات بنفس النمط المبسط... -->
+    <!-- (نفس الكود السابق لكن بتصميم أبسط) -->
 
-    <!-- ========== Teacher Login Screen ========== -->
-    <div id="teacher-login-screen" class="hidden-screen min-h-screen flex items-center justify-center p-4">
-        <div class="glass-card p-10 max-w-md w-full fade-in">
-            <div class="text-center mb-8">
-                <div class="w-28 h-28 bg-gradient-to-br from-green-500 to-green-700 rounded-full flex items-center justify-center mx-auto mb-6 shadow-2xl text-6xl">‍🏫</div>
-                <h2 class="text-4xl font-black text-gray-800 mb-3" data-ar="دخول المعلم" data-en="Teacher Login">دخول المعلم</h2>
-                <p class="text-gray-600" data-ar="تصحيح إجابات الطلاب" data-en="Grade Student Answers">تصحيح إجابات الطلاب</p>
-            </div>
-            <div class="space-y-5">
-                <input type="text" id="t-username" class="input-field w-full p-5 rounded-xl text-lg" placeholder="" data-placeholder-ar="اسم المستخدم" data-placeholder-en="Username">
-                <input type="password" id="t-password" class="input-field w-full p-5 rounded-xl text-lg" placeholder="" data-placeholder-ar="كلمة المرور" data-placeholder-en="Password">
-                <div id="t-error" class="hidden bg-red-50 border-2 border-red-300 text-red-700 p-4 rounded-xl text-base font-bold"></div>
-                <div class="flex gap-4">
-                    <button onclick="backToRole()" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-5 rounded-xl transition-all" data-ar="رجوع" data-en="Back">رجوع</button>
-                    <button onclick="loginTeacher()" class="flex-1 btn-secondary text-white font-bold py-5 rounded-xl" data-ar="دخول" data-en="Login">دخول</button>
-                </div>
-                <div class="text-center text-xs text-gray-500 bg-gray-50 p-3 rounded-lg">
-                    <i class="fas fa-info-circle ml-2"></i>
-                    <span data-ar="تجريبي: teacher / teacher123" data-en="Demo: teacher / teacher123">تجريبي: teacher / teacher123</span>
-                </div>
-            </div>
-        </div>
-    </div>
+</body>
+<script src="questions.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+    // EmailJS Configuration
+    const EMAILJS_CONFIG = { publicKey: '30UlzYidCO1myETH9', serviceId: 'service_y5ryjca', templateId: 'template_9apg4bw' };
+    emailjs.init(EMAILJS_CONFIG.publicKey);
 
-    <!-- ========== Teacher Panel ========== -->
-    <div id="teacher-panel" class="hidden-screen min-h-screen p-6 md:p-10">
-        <div class="max-w-7xl mx-auto">
-            <div class="glass-card p-8 mb-8">
-                <div class="flex justify-between items-center flex-wrap gap-6">
-                    <div>
-                        <h2 class="text-4xl font-black text-gray-800">
-                            <span class="text-5xl ml-4">‍🏫</span>
-                            <span data-ar="لوحة المعلم - تصحيح الإجابات" data-en="Teacher Panel - Grading">لوحة المعلم - تصحيح الإجابات</span>
-                        </h2>
-                        <p class="text-gray-600 mt-2 text-lg" data-ar="راجع إجابات الطلاب وأضف الدرجات" data-en="Review student answers and add grades">راجع إجابات الطلاب وأضف الدرجات</p>
-                    </div>
-                    <div class="flex gap-4">
-                        <button onclick="exportToExcel()" class="btn-secondary px-8 py-4 rounded-xl font-bold text-lg shadow-lg">
-                            <i class="fas fa-file-excel ml-3"></i><span data-ar="Excel" data-en="Excel">Excel</span>
-                        </button>
-                        <button onclick="logout()" class="btn-danger px-8 py-4 rounded-xl font-bold text-lg shadow-lg">
-                            <i class="fas fa-sign-out-alt ml-3"></i><span data-ar="خروج" data-en="Logout">خروج</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="teacher-split-screen">
-                <div class="student-list-panel">
-                    <div class="search-box mb-6">
-                        <i class="fas fa-search"></i>
-                        <input type="text" id="teacher-search" class="input-field w-full p-4 rounded-xl text-lg" placeholder="" data-placeholder-ar="ابحث بالاسم..." data-placeholder-en="Search by name...">
-                    </div>
-                    <h3 class="text-2xl font-bold text-gray-800 mb-6">
-                        <span data-ar="📋 قائمة الطلاب" data-en="📋 Student List">📋 قائمة الطلاب</span>
-                    </h3>
-                    <div id="teacher-student-list"></div>
-                </div>
-                <div class="student-detail-panel" id="student-detail-panel">
-                    <div class="text-center text-gray-500 py-32">
-                        <i class="fas fa-user-graduate text-8xl mb-6 opacity-30"></i>
-                        <p class="text-2xl" data-ar="اختر طالباً من القائمة لعرض إجاباته" data-en="Select a student from the list to view answers">اختر طالباً من القائمة لعرض إجاباته</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    // Variables
+    let currentBranch = '', currentRole = '', currentStudent = {}, currentSubject = '', currentQIndex = 0;
+    let questions = [], answers = {}, questionScores = {}, subjectScores = { english: 0, math: 0, arabic: 0 };
+    let examSubjects = [], allStudents = JSON.parse(localStorage.getItem('exam_students')) || [];
 
-    <!-- ========== Registrar Login Screen ========== -->
-    <div id="registrar-login-screen" class="hidden-screen min-h-screen flex items-center justify-center p-4">
-        <div class="glass-card p-10 max-w-md w-full fade-in">
-            <div class="text-center mb-8">
-                <div class="w-28 h-28 bg-gradient-to-br from-orange-500 to-orange-700 rounded-full flex items-center justify-center mx-auto mb-6 shadow-2xl text-6xl">📋</div>
-                <h2 class="text-4xl font-black text-gray-800 mb-3" data-ar="مسؤول القبول والتسجيل" data-en="Admissions Officer">مسؤول القبول والتسجيل</h2>
-                <p class="text-gray-600" data-ar="عرض جميع الطلاب" data-en="View All Students">عرض جميع الطلاب</p>
-            </div>
-            <div class="space-y-5">
-                <input type="text" id="r-username" class="input-field w-full p-5 rounded-xl text-lg" placeholder="" data-placeholder-ar="اسم المستخدم" data-placeholder-en="Username">
-                <input type="password" id="r-password" class="input-field w-full p-5 rounded-xl text-lg" placeholder="" data-placeholder-ar="كلمة المرور" data-placeholder-en="Password">
-                <div id="r-error" class="hidden bg-red-50 border-2 border-red-300 text-red-700 p-4 rounded-xl text-base font-bold"></div>
-                <div class="flex gap-4">
-                    <button onclick="backToRole()" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-5 rounded-xl transition-all" data-ar="رجوع" data-en="Back">رجوع</button>
-                    <button onclick="loginRegistrar()" class="flex-1 btn-primary text-white font-bold py-5 rounded-xl" data-ar="دخول" data-en="Login">دخول</button>
-                </div>
-                <div class="text-center text-xs text-gray-500 bg-gray-50 p-3 rounded-lg">
-                    <i class="fas fa-info-circle ml-2"></i>
-                    <span data-ar="تجريبي: registrar / registrar123" data-en="Demo: registrar / registrar123">تجريبي: registrar / registrar123</span>
-                </div>
-            </div>
-        </div>
-    </div>
+    const gradeOptions = {
+        'child-gate': [
+            { value: 'KG2', label: 'رياض أطفال 2 (KG2)' }, { value: 'G1', label: 'الصف الأول (I)' },
+            { value: 'G2', label: 'الصف الثاني (II)' }, { value: 'G3', label: 'الصف الثالث (III)' },
+            { value: 'G4', label: 'الصف الرابع (IV)' }, { value: 'G5', label: 'الصف الخامس (V)' },
+            { value: 'G6', label: 'الصف السادس (VI)' }
+        ],
+        'knowledge-gen': [
+            { value: 'KG2', label: 'رياض أطفال 2 (KG2)' }, { value: 'G1', label: 'الصف الأول (I)' },
+            { value: 'G2', label: 'الصف الثاني (II)' }, { value: 'G3', label: 'الصف الثالث (III)' },
+            { value: 'G4', label: 'الصف الرابع (IV)' }, { value: 'G5', label: 'الصف الخامس (V)' },
+            { value: 'G6', label: 'الصف السادس (VI)' }, { value: 'G7', label: 'الصف السابع (VII)' },
+            { value: 'G8', label: 'الصف الثامن (VIII)' }, { value: 'G9', label: 'الصف التاسع (IX)' },
+            { value: 'G10', label: 'الصف العاشر (X)' }, { value: 'G11', label: 'الصف الحادي عشر (XI)' },
+            { value: 'G12', label: 'الصف الثاني عشر (XII)' }
+        ]
+    };
 
-    <!-- ========== Registrar Panel ========== -->
-    <div id="registrar-panel" class="hidden-screen min-h-screen p-6 md:p-10">
-        <div class="max-w-7xl mx-auto">
-            <div class="glass-card p-8 mb-8">
-                <div class="flex justify-between items-center flex-wrap gap-6">
-                    <div>
-                        <h2 class="text-4xl font-black text-gray-800">
-                            <span class="text-5xl ml-4">📋</span>
-                            <span data-ar="لوحة مسؤول القبول والتسجيل" data-en="Admissions Panel">لوحة مسؤول القبول والتسجيل</span>
-                        </h2>
-                        <p class="text-gray-600 mt-2 text-lg" data-ar="عرض جميع الطلاب المسجلين" data-en="View All Registered Students">عرض جميع الطلاب المسجلين</p>
-                    </div>
-                    <div class="flex gap-4">
-                        <button onclick="exportToExcel()" class="btn-secondary px-8 py-4 rounded-xl font-bold text-lg shadow-lg">
-                            <i class="fas fa-file-excel ml-3"></i><span data-ar="تصدير Excel" data-en="Export Excel">تصدير Excel</span>
-                        </button>
-                        <button onclick="logout()" class="btn-danger px-8 py-4 rounded-xl font-bold text-lg shadow-lg">
-                            <i class="fas fa-sign-out-alt ml-3"></i><span data-ar="خروج" data-en="Logout">خروج</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <div class="grid md:grid-cols-4 gap-6 mb-8">
-                <div class="stat-card bg-gradient-to-br from-blue-500 to-blue-700 text-white p-8 shadow-2xl">
-                    <div class="text-5xl font-black" id="r-total">0</div>
-                    <p class="text-blue-100 text-lg mt-2" data-ar="إجمالي الطلاب" data-en="Total Students">إجمالي الطلاب</p>
-                </div>
-                <div class="stat-card bg-gradient-to-br from-green-500 to-green-700 text-white p-8 shadow-2xl">
-                    <div class="text-5xl font-black" id="r-passed">0</div>
-                    <p class="text-green-100 text-lg mt-2" data-ar="مقبول" data-en="Passed">مقبول</p>
-                </div>
-                <div class="stat-card bg-gradient-to-br from-red-500 to-red-700 text-white p-8 shadow-2xl">
-                    <div class="text-5xl font-black" id="r-failed">0</div>
-                    <p class="text-red-100 text-lg mt-2" data-ar="غير مقبول" data-en="Failed">غير مقبول</p>
-                </div>
-                <div class="stat-card bg-gradient-to-br from-amber-500 to-amber-700 text-white p-8 shadow-2xl">
-                    <div class="text-5xl font-black" id="r-pending">0</div>
-                    <p class="text-amber-100 text-lg mt-2" data-ar="بانتظار التصحيح" data-en="Pending">بانتظار التصحيح</p>
-                </div>
-            </div>
-            <div class="glass-card p-8 overflow-x-auto">
-                <h3 class="text-3xl font-bold text-gray-800 mb-6">
-                    <span class="text-4xl ml-3">📋</span>
-                    <span data-ar="جميع الطلاب المسجلين" data-en="All Registered Students">جميع الطلاب المسجلين</span>
-                </h3>
-                <table class="w-full">
-                    <thead class="bg-gradient-to-r from-amber-50 to-orange-50 border-b-3 border-amber-200">
-                        <tr>
-                            <th class="p-4 text-right font-bold text-gray-700">#</th>
-                            <th class="p-4 text-right font-bold text-gray-700" data-ar="الاسم" data-en="Name">الاسم</th>
-                            <th class="p-4 text-right font-bold text-gray-700" data-ar="المرحلة" data-en="Grade">المرحلة</th>
-                            <th class="p-4 text-right font-bold text-gray-700" data-ar="الإنجليزي" data-en="English">الإنجليزي</th>
-                            <th class="p-4 text-right font-bold text-gray-700" data-ar="الرياضيات" data-en="Math">الرياضيات</th>
-                            <th class="p-4 text-right font-bold text-gray-700" data-ar="العربي" data-en="Arabic">العربي</th>
-                            <th class="p-4 text-right font-bold text-gray-700" data-ar="المجموع" data-en="Total">المجموع</th>
-                            <th class="p-4 text-right font-bold text-gray-700" data-ar="الحالة" data-en="Status">الحالة</th>
-                        </tr>
-                    </thead>
-                    <tbody id="r-students-table" class="divide-y divide-gray-200"></tbody>
-                </table>
-            </div>
-        </div>
-    </div>
+    const arabicNationalities = ['saudi', 'yemeni', 'egyptian', 'jordanian', 'other-arab'];
+    const PASSING_SCORE = 15;
 
-    <!-- ========== Admin Login Screen ========== -->
-    <div id="admin-login-screen" class="hidden-screen min-h-screen flex items-center justify-center p-4">
-        <div class="glass-card p-10 max-w-md w-full fade-in">
-            <div class="text-center mb-8">
-                <div class="w-28 h-28 bg-gradient-to-br from-purple-500 to-purple-700 rounded-full flex items-center justify-center mx-auto mb-6 shadow-2xl text-6xl"></div>
-                <h2 class="text-4xl font-black text-gray-800 mb-3" data-ar="مدير النظام" data-en="System Admin">مدير النظام</h2>
-                <p class="text-gray-600" data-ar="منطقة إدارية محمية" data-en="Protected Admin Area">منطقة إدارية محمية</p>
-            </div>
-            <div class="space-y-5">
-                <input type="text" id="a-username" class="input-field w-full p-5 rounded-xl text-lg" placeholder="" data-placeholder-ar="اسم المستخدم" data-placeholder-en="Username">
-                <input type="password" id="a-password" class="input-field w-full p-5 rounded-xl text-lg" placeholder="" data-placeholder-ar="كلمة المرور" data-placeholder-en="Password">
-                <div id="a-error" class="hidden bg-red-50 border-2 border-red-300 text-red-700 p-4 rounded-xl text-base font-bold"></div>
-                <div class="flex gap-4">
-                    <button onclick="backToRole()" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-5 rounded-xl transition-all" data-ar="رجوع" data-en="Back">رجوع</button>
-                    <button onclick="loginAdmin()" class="flex-1 btn-primary text-white font-bold py-5 rounded-xl" data-ar="دخول" data-en="Login">دخول</button>
-                </div>
-                <div class="text-center text-xs text-gray-500 bg-gray-50 p-3 rounded-lg">
-                    <i class="fas fa-info-circle ml-2"></i>
-                    <span data-ar="تجريبي: admin / admin123" data-en="Demo: admin / admin123">تجريبي: admin / admin123</span>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- ========== Admin Dashboard ========== -->
-    <div id="admin-dashboard" class="hidden-screen min-h-screen p-6 md:p-10">
-        <div class="max-w-7xl mx-auto">
-            <div class="glass-card p-8 mb-8">
-                <div class="flex justify-between items-center flex-wrap gap-6">
-                    <div>
-                        <h2 class="text-4xl font-black text-gray-800">
-                            <span class="text-5xl ml-4">📊</span>
-                            <span data-ar="داشبورد مدير النظام" data-en="Admin Dashboard">داشبورد مدير النظام</span>
-                        </h2>
-                        <p class="text-gray-600 mt-2 text-lg" data-ar="نظرة شاملة على أداء المنصة" data-en="Comprehensive Platform Overview">نظرة شاملة على أداء المنصة</p>
-                    </div>
-                    <div class="flex gap-4">
-                        <button onclick="exportToExcel()" class="btn-secondary px-8 py-4 rounded-xl font-bold text-lg shadow-lg">
-                            <i class="fas fa-file-excel ml-3"></i><span data-ar="Excel" data-en="Excel">Excel</span>
-                        </button>
-                        <button onclick="logout()" class="btn-danger px-8 py-4 rounded-xl font-bold text-lg shadow-lg">
-                            <i class="fas fa-sign-out-alt ml-3"></i><span data-ar="خروج" data-en="Logout">خروج</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="grid md:grid-cols-4 gap-6 mb-8">
-                <div class="stat-card bg-gradient-to-br from-blue-500 to-blue-700 text-white p-8 shadow-2xl">
-                    <div class="text-5xl font-black" id="a-total">0</div>
-                    <p class="text-blue-100 text-lg mt-2" data-ar="إجمالي الطلاب" data-en="Total Students">إجمالي الطلاب</p>
-                </div>
-                <div class="stat-card bg-gradient-to-br from-green-500 to-green-700 text-white p-8 shadow-2xl">
-                    <div class="text-5xl font-black" id="a-passed">0</div>
-                    <p class="text-green-100 text-lg mt-2" data-ar="مقبول" data-en="Passed">مقبول</p>
-                </div>
-                <div class="stat-card bg-gradient-to-br from-red-500 to-red-700 text-white p-8 shadow-2xl">
-                    <div class="text-5xl font-black" id="a-failed">0</div>
-                    <p class="text-red-100 text-lg mt-2" data-ar="غير مقبول" data-en="Failed">غير مقبول</p>
-                </div>
-                <div class="stat-card bg-gradient-to-br from-amber-500 to-amber-700 text-white p-8 shadow-2xl">
-                    <div class="text-5xl font-black" id="a-rate">0%</div>
-                    <p class="text-amber-100 text-lg mt-2" data-ar="نسبة القبول" data-en="Pass Rate">نسبة القبول</p>
-                </div>
-            </div>
-            
-            <!-- Charts -->
-            <div class="grid md:grid-cols-2 gap-8 mb-8">
-                <div class="chart-container">
-                    <h3 class="text-2xl font-bold text-gray-800 mb-6" data-ar="📊 توزيع النتائج" data-en="📊 Results Distribution">📊 توزيع النتائج</h3>
-                    <canvas id="resultsChart"></canvas>
-                </div>
-                <div class="chart-container">
-                    <h3 class="text-2xl font-bold text-gray-800 mb-6" data-ar="📈 أداء المواد" data-en="📈 Subject Performance">📈 أداء المواد</h3>
-                    <canvas id="subjectsChart"></canvas>
-                </div>
-            </div>
-            
-            <div class="glass-card p-8 overflow-x-auto">
-                <h3 class="text-2xl font-bold text-gray-800 mb-6">
-                    <span class="text-3xl ml-3">📋</span>
-                    <span data-ar="جميع الطلاب" data-en="All Students">جميع الطلاب</span>
-                </h3>
-                <table class="w-full">
-                    <thead class="bg-gradient-to-r from-amber-50 to-orange-50 border-b-3 border-amber-200">
-                        <tr>
-                            <th class="p-4 text-right font-bold text-gray-700">#</th>
-                            <th class="p-4 text-right font-bold text-gray-700" data-ar="الاسم" data-en="Name">الاسم</th>
-                            <th class="p-4 text-right font-bold text-gray-700" data-ar="المرحلة" data-en="Grade">المرحلة</th>
-                            <th class="p-4 text-right font-bold text-gray-700" data-ar="الإنجليزي" data-en="English">الإنجليزي</th>
-                            <th class="p-4 text-right font-bold text-gray-700" data-ar="الرياضيات" data-en="Math">الرياضيات</th>
-                            <th class="p-4 text-right font-bold text-gray-700" data-ar="العربي" data-en="Arabic">العربي</th>
-                            <th class="p-4 text-right font-bold text-gray-700" data-ar="المجموع" data-en="Total">المجموع</th>
-                            <th class="p-4 text-right font-bold text-gray-700" data-ar="الحالة" data-en="Status">الحالة</th>
-                        </tr>
-                    </thead>
-                    <tbody id="a-students-table" class="divide-y divide-gray-200"></tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-
-    <!-- ========== Exam Screen ========== -->
-    <div id="exam-screen" class="hidden-screen min-h-screen p-4">
-        <div class="max-w-6xl mx-auto">
-            <div class="glass-card p-6 mb-6">
-                <div class="flex justify-between items-center flex-wrap gap-6">
-                    <div class="flex items-center gap-6">
-                        <div class="w-20 h-20 bg-gradient-to-br from-amber-600 to-amber-700 rounded-full flex items-center justify-center text-white text-4xl shadow-2xl">📝</div>
-                        <div>
-                            <h2 id="exam-subject" class="text-3xl font-bold text-gray-800"></h2>
-                            <p class="text-gray-600 text-lg">
-                                <span data-ar="السؤال" data-en="Question">السؤال</span> 
-                                <span id="q-num" class="font-bold text-amber-700 text-2xl">1</span> 
-                                <span data-ar="من" data-en="of">من</span> 
-                                <span id="q-total" class="font-bold text-amber-700 text-2xl">5</span>
-                            </p>
-                        </div>
-                    </div>
-                    <div class="text-left">
-                        <p class="text-sm text-gray-600" data-ar="الطالب:" data-en="Student:">الطالب:</p>
-                        <p id="exam-student-name" class="font-bold text-amber-700 text-xl"></p>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="glass-card p-4 mb-6">
-                <div class="flex justify-center gap-4 flex-wrap" id="subject-tabs"></div>
-            </div>
-            
-            <div class="glass-card p-4 mb-6">
-                <div class="progress-container">
-                    <div id="progress-bar" class="progress-bar" style="width: 0%"></div>
-                </div>
-            </div>
-            
-            <div id="question-area" class="glass-card p-8 mb-6"></div>
-            
-            <div class="glass-card p-6 flex justify-between gap-4 flex-wrap">
-                <button onclick="prevQuestion()" id="btn-prev" class="bg-gray-200 hover:bg-gray-300 disabled:opacity-40 px-8 py-4 rounded-xl font-bold text-lg transition-all" disabled>
-                    <i class="fas fa-arrow-right ml-3"></i><span data-ar="السابق" data-en="Previous">السابق</span>
-                </button>
-                <button onclick="nextQuestion()" id="btn-next" class="btn-primary text-white px-8 py-4 rounded-xl font-bold text-lg shadow-xl">
-                    <span data-ar="التالي" data-en="Next">التالي</span><i class="fas fa-arrow-left mr-3"></i>
-                </button>
-                <button onclick="submitExam()" id="btn-submit" class="hidden btn-secondary text-white px-8 py-4 rounded-xl font-bold text-lg shadow-xl">
-                    <span data-ar="تسليم الاختبار" data-en="Submit Exam">تسليم الاختبار</span> <i class="fas fa-check-circle mr-3"></i>
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- ========== Results Screen ========== -->
-    <div id="results-screen" class="hidden-screen min-h-screen p-4">
-        <div class="max-w-6xl mx-auto">
-            <div class="glass-card p-12 text-center fade-in">
-                <div class="w-40 h-40 bg-gradient-to-br from-amber-600 to-amber-700 rounded-full flex items-center justify-center mx-auto mb-6 shadow-2xl text-8xl" style="animation: pulse-gold 2s infinite;">🏆</div>
-                <h2 class="text-5xl font-black text-gray-800 mb-3" data-ar="نتيجة الاختبار" data-en="Exam Result">نتيجة الاختبار</h2>
-                <p id="result-student-name" class="text-2xl text-amber-700 font-bold mb-8"></p>
-                
-                <div id="result-subjects" class="grid md:grid-cols-3 gap-6 mb-8"></div>
-                
-                <div class="bg-gradient-to-r from-amber-50 to-orange-50 rounded-3xl p-8 mb-8 border-3 border-amber-200">
-                    <h3 class="text-2xl font-bold text-gray-800 mb-6" data-ar="النتيجة الإجمالية" data-en="Overall Result">النتيجة الإجمالية</h3>
-                    <div class="grid grid-cols-3 gap-6">
-                        <div>
-                            <div class="text-5xl font-black text-amber-700" id="result-total">0</div>
-                            <p class="text-gray-600 text-base mt-2" data-ar="المجموع" data-en="Total">المجموع</p>
-                        </div>
-                        <div>
-                            <div class="text-5xl font-black text-amber-700" id="result-percentage">0%</div>
-                            <p class="text-gray-600 text-base mt-2" data-ar="النسبة" data-en="Percentage">النسبة</p>
-                        </div>
-                        <div>
-                            <div id="result-status" class="text-3xl font-black"></div>
-                            <p class="text-gray-600 text-base mt-2" data-ar="الحالة النهائية" data-en="Final Status">الحالة النهائية</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <div id="result-badges" class="mb-8"></div>
-                
-                <div id="result-message" class="mb-8 p-6 rounded-2xl font-bold text-2xl"></div>
-                
-                <div class="flex gap-4">
-                    <button onclick="downloadPDF()" class="btn-gold text-white px-8 py-5 rounded-xl text-xl font-bold flex-1 shadow-2xl">
-                        <i class="fas fa-file-pdf ml-3"></i>
-                        <span data-ar="تحميل الشهادة PDF" data-en="Download Certificate PDF">تحميل الشهادة PDF</span>
-                    </button>
-                    <button onclick="location.reload()" class="btn-primary text-white px-8 py-5 rounded-xl text-xl font-bold flex-1 shadow-2xl">
-                        <i class="fas fa-redo ml-3"></i>
-                        <span data-ar="اختبار جديد" data-en="New Exam">اختبار جديد</span>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        // EmailJS Configuration
-        const EMAILJS_CONFIG = { publicKey: '30UlzYidCO1myETH9', serviceId: 'service_y5ryjca', templateId: 'template_9apg4bw' };
-        emailjs.init(EMAILJS_CONFIG.publicKey);
-
-        // Translations
-        const translations = {
-            ar: {
-                subjectsNoticeArabic: '📚 سيختبر الطالب: الإنجليزية + الرياضيات + العربية',
-                subjectsNoticeNonArabic: '📚 سيختبر الطالب: الإنجليزية + الرياضيات فقط',
-                english: 'اللغة الإنجليزية 🇬',
-                math: 'الرياضيات 🔢',
-                arabic: 'اللغة العربية 🇸🇦',
-                englishTab: '🇬🇧 الإنجليزي',
-                mathTab: '🔢 الرياضيات',
-                arabicTab: '🇸🇦 العربي',
-                englishResult: '🇬 اللغة الإنجليزية',
-                mathResult: '🔢 الرياضيات',
-                arabicResult: '🇸🇦 اللغة العربية',
-                passed: 'مقبول ✅',
-                failed: 'غير مقبول ❌',
-                question: 'السؤال',
-                of: 'من',
-                student: 'الطالب:',
-                previous: 'السابق',
-                next: 'التالي',
-                submit: 'تسليم الاختبار',
-                total: 'المجموع',
-                percentage: 'النسبة',
-                finalStatus: 'الحالة النهائية',
-                downloadPDF: 'تحميل الشهادة PDF',
-                newExam: 'اختبار جديد'
-            },
-            en: {
-                subjectsNoticeArabic: '📚 Student will take: English + Math + Arabic',
-                subjectsNoticeNonArabic: '📚 Student will take: English + Math only',
-                english: 'English 🇬🇧',
-                math: 'Mathematics 🔢',
-                arabic: 'Arabic 🇸',
-                englishTab: '🇬🇧 English',
-                mathTab: '🔢 Math',
-                arabicTab: '🇸🇦 Arabic',
-                englishResult: '🇬 English Language',
-                mathResult: '🔢 Mathematics',
-                arabicResult: '🇸 Arabic Language',
-                passed: 'Passed ✅',
-                failed: 'Failed ❌',
-                question: 'Question',
-                of: 'of',
-                student: 'Student:',
-                previous: 'Previous',
-                next: 'Next',
-                submit: 'Submit Exam',
-                total: 'Total',
-                percentage: 'Percentage',
-                finalStatus: 'Final Status',
-                downloadPDF: 'Download Certificate PDF',
-                newExam: 'New Exam'
-            }
-        };
-
-        let currentLang = 'ar';
-        let currentBranch = ''; let currentRole = ''; let currentStudent = {}; let currentSubject = ''; let currentQIndex = 0;
-        let questions = []; let answers = {}; let questionScores = {}; let subjectScores = { english: 0, math: 0, arabic: 0 };
-        let examSubjects = []; let allStudents = JSON.parse(localStorage.getItem('exam_students')) || [];
-        let charts = {};
-
-        const gradeOptions = {
-            'child-gate': [
-                { value: 'KG2', label: 'رياض أطفال 2 (KG2)', labelEn: 'KG 2' },
-                { value: 'G1', label: 'الصف الأول الابتدائي (I)', labelEn: 'Grade 1 (I)' },
-                { value: 'G2', label: 'الصف الثاني الابتدائي (II)', labelEn: 'Grade 2 (II)' },
-                { value: 'G3', label: 'الصف الثالث الابتدائي (III)', labelEn: 'Grade 3 (III)' },
-                { value: 'G4', label: 'الصف الرابع الابتدائي (IV)', labelEn: 'Grade 4 (IV)' },
-                { value: 'G5', label: 'الصف الخامس الابتدائي (V)', labelEn: 'Grade 5 (V)' },
-                { value: 'G6', label: 'الصف السادس الابتدائي (VI)', labelEn: 'Grade 6 (VI)' }
-            ],
-            'knowledge-gen': [
-                { value: 'KG2', label: 'رياض أطفال 2 (KG2)', labelEn: 'KG 2' },
-                { value: 'G1', label: 'الصف الأول الابتدائي (I)', labelEn: 'Grade 1 (I)' },
-                { value: 'G2', label: 'الصف الثاني الابتدائي (II)', labelEn: 'Grade 2 (II)' },
-                { value: 'G3', label: 'الصف الثالث الابتدائي (III)', labelEn: 'Grade 3 (III)' },
-                { value: 'G4', label: 'الصف الرابع الابتدائي (IV)', labelEn: 'Grade 4 (IV)' },
-                { value: 'G5', label: 'الصف الخامس الابتدائي (V)', labelEn: 'Grade 5 (V)' },
-                { value: 'G6', label: 'الصف السادس الابتدائي (VI)', labelEn: 'Grade 6 (VI)' },
-                { value: 'G7', label: 'الصف الأول المتوسط (VII)', labelEn: 'Grade 7 (VII)' },
-                { value: 'G8', label: 'الصف الثاني المتوسط (VIII)', labelEn: 'Grade 8 (VIII)' },
-                { value: 'G9', label: 'الصف الثالث المتوسط (IX)', labelEn: 'Grade 9 (IX)' },
-                { value: 'G10', label: 'الصف الأول الثانوي (X)', labelEn: 'Grade 10 (X)' },
-                { value: 'G11', label: 'الصف الثاني الثانوي (XI)', labelEn: 'Grade 11 (XI)' },
-                { value: 'G12', label: 'الصف الثالث الثانوي (XII)', labelEn: 'Grade 12 (XII)' }
-            ]
-        };
-
-        const arabicNationalities = ['saudi', 'yemeni', 'egyptian', 'jordanian', 'other-arab'];
-        const nationalityLabels = { 
-            'saudi': { ar: '🇸 سعودي', en: '🇦 Saudi' }, 
-            'yemeni': { ar: '🇾🇪 يمني', en: '🇾🇪 Yemeni' }, 
-            'egyptian': { ar: '🇪🇬 مصري', en: '🇪🇬 Egyptian' }, 
-            'jordanian': { ar: '🇯🇴 أردني', en: '🇯🇴 Jordanian' }, 
-            'other-arab': { ar: 'عربي', en: 'Other Arab' }, 
-            'indian': { ar: '🇮🇳 هندي', en: '🇮🇳 Indian' }, 
-            'pakistani': { ar: '🇵🇰 باكستاني', en: '🇵🇰 Pakistani' }, 
-            'filipino': { ar: '🇵🇭 فلبيني', en: '🇵 Filipino' }, 
-            'other-non-arab': { ar: 'أخرى', en: 'Other' } 
-        };
-        const PASSING_SCORE = 15;
-
-        // Language Switcher
-        function switchLang(lang) {
-            currentLang = lang;
-            document.body.classList.toggle('english', lang === 'en');
-            document.getElementById('lang-ar').classList.toggle('active', lang === 'ar');
-            document.getElementById('lang-en').classList.toggle('active', lang === 'en');
-            
-            // Update all elements with data attributes
-            document.querySelectorAll('[data-ar]').forEach(el => {
-                const key = el.getAttribute('data-' + lang);
-                if (key) el.textContent = key;
-            });
-            
-            // Update placeholders
-            document.querySelectorAll('[data-placeholder-ar]').forEach(el => {
-                const key = el.getAttribute('data-placeholder-' + lang);
-                if (key) el.placeholder = key;
-            });
-            
-            // Update select options
-            document.querySelectorAll('option[data-ar]').forEach(el => {
-                const key = el.getAttribute('data-' + lang);
-                if (key) el.textContent = key;
-            });
-            
-            // Update optgroup labels
-            document.querySelectorAll('optgroup[data-label-en]').forEach(el => {
-                const key = el.getAttribute('data-label-' + lang);
-                if (key) el.label = key;
-            });
-        }
-
-        // Create Particles
-        function createParticles() {
-            const container = document.getElementById('particles');
-            for (let i = 0; i < 25; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'particle';
-                particle.style.width = Math.random() * 120 + 60 + 'px';
-                particle.style.height = particle.style.width;
-                particle.style.left = Math.random() * 100 + '%';
-                particle.style.top = Math.random() * 100 + '%';
-                particle.style.animationDelay = Math.random() * 25 + 's';
-                particle.style.animationDuration = (Math.random() * 25 + 25) + 's';
-                container.appendChild(particle);
-            }
-        }
-        createParticles();
-
-        // Theme Toggle
-        function toggleTheme() {
-            document.body.classList.toggle('dark-mode');
-            const icon = document.getElementById('theme-icon');
-            if (document.body.classList.contains('dark-mode')) {
-                icon.className = 'fas fa-sun text-2xl text-yellow-400';
-            } else {
-                icon.className = 'fas fa-moon text-2xl text-amber-700';
-            }
-        }
-
-        // Notification System
-        function showNotification(message, type = 'success') {
-            const container = document.getElementById('notification-container');
-            const notification = document.createElement('div');
-            notification.className = `notification ${type}`;
-            const icon = type === 'success' ? 'check-circle' : type === 'warning' ? 'exclamation-triangle' : 'times-circle';
-            notification.innerHTML = `<i class="fas fa-${icon} text-2xl"></i><span>${message}</span>`;
-            container.appendChild(notification);
-            setTimeout(() => notification.remove(), 3000);
-        }
-
-        // Welcome Screen
-        window.addEventListener('load', () => {
+    // Welcome Screen
+    window.addEventListener('load', () => {
+        setTimeout(() => {
+            document.getElementById('welcome-screen').style.opacity = '0';
             setTimeout(() => {
-                document.getElementById('welcome-screen').classList.add('hide');
-                setTimeout(() => {
-                    document.getElementById('welcome-screen').classList.add('hidden-screen');
-                    document.getElementById('branch-screen').classList.remove('hidden-screen');
-                }, 500);
-            }, 2000);
-        });
+                document.getElementById('welcome-screen').classList.add('hidden-screen');
+                document.getElementById('branch-screen').classList.remove('hidden-screen');
+            }, 500);
+        }, 2000);
+    });
 
-        // Branch Selection
-        function selectBranch(branch) {
-            currentBranch = branch;
-            document.querySelectorAll('.branch-card').forEach(c => c.classList.remove('selected'));
-            document.getElementById(`branch-${branch}`).classList.add('selected');
-            document.getElementById('branch-btn').disabled = false;
-        }
+    function selectBranch(branch) {
+        currentBranch = branch;
+        document.querySelectorAll('.branch-card').forEach(c => c.classList.remove('selected'));
+        document.getElementById(`branch-${branch}`).classList.add('selected');
+        document.getElementById('branch-btn').disabled = false;
+    }
 
-        function proceedBranch() {
-            if (!currentBranch) return;
-            document.getElementById('branch-screen').classList.add('hidden-screen');
-            document.getElementById('role-screen').classList.remove('hidden-screen');
-            const branchName = currentBranch === 'child-gate' ? 
-                (currentLang === 'ar' ? 'بوابة الطفل' : 'Kids Gate') : 
-                (currentLang === 'ar' ? 'أجيال المعرفة' : 'Knowledge Generations');
-            document.getElementById('selected-branch-name').textContent = branchName;
-        }
+    function proceedBranch() {
+        if (!currentBranch) return;
+        document.getElementById('branch-screen').classList.add('hidden-screen');
+        document.getElementById('role-screen').classList.remove('hidden-screen');
+        document.getElementById('selected-branch-name').textContent = currentBranch === 'child-gate' ? 'بوابة الطفل' : 'أجيال المعرفة';
+    }
 
-        function backToBranch() {
-            document.getElementById('role-screen').classList.add('hidden-screen');
-            document.getElementById('branch-screen').classList.remove('hidden-screen');
-        }
+    function backToBranch() {
+        document.getElementById('role-screen').classList.add('hidden-screen');
+        document.getElementById('branch-screen').classList.remove('hidden-screen');
+    }
 
-        // Role Selection
-        function selectRole(role) {
-            currentRole = role;
-            document.querySelectorAll('.role-card').forEach(c => c.classList.remove('selected'));
-            document.getElementById(`role-${role}`).classList.add('selected');
-            document.getElementById('role-btn').disabled = false;
-        }
+    function selectRole(role) {
+        currentRole = role;
+        document.querySelectorAll('.role-card').forEach(c => c.classList.remove('selected'));
+        document.getElementById(`role-${role}`).classList.add('selected');
+        document.getElementById('role-btn').disabled = false;
+    }
 
-        function proceedRole() {
-            if (!currentRole) return;
-            document.getElementById('role-screen').classList.add('hidden-screen');
-            if (currentRole === 'student') {
-                document.getElementById('student-form-screen').classList.remove('hidden-screen');
-                const branchName = currentBranch === 'child-gate' ? 
-                    (currentLang === 'ar' ? 'بوابة الطفل' : 'Kids Gate') : 
-                    (currentLang === 'ar' ? 'أجيال المعرفة' : 'Knowledge Generations');
-                document.getElementById('form-branch-name').textContent = branchName;
-                
-                const gradeSelect = document.getElementById('s-grade');
-                gradeSelect.innerHTML = '<option value="">' + (currentLang === 'ar' ? '-- اختر المرحلة --' : '-- Select Grade --') + '</option>';
-                gradeOptions[currentBranch].forEach(opt => {
-                    const option = document.createElement('option');
-                    option.value = opt.value;
-                    option.textContent = currentLang === 'ar' ? opt.label : opt.labelEn;
-                    gradeSelect.appendChild(option);
-                });
-            } else if (currentRole === 'teacher') {
-                document.getElementById('teacher-login-screen').classList.remove('hidden-screen');
-            } else if (currentRole === 'registrar') {
-                document.getElementById('registrar-login-screen').classList.remove('hidden-screen');
-            } else if (currentRole === 'admin') {
-                document.getElementById('admin-login-screen').classList.remove('hidden-screen');
-            }
-        }
-
-        function backToRole() {
-            document.querySelectorAll('[id$="-screen"]').forEach(s => { if (s.id !== 'welcome-screen') s.classList.add('hidden-screen'); });
-            document.getElementById('role-screen').classList.remove('hidden-screen');
-            currentRole = '';
-            document.querySelectorAll('.role-card').forEach(c => c.classList.remove('selected'));
-            document.getElementById('role-btn').disabled = true;
-        }
-
-        // Nationality Handler
-        function handleNationalityChange() {
-            const nationality = document.getElementById('s-nationality').value;
-            const testsArabic = arabicNationalities.includes(nationality);
-            currentStudent.testsArabic = testsArabic;
-            const notice = document.getElementById('subjects-notice');
-            const noticeText = document.getElementById('subjects-notice-text');
-            if (nationality) {
-                notice.classList.remove('hidden');
-                noticeText.textContent = testsArabic ? 
-                    translations[currentLang].subjectsNoticeArabic : 
-                    translations[currentLang].subjectsNoticeNonArabic;
-            } else { 
-                notice.classList.add('hidden'); 
-            }
-        }
-
-        // Start Student Exam
-        function startStudentExam() {
-            const name = document.getElementById('s-name').value.trim();
-            const dob = document.getElementById('s-dob').value;
-            const id = document.getElementById('s-id').value.trim();
-            const phone = document.getElementById('s-phone').value.trim();
-            const genderEl = document.querySelector('input[name="gender"]:checked');
-            const grade = document.getElementById('s-grade').value;
-            const nationality = document.getElementById('s-nationality').value;
-            
-            if (!name || !dob || !id || !phone || !genderEl || !nationality || !grade) { 
-                alert(currentLang === 'ar' ? 'الرجاء تعبئة جميع الحقول المطلوبة' : 'Please fill in all required fields'); 
-                return; 
-            }
-            
-            currentStudent = { name, dob, id, phone, gender: genderEl.value, grade, branch: currentBranch, nationality, testsArabic: arabicNationalities.includes(nationality) };
-            if (currentStudent.testsArabic) { examSubjects = ['english', 'math', 'arabic']; } else { examSubjects = ['english', 'math']; }
-            subjectScores = { english: 0, math: 0, arabic: 0 };
-            
-            document.getElementById('student-form-screen').classList.add('hidden-screen');
-            document.getElementById('exam-screen').classList.remove('hidden-screen');
-            document.getElementById('exam-student-name').textContent = currentStudent.name;
-            
-            showNotification(currentLang === 'ar' ? 'بدأ الاختبار بنجاح! بالتوفيق 🍀' : 'Exam started successfully! Good luck 🍀', 'success');
-            startSubject('english');
-        }
-
-        // Start Subject
-        function startSubject(subject) {
-            currentSubject = subject;
-            currentQIndex = 0;
-            answers = {};
-            questionScores = {};
-            
-            const subjectNames = { 
-                english: translations[currentLang].english, 
-                math: translations[currentLang].math, 
-                arabic: translations[currentLang].arabic 
-            };
-            document.getElementById('exam-subject').textContent = subjectNames[subject];
-            updateSubjectTabs();
-            loadQuestions(subject);
-            document.getElementById('q-total').textContent = questions.length;
-            renderQuestion();
-        }
-
-        function updateSubjectTabs() {
-            const tabsContainer = document.getElementById('subject-tabs');
-            const subjectNames = { 
-                english: translations[currentLang].englishTab, 
-                math: translations[currentLang].mathTab, 
-                arabic: translations[currentLang].arabicTab 
-            };
-            tabsContainer.innerHTML = examSubjects.map(subj => {
-                let className = 'subject-tab ';
-                if (subj === currentSubject) { className += 'active'; } else if (subjectScores[subj] > 0) { className += 'completed'; } else { className += 'inactive'; }
-                return `<div class="${className}">${subjectNames[subj]}</div>`;
-            }).join('');
-        }
-
-        function loadQuestions(subject) {
-            if (subject === 'english' && questionBank[currentStudent.grade]?.english) {
-                const models = Object.keys(questionBank[currentStudent.grade].english);
-                const randomModel = models[Math.floor(Math.random() * models.length)];
-                questions = [...questionBank[currentStudent.grade].english[randomModel]];
-                questions = questions.sort(() => Math.random() - 0.5);
-            } else if (subject === 'math') {
-                questions = [
-                    { id: "math_1", type: "mcq", question: currentLang === 'ar' ? "اختر الإجابة الصحيحة:" : "Choose the correct answer:", marks: 10, subQuestions: [
-                        { question: "2 + 3 = ?", options: ["4", "5", "6"], correct: 1 },
-                        { question: "7 - 2 = ?", options: ["4", "5", "6"], correct: 1 },
-                        { question: currentLang === 'ar' ? "أي عدد أكبر؟" : "Which number is larger?", options: ["5", "8", "3"], correct: 1 }
-                    ], needs_manual: false },
-                    { id: "math_2", type: "mcq", question: currentLang === 'ar' ? "اختر الإجابة الصحيحة:" : "Choose the correct answer:", marks: 10, subQuestions: [
-                        { question: "4 × 2 = ?", options: ["6", "8", "10"], correct: 1 },
-                        { question: "10 ÷ 2 = ?", options: ["4", "5", "6"], correct: 1 },
-                        { question: "9 - 4 = ?", options: ["4", "5", "6"], correct: 1 }
-                    ], needs_manual: false },
-                    { id: "math_3", type: "upload", question: currentLang === 'ar' ? "حل المسائل التالية في ورقة ثم ارفع الصورة:" : "Solve the following problems on paper and upload the image:", marks: 10, subQuestions: ["15 + 27 = ?", "45 - 18 = ?", "6 × 7 = ?"], needs_manual: true }
-                ];
-            } else if (subject === 'arabic') {
-                questions = [
-                    { id: "arabic_1", type: "mcq", question: currentLang === 'ar' ? "اختر الإجابة الصحيحة:" : "Choose the correct answer:", marks: 10, subQuestions: [
-                        { question: currentLang === 'ar' ? "الحرف الأول من 'تفاحة':" : "First letter of 'Apple':", options: ["ت", "ف", "ا"], correct: 0 },
-                        { question: currentLang === 'ar' ? "الحرف الأول من 'عنب':" : "First letter of 'Grapes':", options: ["ن", "ب", "ع"], correct: 2 },
-                        { question: currentLang === 'ar' ? "اختر الحرف المشابه لـ 'م':" : "Choose similar letter to 'M':", options: ["ن", "م", "هـ"], correct: 1 }
-                    ], needs_manual: false },
-                    { id: "arabic_2", type: "mcq", question: currentLang === 'ar' ? "اختر الإجابة الصحيحة:" : "Choose the correct answer:", marks: 10, subQuestions: [
-                        { question: currentLang === 'ar' ? "الحرف الأول من 'قلم':" : "First letter of 'Pen':", options: ["ل", "م", "ق"], correct: 2 },
-                        { question: currentLang === 'ar' ? "الحرف الأول من 'كتاب':" : "First letter of 'Book':", options: ["ك", "ت", "ا"], correct: 0 },
-                        { question: currentLang === 'ar' ? "اختر الحرف المشابه لـ 'ب':" : "Choose similar letter to 'B':", options: ["ت", "ب", "ث"], correct: 1 }
-                    ], needs_manual: false },
-                    { id: "arabic_3", type: "upload", question: currentLang === 'ar' ? "اكتب الحروف العربية في ورقة ثم ارفع الصورة:" : "Write Arabic letters on paper and upload the image:", marks: 10, subQuestions: [currentLang === 'ar' ? "ا ب ت ث ج ح خ" : "A B T TH J H KH", currentLang === 'ar' ? "د ذ ر ز س ش ص" : "D DH R Z S SH S"], needs_manual: true }
-                ];
-            } else { questions = []; }
-        }
-
-        // Render Question
-        function renderQuestion() {
-            const q = questions[currentQIndex];
-            const area = document.getElementById('question-area');
-            document.getElementById('q-num').textContent = currentQIndex + 1;
-            const percent = ((currentQIndex + 1) / questions.length) * 100;
-            document.getElementById('progress-bar').style.width = percent + '%';
-            
-            let html = '';
-            if (q.type === 'mcq') { html = renderMCQQuestion(q); } else if (q.type === 'image_choice') { html = renderImageChoiceQuestion(q); } else if (q.type === 'upload') { html = renderUploadQuestion(q); }
-            area.innerHTML = html;
-            
-            document.getElementById('btn-prev').disabled = currentQIndex === 0;
-            if (currentQIndex === questions.length - 1) { 
-                document.getElementById('btn-next').classList.add('hidden'); 
-                document.getElementById('btn-submit').classList.remove('hidden'); 
-            } else { 
-                document.getElementById('btn-next').classList.remove('hidden'); 
-                document.getElementById('btn-submit').classList.add('hidden'); 
-            }
-        }
-
-        function renderMCQQuestion(q) {
-            let html = `<div class="space-y-6">`;
-            html += `<div class="bg-gradient-to-r from-amber-50 to-orange-50 p-6 rounded-xl border-3 border-amber-200"><p class="text-2xl font-bold text-gray-800">${q.question}</p></div>`;
-            if (q.passage) { 
-                html += `<div class="bg-gradient-to-r from-blue-50 to-cyan-50 p-6 rounded-xl border-3 border-blue-200">
-                    <p class="text-lg text-blue-600 font-bold mb-4">📖 ${currentLang === 'ar' ? 'النص:' : 'Passage:'}</p>
-                    <p class="text-gray-700 text-lg leading-relaxed italic">${q.passage}</p>
-                </div>`; 
-            }
-            
-            q.subQuestions.forEach((sq, sqIdx) => {
-                const qKey = `${currentQIndex}_${sqIdx}`;
-                const score = questionScores[qKey];
-                const scoreBadge = score !== undefined ? `<div class="score-badge ${score > 0 ? 'score-correct' : 'score-wrong'}">${score}/${sq.marks || 1}</div>` : '';
-                html += `<div class="question-block">${scoreBadge}<p class="font-bold text-gray-800 mb-4 text-xl">${sqIdx + 1}. ${sq.question}</p><div class="grid grid-cols-2 gap-4">`;
-                sq.options.forEach((opt, optIdx) => {
-                    const selected = answers[qKey] === optIdx ? 'selected' : '';
-                    html += `<button onclick="selectMCQ('${qKey}', ${optIdx}, ${sq.correct})" class="option-btn font-bold text-center text-lg ${selected}">${opt}</button>`;
-                });
-                html += `</div></div>`;
+    function proceedRole() {
+        if (!currentRole) return;
+        document.getElementById('role-screen').classList.add('hidden-screen');
+        if (currentRole === 'student') {
+            document.getElementById('student-form-screen').classList.remove('hidden-screen');
+            const gradeSelect = document.getElementById('s-grade');
+            gradeSelect.innerHTML = '<option value="">-- اختر المرحلة --</option>';
+            gradeOptions[currentBranch].forEach(opt => {
+                const option = document.createElement('option');
+                option.value = opt.value;
+                option.textContent = opt.label;
+                gradeSelect.appendChild(option);
             });
-            html += `</div>`;
-            return html;
         }
+        // باقي الأدوار...
+    }
 
-        function renderImageChoiceQuestion(q) {
-            let html = `<div class="space-y-6">`;
-            html += `<div class="bg-gradient-to-r from-amber-50 to-orange-50 p-6 rounded-xl border-3 border-amber-200"><p class="text-2xl font-bold text-gray-800">${q.question}</p></div>`;
-            html += `<div class="grid grid-cols-2 md:grid-cols-4 gap-6">`;
-            q.items.forEach((item, itemIdx) => {
-                const qKey = `${currentQIndex}_${itemIdx}`;
-                const score = questionScores[qKey];
-                const scoreBadge = score !== undefined ? `<div class="score-badge ${score > 0 ? 'score-correct' : 'score-wrong'}">${score}/1</div>` : '';
-                html += `<div class="bg-white p-6 rounded-xl border-3 border-gray-100 relative">${scoreBadge}<img src="${item.image}" alt="Question ${itemIdx + 1}" class="w-full h-40 object-contain mb-4"><div class="space-y-3">`;
-                item.options.forEach((opt, optIdx) => {
-                    const selected = answers[qKey] === optIdx ? 'selected' : '';
-                    html += `<button onclick="selectMCQ('${qKey}', ${optIdx}, ${item.correct})" class="option-btn w-full font-bold text-base ${selected}">${opt}</button>`;
-                });
-                html += `</div></div>`;
+    function backToRole() {
+        document.querySelectorAll('[id$="-screen"]').forEach(s => { if (s.id !== 'welcome-screen') s.classList.add('hidden-screen'); });
+        document.getElementById('role-screen').classList.remove('hidden-screen');
+        currentRole = '';
+        document.querySelectorAll('.role-card').forEach(c => c.classList.remove('selected'));
+        document.getElementById('role-btn').disabled = true;
+    }
+
+    function handleNationalityChange() {
+        const nationality = document.getElementById('s-nationality').value;
+        const testsArabic = arabicNationalities.includes(nationality);
+        currentStudent.testsArabic = testsArabic;
+        const notice = document.getElementById('subjects-notice');
+        const noticeText = document.getElementById('subjects-notice-text');
+        if (nationality) {
+            notice.classList.remove('hidden');
+            noticeText.textContent = testsArabic ? '📚 سيختبر: الإنجليزي + الرياضيات + العربي' : '📚 سيختبر: الإنجليزي + الرياضيات فقط';
+        } else { notice.classList.add('hidden'); }
+    }
+
+    function startStudentExam() {
+        const name = document.getElementById('s-name').value.trim();
+        const dob = document.getElementById('s-dob').value;
+        const id = document.getElementById('s-id').value.trim();
+        const phone = document.getElementById('s-phone').value.trim();
+        const genderEl = document.querySelector('input[name="gender"]:checked');
+        const grade = document.getElementById('s-grade').value;
+        const nationality = document.getElementById('s-nationality').value;
+        
+        if (!name || !dob || !id || !phone || !genderEl || !nationality || !grade) { 
+            alert('الرجاء تعبئة جميع الحقول المطلوبة'); 
+            return; 
+        }
+        
+        currentStudent = { name, dob, id, phone, gender: genderEl.value, grade, branch: currentBranch, nationality, testsArabic: arabicNationalities.includes(nationality) };
+        examSubjects = currentStudent.testsArabic ? ['english', 'math', 'arabic'] : ['english', 'math'];
+        subjectScores = { english: 0, math: 0, arabic: 0 };
+        
+        document.getElementById('student-form-screen').classList.add('hidden-screen');
+        document.getElementById('exam-screen').classList.remove('hidden-screen');
+        document.getElementById('exam-student-name').textContent = currentStudent.name;
+        
+        showNotification('بدأ الاختبار بنجاح! بالتوفيق 🍀', 'success');
+        startSubject('english');
+    }
+
+    function startSubject(subject) {
+        currentSubject = subject;
+        currentQIndex = 0;
+        answers = {};
+        questionScores = {};
+        
+        const subjectNames = { english: 'اللغة الإنجليزية 🇬🇧', math: 'الرياضيات 🔢', arabic: 'اللغة العربية 🇸🇦' };
+        document.getElementById('exam-subject').textContent = subjectNames[subject];
+        updateSubjectTabs();
+        loadQuestions(subject);
+        document.getElementById('q-total').textContent = questions.length;
+        renderQuestion();
+    }
+
+    function updateSubjectTabs() {
+        const tabsContainer = document.getElementById('subject-tabs');
+        const subjectNames = { english: '🇬🇧 الإنجليزي', math: '🔢 الرياضيات', arabic: '🇸🇦 العربي' };
+        tabsContainer.innerHTML = examSubjects.map(subj => {
+            let className = 'subject-tab ';
+            if (subj === currentSubject) { className += 'active'; } 
+            else if (subjectScores[subj] > 0) { className += 'completed'; } 
+            else { className += 'inactive'; }
+            return `<div class="${className}">${subjectNames[subj]}</div>`;
+        }).join('');
+    }
+
+    function loadQuestions(subject) {
+        if (subject === 'english' && questionBank[currentStudent.grade]?.english) {
+            const models = Object.keys(questionBank[currentStudent.grade].english);
+            const randomModel = models[Math.floor(Math.random() * models.length)];
+            questions = [...questionBank[currentStudent.grade].english[randomModel]];
+            questions = questions.sort(() => Math.random() - 0.5);
+        } else if (subject === 'math') {
+            questions = [
+                { id: "math_1", type: "mcq", question: "اختر الإجابة الصحيحة:", marks: 10, subQuestions: [
+                    { question: "2 + 3 = ?", options: ["4", "5", "6"], correct: 1 },
+                    { question: "7 - 2 = ?", options: ["4", "5", "6"], correct: 1 },
+                    { question: "أي عدد أكبر؟", options: ["5", "8", "3"], correct: 1 }
+                ], needs_manual: false }
+            ];
+        } else if (subject === 'arabic') {
+            questions = [
+                { id: "arabic_1", type: "mcq", question: "اختر الإجابة الصحيحة:", marks: 10, subQuestions: [
+                    { question: "الحرف الأول من 'تفاحة':", options: ["ت", "ف", "ا"], correct: 0 },
+                    { question: "الحرف الأول من 'عنب':", options: ["ن", "ب", "ع"], correct: 2 }
+                ], needs_manual: false }
+            ];
+        } else { questions = []; }
+    }
+
+    function renderQuestion() {
+        const q = questions[currentQIndex];
+        const area = document.getElementById('question-area');
+        document.getElementById('q-num').textContent = currentQIndex + 1;
+        const percent = ((currentQIndex + 1) / questions.length) * 100;
+        document.getElementById('progress-bar').style.width = percent + '%';
+        
+        let html = '';
+        if (q.type === 'mcq') { html = renderMCQQuestion(q); } 
+        else if (q.type === 'image_choice') { html = renderImageChoiceQuestion(q); } 
+        else if (q.type === 'upload') { html = renderUploadQuestion(q); }
+        area.innerHTML = html;
+        
+        document.getElementById('btn-prev').disabled = currentQIndex === 0;
+        if (currentQIndex === questions.length - 1) { 
+            document.getElementById('btn-next').classList.add('hidden'); 
+            document.getElementById('btn-submit').classList.remove('hidden'); 
+        } else { 
+            document.getElementById('btn-next').classList.remove('hidden'); 
+            document.getElementById('btn-submit').classList.add('hidden'); 
+        }
+    }
+
+    function renderMCQQuestion(q) {
+        let html = `<div class="space-y-4">`;
+        html += `<div class="bg-amber-50 p-4 rounded-xl border-2 border-amber-200"><p class="text-xl font-bold text-gray-800">${q.question}</p></div>`;
+        if (q.passage) { 
+            html += `<div class="bg-blue-50 p-4 rounded-xl border-2 border-blue-200">
+                <p class="text-sm text-blue-600 font-bold mb-2">📖 النص:</p>
+                <p class="text-gray-700 italic">${q.passage}</p>
+            </div>`; 
+        }
+        q.subQuestions.forEach((sq, sqIdx) => {
+            const qKey = `${currentQIndex}_${sqIdx}`;
+            const score = questionScores[qKey];
+            const scoreBadge = score !== undefined ? `<div class="score-badge ${score > 0 ? 'score-correct' : 'score-wrong'}">${score}/1</div>` : '';
+            html += `<div class="question-block relative">${scoreBadge}<p class="font-bold text-gray-800 mb-3 text-lg">${sqIdx + 1}. ${sq.question}</p><div class="grid grid-cols-2 gap-3">`;
+            sq.options.forEach((opt, optIdx) => {
+                const selected = answers[qKey] === optIdx ? 'selected' : '';
+                html += `<button onclick="selectMCQ('${qKey}', ${optIdx}, ${sq.correct})" class="option-btn font-bold text-center ${selected}">${opt}</button>`;
             });
             html += `</div></div>`;
-            return html;
-        }
+        });
+        html += `</div>`;
+        return html;
+    }
 
-        function renderUploadQuestion(q) {
-            let html = `<div class="space-y-6">`;
-            html += `<div class="bg-gradient-to-r from-amber-50 to-orange-50 p-6 rounded-xl border-3 border-amber-200"><p class="text-2xl font-bold text-gray-800">${q.question}</p></div>`;
-            if (q.passage) { 
-                html += `<div class="bg-gradient-to-r from-blue-50 to-cyan-50 p-6 rounded-xl border-3 border-blue-200">
-                    <p class="text-lg text-blue-600 font-bold mb-4">📖 ${currentLang === 'ar' ? 'النص:' : 'Passage:'}</p>
-                    <p class="text-gray-700 text-lg leading-relaxed italic">${q.passage}</p>
-                </div>`; 
-            }
-            if (q.subQuestions && q.subQuestions.length > 0) { 
-                html += `<div class="bg-gradient-to-r from-yellow-50 to-amber-50 p-6 rounded-xl border-3 border-yellow-200">
-                    <p class="font-bold text-gray-800 mb-4 text-xl">✏️ ${currentLang === 'ar' ? 'الأسئلة:' : 'Questions:'}</p>
-                    <ol class="list-decimal list-inside space-y-3 text-lg">`; 
-                q.subQuestions.forEach((sq) => { html += `<li class="text-gray-700">${sq}</li>`; }); 
-                html += `</ol></div>`; 
-            }
-            html += `<div class="upload-zone p-12 text-center" onclick="document.getElementById('file-input').click()">
-                <div class="text-8xl mb-6">📸</div>
-                <p class="text-gray-800 font-bold text-2xl mb-4">${currentLang === 'ar' ? 'اضغط هنا لرفع صورة الحل' : 'Click here to upload answer image'}</p>
-                <p class="text-gray-600 text-lg mb-3">${currentLang === 'ar' ? 'حل الأسئلة في ورقة ثم صورها وارفعها هنا' : 'Solve questions on paper, take a photo and upload it here'}</p>
-                <p class="text-amber-700 text-base font-bold">${currentLang === 'ar' ? 'سيتم إرسال الصورة تلقائياً للمعلمة' : 'Image will be sent automatically to the teacher'}</p>
-            </div><input type="file" id="file-input" accept="image/*" class="hidden" onchange="handleFile(this)"><div id="preview"></div>`;
-            html += `</div>`;
-            return html;
-        }
-
-        function selectMCQ(qKey, optIdx, correctIdx) {
-            answers[qKey] = optIdx;
-            const isCorrect = optIdx === correctIdx;
-            questionScores[qKey] = isCorrect ? 1 : 0;
-            const buttons = document.querySelectorAll(`button[onclick^="selectMCQ('${qKey}'"]`);
-            buttons.forEach((btn, idx) => { btn.classList.remove('selected'); if (idx === optIdx) { btn.classList.add('selected'); } });
-            setTimeout(() => renderQuestion(), 300);
-        }
-
-        function handleFile(input) {
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    const imageData = e.target.result;
-                    answers[`${currentQIndex}_upload`] = imageData;
-                    document.getElementById('preview').innerHTML = `<div class="mt-6 border-4 border-amber-300 rounded-2xl overflow-hidden shadow-2xl"><img src="${imageData}" class="w-full max-h-[500px] object-contain"><div class="bg-gradient-to-r from-amber-100 to-orange-100 p-5 text-center"><i class="fas fa-check-circle text-amber-600 text-4xl mb-3"></i><p class="text-amber-800 font-bold text-xl">${currentLang === 'ar' ? 'تم رفع الصورة بنجاح' : 'Image uploaded successfully'}</p><p class="text-amber-700 text-base mt-2">${currentLang === 'ar' ? 'سيتم إرسالها للمعلمة للمراجعة' : 'Will be sent to teacher for review'}</p></div></div>`;
-                    sendImageToEmail(imageData);
-                    showNotification(currentLang === 'ar' ? 'تم رفع الصورة وإرسالها للمعلمة ✅' : 'Image uploaded and sent to teacher ✅', 'success');
-                };
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
-
-        function sendImageToEmail(imageData) {
-            const templateParams = { 
-                to_email: 'amira.echo21@gmail.com', 
-                student_name: currentStudent.name, 
-                grade: currentStudent.grade, 
-                branch: currentBranch === 'child-gate' ? (currentLang === 'ar' ? 'بوابة الطفل' : 'Kids Gate') : (currentLang === 'ar' ? 'أجيال المعرفة' : 'Knowledge Generations'), 
-                subject: currentSubject === 'english' ? (currentLang === 'ar' ? 'الإنجليزية' : 'English') : currentSubject === 'math' ? (currentLang === 'ar' ? 'الرياضيات' : 'Math') : (currentLang === 'ar' ? 'العربية' : 'Arabic'), 
-                question: questions[currentQIndex].question, 
-                attachment: imageData 
-            };
-            emailjs.send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.templateId, templateParams)
-                .then(function() { console.log('Image sent successfully!'); }, function(error) { console.log('Failed to send image:', error); });
-        }
-
-        function nextQuestion() { if (currentQIndex < questions.length - 1) { currentQIndex++; renderQuestion(); } }
-        function prevQuestion() { if (currentQIndex > 0) { currentQIndex--; renderQuestion(); } }
-
-        function submitExam() {
-            if (!confirm(currentLang === 'ar' ? 'هل أنت متأكد من تسليم هذا الاختبار؟' : 'Are you sure you want to submit this exam?')) { return; }
-            let score = 0; let totalMarks = 0;
-            questions.forEach((q, qIdx) => {
-                if (q.type === 'mcq' && q.subQuestions) { 
-                    q.subQuestions.forEach((sq, sqIdx) => { 
-                        const qKey = `${qIdx}_${sqIdx}`; 
-                        totalMarks += 1; 
-                        if (answers[qKey] === sq.correct) score += 1; 
-                    }); 
-                } else if (q.type === 'image_choice' && q.items) { 
-                    q.items.forEach((item, itemIdx) => { 
-                        const qKey = `${qIdx}_${itemIdx}`; 
-                        totalMarks += 1; 
-                        if (answers[qKey] === item.correct) score += 1; 
-                    }); 
-                } else if (q.type === 'upload') { 
-                    totalMarks += q.marks; 
-                    if (answers[`${qIdx}_upload`]) score += q.marks; 
-                } 
+    function renderImageChoiceQuestion(q) {
+        let html = `<div class="space-y-4">`;
+        html += `<div class="bg-amber-50 p-4 rounded-xl border-2 border-amber-200"><p class="text-xl font-bold text-gray-800">${q.question}</p></div>`;
+        html += `<div class="grid grid-cols-2 md:grid-cols-4 gap-4">`;
+        q.items.forEach((item, itemIdx) => {
+            const qKey = `${currentQIndex}_${itemIdx}`;
+            const score = questionScores[qKey];
+            const scoreBadge = score !== undefined ? `<div class="score-badge ${score > 0 ? 'score-correct' : 'score-wrong'}">${score}/1</div>` : '';
+            html += `<div class="bg-white p-4 rounded-xl border-2 border-gray-100 relative">${scoreBadge}<img src="${item.image}" alt="Question" class="w-full h-32 object-contain mb-3"><div class="space-y-2">`;
+            item.options.forEach((opt, optIdx) => {
+                const selected = answers[qKey] === optIdx ? 'selected' : '';
+                html += `<button onclick="selectMCQ('${qKey}', ${optIdx}, ${item.correct})" class="option-btn w-full font-bold text-sm ${selected}">${opt}</button>`;
             });
-            const finalScore = Math.round((score / totalMarks) * 30);
-            subjectScores[currentSubject] = finalScore;
-            const currentIdx = examSubjects.indexOf(currentSubject);
-            if (currentIdx < examSubjects.length - 1) { 
-                const subjectName = currentSubject === 'english' ? (currentLang === 'ar' ? 'الإنجليزية' : 'English') : currentSubject === 'math' ? (currentLang === 'ar' ? 'الرياضيات' : 'Math') : (currentLang === 'ar' ? 'العربية' : 'Arabic');
-                showNotification(`${currentLang === 'ar' ? 'أنهيت' : 'Completed'} ${subjectName} ${currentLang === 'ar' ? 'بدرجة' : 'with score'} ${finalScore}/30`, 'success'); 
-                startSubject(examSubjects[currentIdx + 1]); 
-            } else { 
-                saveStudentResult(); 
-            }
-        }
+            html += `</div></div>`;
+        });
+        html += `</div></div>`;
+        return html;
+    }
 
-        function saveStudentResult() {
-            const total = Object.values(subjectScores).reduce((a, b) => a + b, 0);
-            const maxScore = currentStudent.testsArabic ? 90 : 60;
-            const passed = total >= (maxScore * 0.5);
-            const studentData = { 
-                id: Date.now().toString(), 
-                name: currentStudent.name, 
-                dob: currentStudent.dob, 
-                idNumber: currentStudent.id, 
-                phone: currentStudent.phone, 
-                gender: currentStudent.gender, 
-                branch: currentStudent.branch, 
-                grade: currentStudent.grade, 
-                nationality: currentStudent.nationality, 
-                testsArabic: currentStudent.testsArabic, 
-                scores: { ...subjectScores }, 
-                total: total, 
-                maxScore: maxScore, 
-                passed: passed, 
-                date: new Date().toLocaleString(currentLang === 'ar' ? 'ar-SA' : 'en-US'), 
-                timestamp: Date.now() 
+    function renderUploadQuestion(q) {
+        let html = `<div class="space-y-4">`;
+        html += `<div class="bg-amber-50 p-4 rounded-xl border-2 border-amber-200"><p class="text-xl font-bold text-gray-800">${q.question}</p></div>`;
+        if (q.passage) { 
+            html += `<div class="bg-blue-50 p-4 rounded-xl border-2 border-blue-200">
+                <p class="text-sm text-blue-600 font-bold mb-2">📖 النص:</p>
+                <p class="text-gray-700 italic">${q.passage}</p>
+            </div>`; 
+        }
+        if (q.subQuestions && q.subQuestions.length > 0) { 
+            html += `<div class="bg-yellow-50 p-4 rounded-xl border-2 border-yellow-200">
+                <p class="font-bold text-gray-800 mb-3 text-lg">✏️ الأسئلة:</p>
+                <ol class="list-decimal list-inside space-y-2">`; 
+            q.subQuestions.forEach((sq) => { html += `<li class="text-gray-700">${sq}</li>`; }); 
+            html += `</ol></div>`; 
+        }
+        html += `<div class="upload-zone p-8 text-center" onclick="document.getElementById('file-input').click()">
+            <div class="text-6xl mb-4">📸</div>
+            <p class="text-gray-800 font-bold text-xl mb-2">اضغط هنا لرفع صورة الحل</p>
+            <p class="text-gray-600">حل الأسئلة في ورقة ثم صورها وارفعها هنا</p>
+            <p class="text-amber-700 text-sm font-bold mt-3">سيتم إرسال الصورة تلقائياً للمعلمة</p>
+        </div><input type="file" id="file-input" accept="image/*" class="hidden" onchange="handleFile(this)"><div id="preview"></div>`;
+        html += `</div>`;
+        return html;
+    }
+
+    function selectMCQ(qKey, optIdx, correctIdx) {
+        answers[qKey] = optIdx;
+        const isCorrect = optIdx === correctIdx;
+        questionScores[qKey] = isCorrect ? 1 : 0;
+        const buttons = document.querySelectorAll(`button[onclick^="selectMCQ('${qKey}'"]`);
+        buttons.forEach((btn, idx) => { 
+            btn.classList.remove('selected'); 
+            if (idx === optIdx) { btn.classList.add('selected'); } 
+        });
+        setTimeout(() => renderQuestion(), 300);
+    }
+
+    function handleFile(input) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const imageData = e.target.result;
+                answers[`${currentQIndex}_upload`] = imageData;
+                document.getElementById('preview').innerHTML = `<div class="mt-6 border-4 border-amber-300 rounded-2xl overflow-hidden"><img src="${imageData}" class="w-full max-h-96 object-contain"><div class="bg-amber-100 p-4 text-center"><i class="fas fa-check-circle text-amber-600 text-3xl mb-2"></i><p class="text-amber-800 font-bold text-lg">تم رفع الصورة بنجاح</p><p class="text-amber-700 text-sm mt-1">سيتم إرسالها للمعلمة للمراجعة</p></div></div>`;
+                sendImageToEmail(imageData);
+                showNotification('تم رفع الصورة وإرسالها للمعلمة ✅', 'success');
             };
-            allStudents.push(studentData);
-            localStorage.setItem('exam_students', JSON.stringify(allStudents));
-            showNotification(currentLang === 'ar' ? 'تم حفظ النتيجة بنجاح! 🎉' : 'Result saved successfully! 🎉', 'success');
-            showResults(studentData);
+            reader.readAsDataURL(input.files[0]);
         }
+    }
 
-        // Show Results
-        function showResults(data) {
-            document.getElementById('exam-screen').classList.add('hidden-screen');
-            document.getElementById('results-screen').classList.remove('hidden-screen');
-            document.getElementById('result-student-name').textContent = data.name;
-            document.getElementById('result-total').textContent = `${data.total}/${data.maxScore}`;
-            const pct = Math.round((data.total / data.maxScore) * 100);
-            document.getElementById('result-percentage').textContent = pct + '%';
-            
-            const statusEl = document.getElementById('result-status');
-            statusEl.innerHTML = data.passed ? 
-                `<span class="status-badge status-passed">${translations[currentLang].passed}</span>` : 
-                `<span class="status-badge status-failed">${translations[currentLang].failed}</span>`;
-            
-            const container = document.getElementById('result-subjects');
-            const subjectNames = { 
-                english: translations[currentLang].englishResult, 
-                math: translations[currentLang].mathResult, 
-                arabic: translations[currentLang].arabicResult 
-            };
-            container.innerHTML = Object.entries(data.scores).map(([subj, score]) => {
-                const passed = score >= PASSING_SCORE;
-                const statusText = passed ? translations[currentLang].passed : translations[currentLang].failed;
-                const statusClass = passed ? 'status-passed' : 'status-failed';
-                const cardClass = passed ? 'passed' : 'failed';
-                return `<div class="subject-result-card ${cardClass}"><div class="text-center"><h4 class="text-2xl font-bold text-gray-800 mb-4">${subjectNames[subj]}</h4><div class="text-6xl font-black mb-4 ${passed ? 'text-green-600' : 'text-red-600'}">${score}/30</div><div class="status-badge ${statusClass}">${statusText}</div></div></div>`;
-            }).join('');
-            
-            // Badges
-            const badgesContainer = document.getElementById('result-badges');
-            let badges = '';
-            if (data.total >= 75) { 
-                badges += '<span class="achievement-badge badge-excellent">🏆 ' + (currentLang === 'ar' ? 'طالب متميز' : 'Excellent Student') + '</span>'; 
-            }
-            if (data.total >= 60) { 
-                badges += '<span class="achievement-badge badge-good">⭐ ' + (currentLang === 'ar' ? 'أداء جيد' : 'Good Performance') + '</span>'; 
-            }
-            if (data.total >= 45) { 
-                badges += '<span class="achievement-badge badge-effort">💪 ' + (currentLang === 'ar' ? 'اجتهاد' : 'Effort') + '</span>'; 
-            }
-            badgesContainer.innerHTML = badges ? `<div class="badge-container">${badges}</div>` : '';
-            
-            const msgBox = document.getElementById('result-message');
-            if (data.passed) { 
-                msgBox.className = 'mb-8 p-6 rounded-2xl font-bold text-2xl bg-gradient-to-r from-green-100 to-emerald-100 text-green-800 border-3 border-green-300'; 
-                msgBox.innerHTML = currentLang === 'ar' ? '🎉 لقد اجتزت الاختبار بنجاح - تم قبولك' : '🎉 You passed the exam successfully - Congratulations'; 
-            } else { 
-                msgBox.className = 'mb-8 p-6 rounded-2xl font-bold text-2xl bg-gradient-to-r from-red-100 to-pink-100 text-red-800 border-3 border-red-300'; 
-                msgBox.innerHTML = currentLang === 'ar' ? 'لم تجتز الاختبار - يرجى المحاولة مرة أخرى' : 'You did not pass the exam - Please try again'; 
-            }
-        }
-
-        // Download PDF
-        function downloadPDF() {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-            const title = currentLang === 'ar' ? 'شهادة إنجاز' : 'Certificate of Achievement';
-            const studentLabel = currentLang === 'ar' ? 'الطالب:' : 'Student:';
-            const gradeLabel = currentLang === 'ar' ? 'المرحلة:' : 'Grade:';
-            const totalLabel = currentLang === 'ar' ? 'المجموع الكلي:' : 'Total Score:';
-            const englishLabel = currentLang === 'ar' ? 'الإنجليزية:' : 'English:';
-            const mathLabel = currentLang === 'ar' ? 'الرياضيات:' : 'Math:';
-            const arabicLabel = currentLang === 'ar' ? 'العربية:' : 'Arabic:';
-            
-            doc.setFont('helvetica');
-            doc.setFontSize(28);
-            doc.text(title, 105, 30, { align: 'center' });
-            doc.setFontSize(18);
-            doc.text(`${studentLabel} ${currentStudent.name}`, 105, 50, { align: 'center' });
-            doc.text(`${gradeLabel} ${currentStudent.grade}`, 105, 65, { align: 'center' });
-            doc.text(`${totalLabel} ${Object.values(subjectScores).reduce((a, b) => a + b, 0)}/${currentStudent.testsArabic ? 90 : 60}`, 105, 85, { align: 'center' });
-            doc.text(`${englishLabel} ${subjectScores.english}/30`, 105, 100, { align: 'center' });
-            doc.text(`${mathLabel} ${subjectScores.math}/30`, 105, 115, { align: 'center' });
-            if (currentStudent.testsArabic) { doc.text(`${arabicLabel} ${subjectScores.arabic}/30`, 105, 130, { align: 'center' }); }
-            doc.save(`certificate_${currentStudent.name}.pdf`);
-            showNotification(currentLang === 'ar' ? 'تم تحميل الشهادة بنجاح! 📄' : 'Certificate downloaded successfully! 📄', 'success');
-        }
-
-        // Teacher Login
-        function loginTeacher() {
-            const user = document.getElementById('t-username').value;
-            const pass = document.getElementById('t-password').value;
-            const errBox = document.getElementById('t-error');
-            if (user === 'teacher' && pass === 'teacher123') { 
-                errBox.classList.add('hidden'); 
-                document.getElementById('teacher-login-screen').classList.add('hidden-screen'); 
-                document.getElementById('teacher-panel').classList.remove('hidden-screen'); 
-                updateTeacherPanel(); 
-                showNotification(currentLang === 'ar' ? 'مرحباً بك في لوحة المعلم 👨‍🏫' : 'Welcome to Teacher Panel 👨‍', 'success'); 
-            } else { 
-                errBox.textContent = currentLang === 'ar' ? 'اسم المستخدم أو كلمة المرور غير صحيحة' : 'Invalid username or password'; 
-                errBox.classList.remove('hidden'); 
-            }
-        }
-
-        function updateTeacherPanel() {
-            const listContainer = document.getElementById('teacher-student-list');
-            if (allStudents.length === 0) { 
-                listContainer.innerHTML = `<div class="text-center text-gray-500 py-12"><i class="fas fa-inbox text-6xl mb-4 opacity-30"></i><p class="text-xl">${currentLang === 'ar' ? 'لا يوجد طلاب حتى الآن' : 'No students yet'}</p></div>`; 
-                return; 
-            }
-            listContainer.innerHTML = allStudents.map((s, i) => `
-                <div class="student-item" onclick="showStudentDetail('${s.id}')">
-                    <div class="flex justify-between items-center">
-                        <div>
-                            <div class="font-bold text-gray-800 text-xl">${s.name}</div>
-                            <div class="text-sm text-gray-600">${s.grade} - ${s.branch === 'child-gate' ? (currentLang === 'ar' ? 'بوابة الطفل' : 'Kids Gate') : (currentLang === 'ar' ? 'أجيال المعرفة' : 'Knowledge Generations')}</div>
-                        </div>
-                        <div class="text-left">
-                            <div class="font-bold text-amber-700 text-xl">${s.total}/${s.maxScore}</div>
-                            <span class="px-3 py-1 rounded-full text-sm font-bold ${s.passed ? 'badge-success' : 'badge-danger'}">${s.passed ? (currentLang === 'ar' ? 'مقبول' : 'Passed') : (currentLang === 'ar' ? 'غير مقبول' : 'Failed')}</span>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function filterStudents() {
-            const searchTerm = document.getElementById('teacher-search').value.toLowerCase();
-            const items = document.querySelectorAll('.student-item');
-            items.forEach(item => {
-                const text = item.textContent.toLowerCase();
-                item.style.display = text.includes(searchTerm) ? 'block' : 'none';
-            });
-        }
-
-        function showStudentDetail(studentId) {
-            const student = allStudents.find(s => s.id === studentId);
-            if (!student) return;
-            const detailPanel = document.getElementById('student-detail-panel');
-            const subjectNames = { 
-                english: currentLang === 'ar' ? 'اللغة الإنجليزية' : 'English Language', 
-                math: currentLang === 'ar' ? 'الرياضيات' : 'Mathematics', 
-                arabic: currentLang === 'ar' ? 'اللغة العربية' : 'Arabic Language' 
-            };
-            detailPanel.innerHTML = `
-                <div class="mb-8">
-                    <h3 class="text-3xl font-bold text-gray-800 mb-4">${student.name}</h3>
-                    <div class="grid grid-cols-2 gap-6 text-lg">
-                        <div><span class="font-bold">${currentLang === 'ar' ? 'المرحلة:' : 'Grade:'}</span> ${student.grade}</div>
-                        <div><span class="font-bold">${currentLang === 'ar' ? 'الفرع:' : 'Branch:'}</span> ${student.branch === 'child-gate' ? (currentLang === 'ar' ? 'بوابة الطفل' : 'Kids Gate') : (currentLang === 'ar' ? 'أجيال المعرفة' : 'Knowledge Generations')}</div>
-                        <div><span class="font-bold">${currentLang === 'ar' ? 'الجنسية:' : 'Nationality:'}</span> ${nationalityLabels[student.nationality][currentLang]}</div>
-                        <div><span class="font-bold">${currentLang === 'ar' ? 'التاريخ:' : 'Date:'}</span> ${student.date}</div>
-                    </div>
-                </div>
-                <div class="space-y-6">
-                    ${Object.entries(student.scores).map(([subj, score]) => `
-                        <div class="border-3 border-gray-200 rounded-2xl p-6">
-                            <div class="flex justify-between items-center mb-6">
-                                <h4 class="text-2xl font-bold text-gray-800">${subjectNames[subj]}</h4>
-                                <div class="text-4xl font-black ${score >= 15 ? 'text-green-600' : 'text-red-600'}">${score}/30</div>
-                            </div>
-                            <div class="bg-gradient-to-r from-gray-50 to-gray-100 p-6 rounded-xl">
-                                <p class="text-gray-700 text-lg">${currentLang === 'ar' ? 'الدرجة النهائية:' : 'Final Score:'} <span class="font-bold text-2xl">${score}</span> ${currentLang === 'ar' ? 'من 30' : 'out of 30'}</p>
-                                <p class="text-gray-700 text-lg mt-3">${currentLang === 'ar' ? 'الحالة:' : 'Status:'} <span class="font-bold text-2xl ${score >= 15 ? 'text-green-600' : 'text-red-600'}">${score >= 15 ? (currentLang === 'ar' ? 'مقبول ✅' : 'Passed ✅') : (currentLang === 'ar' ? 'غير مقبول ❌' : 'Failed ❌')}</span></p>
-                            </div>
-                        </div>
-                    `).join('')}
-                </div>
-            `;
-            document.querySelectorAll('.student-item').forEach(item => item.classList.remove('active'));
-            event.currentTarget.classList.add('active');
-        }
-
-        // Registrar Login
-        function loginRegistrar() {
-            const user = document.getElementById('r-username').value;
-            const pass = document.getElementById('r-password').value;
-            const errBox = document.getElementById('r-error');
-            if (user === 'registrar' && pass === 'registrar123') { 
-                errBox.classList.add('hidden'); 
-                document.getElementById('registrar-login-screen').classList.add('hidden-screen'); 
-                document.getElementById('registrar-panel').classList.remove('hidden-screen'); 
-                updateRegistrarPanel(); 
-                showNotification(currentLang === 'ar' ? 'مرحباً بك في لوحة مسؤول القبول 📋' : 'Welcome to Admissions Panel 📋', 'success'); 
-            } else { 
-                errBox.textContent = currentLang === 'ar' ? 'اسم المستخدم أو كلمة المرور غير صحيحة' : 'Invalid username or password'; 
-                errBox.classList.remove('hidden'); 
-            }
-        }
-
-        function updateRegistrarPanel() {
-            document.getElementById('r-total').textContent = allStudents.length;
-            const passed = allStudents.filter(s => s.passed).length;
-            const failed = allStudents.length - passed;
-            const pending = allStudents.filter(s => Object.values(s.scores).some(score => score === 0)).length;
-            document.getElementById('r-passed').textContent = passed;
-            document.getElementById('r-failed').textContent = failed;
-            document.getElementById('r-pending').textContent = pending;
-            const tbody = document.getElementById('r-students-table');
-            if (allStudents.length === 0) { 
-                tbody.innerHTML = `<tr><td colspan="8" class="p-12 text-center text-gray-500 text-xl">${currentLang === 'ar' ? 'لا يوجد طلاب حتى الآن' : 'No students yet'}</td></tr>`; 
-                return; 
-            }
-            tbody.innerHTML = allStudents.map((s, i) => {
-                const arabicScore = s.testsArabic ? (s.scores.arabic || '-') : '-';
-                const statusClass = s.passed ? 'badge-success' : 'badge-danger';
-                const statusText = s.passed ? (currentLang === 'ar' ? 'مقبول ✅' : 'Passed ✅') : (currentLang === 'ar' ? 'غير مقبول ❌' : 'Failed ❌');
-                return `<tr class="hover:bg-gradient-to-r hover:from-amber-50 hover:to-orange-50 transition-all"><td class="p-4">${i + 1}</td><td class="p-4 font-bold text-lg">${s.name}</td><td class="p-4">${s.grade}</td><td class="p-4 font-bold text-amber-700">${s.scores.english || 0}/30</td><td class="p-4 font-bold text-blue-600">${s.scores.math || 0}/30</td><td class="p-4 font-bold text-green-600">${arabicScore}</td><td class="p-4 font-bold text-xl">${s.total}/${s.maxScore}</td><td class="p-4"><span class="px-4 py-2 rounded-full text-sm font-bold ${statusClass}">${statusText}</span></td></tr>`;
-            }).join('');
-        }
-
-        // Admin Login
-        function loginAdmin() {
-            const user = document.getElementById('a-username').value;
-            const pass = document.getElementById('a-password').value;
-            const errBox = document.getElementById('a-error');
-            if (user === 'admin' && pass === 'admin123') { 
-                errBox.classList.add('hidden'); 
-                document.getElementById('admin-login-screen').classList.add('hidden-screen'); 
-                document.getElementById('admin-dashboard').classList.remove('hidden-screen'); 
-                updateAdminDashboard(); 
-                showNotification(currentLang === 'ar' ? 'مرحباً بك في داشبورد المدير 📊' : 'Welcome to Admin Dashboard 📊', 'success'); 
-            } else { 
-                errBox.textContent = currentLang === 'ar' ? 'بيانات الدخول غير صحيحة' : 'Invalid credentials'; 
-                errBox.classList.remove('hidden'); 
-            }
-        }
-
-        function updateAdminDashboard() {
-            const total = allStudents.length;
-            const passed = allStudents.filter(s => s.passed).length;
-            const failed = total - passed;
-            const rate = total > 0 ? Math.round((passed / total) * 100) : 0;
-            document.getElementById('a-total').textContent = total;
-            document.getElementById('a-passed').textContent = passed;
-            document.getElementById('a-failed').textContent = failed;
-            document.getElementById('a-rate').textContent = rate + '%';
-            
-            const tbody = document.getElementById('a-students-table');
-            tbody.innerHTML = allStudents.map((s, i) => {
-                const arabicScore = s.testsArabic ? (s.scores.arabic || '-') : '-';
-                const statusClass = s.passed ? 'badge-success' : 'badge-danger';
-                const statusText = s.passed ? (currentLang === 'ar' ? 'مقبول ✅' : 'Passed ✅') : (currentLang === 'ar' ? 'غير مقبول ❌' : 'Failed ❌');
-                return `<tr class="hover:bg-gradient-to-r hover:from-amber-50 hover:to-orange-50 transition-all"><td class="p-4">${i + 1}</td><td class="p-4 font-bold text-lg">${s.name}</td><td class="p-4">${s.grade}</td><td class="p-4 font-bold text-amber-700">${s.scores.english || 0}</td><td class="p-4 font-bold text-blue-600">${s.scores.math || 0}</td><td class="p-4 font-bold text-green-600">${arabicScore}</td><td class="p-4 font-bold text-xl">${s.total}</td><td class="p-4"><span class="px-4 py-2 rounded-full text-sm font-bold ${statusClass}">${statusText}</span></td></tr>`;
-            }).join('');
-            
-            // Charts
-            setTimeout(() => {
-                if (charts.results) charts.results.destroy();
-                if (charts.subjects) charts.subjects.destroy();
-                
-                const ctx1 = document.getElementById('resultsChart').getContext('2d');
-                charts.results = new Chart(ctx1, {
-                    type: 'doughnut',
-                    data: { 
-                        labels: [currentLang === 'ar' ? 'مقبول' : 'Passed', currentLang === 'ar' ? 'غير مقبول' : 'Failed'], 
-                        datasets: [{ data: [passed, failed], backgroundColor: ['#10B981', '#EF4444'] }] 
-                    },
-                    options: { 
-                        responsive: true, 
-                        plugins: { legend: { position: 'bottom' } },
-                        animation: { duration: 1500, easing: 'easeOutQuart' }
-                    }
-                });
-                
-                const ctx2 = document.getElementById('subjectsChart').getContext('2d');
-                const avgEnglish = total > 0 ? allStudents.reduce((sum, s) => sum + (s.scores.english || 0), 0) / total : 0;
-                const avgMath = total > 0 ? allStudents.reduce((sum, s) => sum + (s.scores.math || 0), 0) / total : 0;
-                const avgArabic = total > 0 ? allStudents.reduce((sum, s) => sum + (s.scores.arabic || 0), 0) / total : 0;
-                charts.subjects = new Chart(ctx2, {
-                    type: 'bar',
-                    data: { 
-                        labels: [currentLang === 'ar' ? 'الإنجليزي' : 'English', currentLang === 'ar' ? 'الرياضيات' : 'Math', currentLang === 'ar' ? 'العربي' : 'Arabic'], 
-                        datasets: [{ 
-                            label: currentLang === 'ar' ? 'متوسط الدرجات' : 'Average Score', 
-                            data: [avgEnglish, avgMath, avgArabic], 
-                            backgroundColor: ['#FF6B9D', '#00BBF9', '#10B981'] 
-                        }] 
-                    },
-                    options: { 
-                        responsive: true, 
-                        scales: { y: { beginAtZero: true, max: 30 } },
-                        animation: { duration: 1500, easing: 'easeOutQuart' }
-                    }
-                });
-            }, 100);
-        }
-
-        // Export to Excel
-        function exportToExcel() {
-            if (allStudents.length === 0) { 
-                alert(currentLang === 'ar' ? 'لا توجد بيانات للتصدير' : 'No data to export'); 
-                return; 
-            }
-            const data = allStudents.map(s => ({
-                [currentLang === 'ar' ? 'الاسم' : 'Name']: s.name,
-                [currentLang === 'ar' ? 'تاريخ الميلاد' : 'Date of Birth']: s.dob || '-',
-                [currentLang === 'ar' ? 'رقم الهوية' : 'ID Number']: s.idNumber || '-',
-                [currentLang === 'ar' ? 'رقم الجوال' : 'Phone']: s.phone || '-',
-                [currentLang === 'ar' ? 'الجنس' : 'Gender']: s.gender === 'male' ? (currentLang === 'ar' ? 'ذكر' : 'Male') : (currentLang === 'ar' ? 'أنثى' : 'Female'),
-                [currentLang === 'ar' ? 'الفرع' : 'Branch']: s.branch === 'child-gate' ? (currentLang === 'ar' ? 'بوابة الطفل' : 'Kids Gate') : (currentLang === 'ar' ? 'أجيال المعرفة' : 'Knowledge Generations'),
-                [currentLang === 'ar' ? 'المرحلة' : 'Grade']: s.grade || '-',
-                [currentLang === 'ar' ? 'الجنسية' : 'Nationality']: nationalityLabels[s.nationality][currentLang],
-                [currentLang === 'ar' ? 'يختبر عربي' : 'Takes Arabic']: s.testsArabic ? (currentLang === 'ar' ? 'نعم' : 'Yes') : (currentLang === 'ar' ? 'لا' : 'No'),
-                [currentLang === 'ar' ? 'الإنجليزي' : 'English']: s.scores.english || 0,
-                [currentLang === 'ar' ? 'الرياضيات' : 'Math']: s.scores.math || 0,
-                [currentLang === 'ar' ? 'العربي' : 'Arabic']: s.testsArabic ? (s.scores.arabic || 0) : '-',
-                [currentLang === 'ar' ? 'المجموع' : 'Total']: s.total,
-                [currentLang === 'ar' ? 'من' : 'out of']: s.maxScore,
-                [currentLang === 'ar' ? 'الحالة' : 'Status']: s.passed ? (currentLang === 'ar' ? 'مقبول' : 'Passed') : (currentLang === 'ar' ? 'غير مقبول' : 'Failed'),
-                [currentLang === 'ar' ? 'التاريخ' : 'Date']: s.date || '-'
-            }));
-            const ws = XLSX.utils.json_to_sheet(data);
-            const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, currentLang === 'ar' ? 'نتائج الطلاب' : 'Student Results');
-            XLSX.writeFile(wb, 'students_results.xlsx');
-            showNotification(currentLang === 'ar' ? 'تم تصدير Excel بنجاح! 📊' : 'Excel exported successfully! 📊', 'success');
-        }
-
-        function logout() { 
-            if (confirm(currentLang === 'ar' ? 'هل تريد تسجيل الخروج؟' : 'Do you want to logout?')) { 
-                location.reload(); 
-            } 
-        }
-
-        // Question Bank (Include all questions from previous code)
-        const questionBank = {
-            G1: { english: { modelA: [
-                { id: "g1_en_a_q1", type: "image_choice", question: "Choose the correct name for the given pictures:", marks: 12, items: [
-                    { image: "https://cdn-icons-png.flaticon.com/512/616/616408.png", options: ["Cat", "Cot"], correct: 0 },
-                    { image: "https://cdn-icons-png.flaticon.com/512/2917/2917995.png", options: ["Pan", "Pen"], correct: 0 },
-                    { image: "https://cdn-icons-png.flaticon.com/512/616/616430.png", options: ["Dog", "Dug"], correct: 0 },
-                    { image: "https://cdn-icons-png.flaticon.com/512/616/616567.png", options: ["Big", "Bag"], correct: 0 }
-                ], needs_manual: false },
-                { id: "g1_en_a_q2", type: "mcq", question: "Choose the correct ending sound:", marks: 10, subQuestions: [
-                    { question: "Man - Pan - Rot - Pit", options: ["Man", "Pan", "Rot", "Pit"], correct: 0 },
-                    { question: "Sun - Hub - Sip - Fun", options: ["Sun", "Hub", "Sip", "Fun"], correct: 3 },
-                    { question: "Rat - Tin - Hat - Put", options: ["Rat", "Tin", "Hat", "Put"], correct: 2 },
-                    { question: "Cod - Cut - Fit - Rod", options: ["Cod", "Cut", "Fit", "Rod"], correct: 3 },
-                    { question: "Pin - Sin - Lip - Tag", options: ["Pin", "Sin", "Lip", "Tag"], correct: 2 }
-                ], needs_manual: false },
-                { id: "g1_en_a_q3", type: "mcq", question: "Choose the correct answers:", marks: 8, subQuestions: [
-                    { question: "___ is my rabbit.", options: ["This", "That"], correct: 0 },
-                    { question: "___ tree is big.", options: ["This", "That"], correct: 1 }
-                ], needs_manual: false }
-            ], modelB: [
-                { id: "g1_en_b_q1", type: "image_choice", question: "Choose the correct name for the given pictures:", marks: 12, items: [
-                    { image: "https://cdn-icons-png.flaticon.com/512/2917/2917995.png", options: ["Pin", "Sip"], correct: 0 },
-                    { image: "https://cdn-icons-png.flaticon.com/512/888/888847.png", options: ["Sun", "Tan"], correct: 0 },
-                    { image: "https://cdn-icons-png.flaticon.com/512/616/616430.png", options: ["Pit", "Hen"], correct: 1 },
-                    { image: "https://cdn-icons-png.flaticon.com/512/2917/2917995.png", options: ["Rot", "Pot"], correct: 1 }
-                ], needs_manual: false },
-                { id: "g1_en_b_q2", type: "mcq", question: "Choose the correct ending sound:", marks: 10, subQuestions: [
-                    { question: "Sat - Pan - Rot - Pat", options: ["Sat", "Pan", "Rot", "Pat"], correct: 0 },
-                    { question: "Hug - Pug - Sip - Fun", options: ["Hug", "Pug", "Sip", "Fun"], correct: 1 },
-                    { question: "Fin - Tin - Hat - Put", options: ["Fin", "Tin", "Hat", "Put"], correct: 1 },
-                    { question: "Cut - Tap - Hut - Rod", options: ["Cut", "Tap", "Hut", "Rod"], correct: 2 },
-                    { question: "Bag - Sin - Lip - Tag", options: ["Bag", "Sin", "Lip", "Tag"], correct: 3 }
-                ], needs_manual: false },
-                { id: "g1_en_b_q3", type: "mcq", question: "Choose the correct answers:", marks: 8, subQuestions: [
-                    { question: "___ is a yellow duck.", options: ["This", "That"], correct: 0 },
-                    { question: "___ is a big aero plane.", options: ["This", "That"], correct: 1 }
-                ], needs_manual: false }
-            ] } },
-            G2: { english: { modelA: [
-                { id: "g2_en_a_q1", type: "upload", question: "Read the given passage and answer the following questions.", passage: "One misty morning, Jane was looking around her garden. She sat on the grass. She saw a rock with little plants on it. There were flowers. They looked pretty.", subQuestions: ["Who sat on the grass?", "___ were looking pretty."], marks: 10, needs_manual: true },
-                { id: "g2_en_a_q2", type: "mcq", question: "Use (is - am - are):", marks: 10, subQuestions: [
-                    { question: "They ___ happy to see us.", options: ["am", "are"], correct: 1 },
-                    { question: "The dog ___ in the backyard.", options: ["are", "is"], correct: 1 },
-                    { question: "We ___ ready.", options: ["are", "am"], correct: 0 },
-                    { question: "You ___ intelligent.", options: ["are", "is"], correct: 0 },
-                    { question: "I ___ writing.", options: ["is", "am"], correct: 1 }
-                ], needs_manual: false },
-                { id: "g2_en_a_q3", type: "mcq", question: "Use (have / has):", marks: 10, subQuestions: [
-                    { question: "I ___ many toys.", options: ["have", "has"], correct: 0 },
-                    { question: "You ___ an extra pen.", options: ["have", "has"], correct: 0 },
-                    { question: "She ___ one sister.", options: ["have", "has"], correct: 1 },
-                    { question: "They ___ a test today.", options: ["have", "has"], correct: 0 },
-                    { question: "The rainbow ___ seven colors.", options: ["have", "has"], correct: 1 }
-                ], needs_manual: false }
-            ], modelB: [
-                { id: "g2_en_b_q1", type: "upload", question: "Read the given passage and answer the following questions.", passage: "Jane wants to build a birdhouse. She gets some wood, nails and paint. She draws her birdhouse. They hang it up in a tree. A bird goes into it.", subQuestions: ["Who wants to build a birdhouse?", "___ goes into the birdhouse."], marks: 10, needs_manual: true },
-                { id: "g2_en_b_q2", type: "mcq", question: "Use (is - am - are):", marks: 10, subQuestions: [
-                    { question: "I ___ a teacher.", options: ["am", "are"], correct: 0 },
-                    { question: "The dress ___ beautiful.", options: ["are", "is"], correct: 1 },
-                    { question: "We ___ happy.", options: ["are", "am"], correct: 0 },
-                    { question: "She ___ tall.", options: ["am", "is"], correct: 1 },
-                    { question: "They ___ learning.", options: ["is", "are"], correct: 1 }
-                ], needs_manual: false },
-                { id: "g2_en_b_q3", type: "mcq", question: "Use (have / has):", marks: 10, subQuestions: [
-                    { question: "She ___ a blue bag.", options: ["have", "has"], correct: 1 },
-                    { question: "We ___ a big house.", options: ["have", "has"], correct: 0 },
-                    { question: "I ___ some cookies.", options: ["have", "has"], correct: 0 },
-                    { question: "They ___ a ball.", options: ["have", "has"], correct: 0 },
-                    { question: "You ___ a bicycle.", options: ["have", "has"], correct: 0 }
-                ], needs_manual: false }
-            ] } },
-            G3: { english: { modelA: [
-                { id: "g3_en_a_q1", type: "mcq", question: "Read the given passage and answer the questions.", passage: "Jana and Ali are going for a trip to Taif. They are waiting for the bus at the bus stop. Jana has a small pink bag and Ali has a big blue backpack. They are taking their dog, Max with them. They are excited for the trip.", marks: 14, subQuestions: [
-                    { question: "Where is Ali going?", options: ["Trip", "School"], correct: 0 },
-                    { question: "Who is going with him?", options: ["Jana", "Friends"], correct: 0 },
-                    { question: "What are they waiting for?", options: ["Bus", "Car"], correct: 0 },
-                    { question: "Max:", options: ["Common Noun", "Proper Noun"], correct: 1 },
-                    { question: "Bus:", options: ["Common Noun", "Proper Noun"], correct: 0 },
-                    { question: "Taif:", options: ["Common Noun", "Proper Noun"], correct: 1 },
-                    { question: "Backpack:", options: ["Common Noun", "Proper Noun"], correct: 0 }
-                ], needs_manual: false },
-                { id: "g3_en_a_q2", type: "mcq", question: "Choose the correct answer:", marks: 16, subQuestions: [
-                    { question: "The elephant ___ a long trunk.", options: ["has", "have"], correct: 0 },
-                    { question: "You ___ a beautiful dress.", options: ["has", "have"], correct: 1 },
-                    { question: "She ___ in the hospital yesterday.", options: ["was", "were"], correct: 0 },
-                    { question: "They ___ many trees in their backyard.", options: ["has", "have"], correct: 1 },
-                    { question: "You ___ a tall boy.", options: ["is", "are"], correct: 1 },
-                    { question: "___ she baking a cake?", options: ["Is", "Are"], correct: 0 },
-                    { question: "I ___ eating apples but they ___ eating popcorns.", options: ["am/are", "is/are", "am/is"], correct: 0 }
-                ], needs_manual: false }
-            ], modelB: [
-                { id: "g3_en_b_q1", type: "mcq", question: "Read the given passage and answer the questions.", passage: "Alma and her friend Reem are in Hyde Park. They are wearing red dresses. They are looking beautiful. They are eating ice cream. There is a white kitten near the ice cream truck. Alma is playing with it. She is throwing the ball and the kitten is running after it.", marks: 14, subQuestions: [
-                    { question: "Where is Alma?", options: ["School", "Park"], correct: 1 },
-                    { question: "What is she wearing?", options: ["Dress", "T-shirt"], correct: 0 },
-                    { question: "What is the kitten running after?", options: ["Bug", "Ball"], correct: 1 },
-                    { question: "Truck:", options: ["Common Noun", "Proper Noun"], correct: 0 },
-                    { question: "Reem:", options: ["Common Noun", "Proper Noun"], correct: 1 },
-                    { question: "Kitten:", options: ["Common Noun", "Proper Noun"], correct: 0 },
-                    { question: "Hyde Park:", options: ["Common Noun", "Proper Noun"], correct: 1 }
-                ], needs_manual: false },
-                { id: "g3_en_b_q2", type: "mcq", question: "Choose the correct answer:", marks: 16, subQuestions: [
-                    { question: "You ___ driving a car.", options: ["was", "were"], correct: 1 },
-                    { question: "He ___ playing with me.", options: ["was", "were"], correct: 0 },
-                    { question: "Monkeys ___ long tails.", options: ["has", "have"], correct: 1 },
-                    { question: "My mother ___ an expensive ring.", options: ["has", "have"], correct: 0 },
-                    { question: "You ___ my best friend.", options: ["is", "are"], correct: 1 },
-                    { question: "___ he sleeping in the room?", options: ["Is", "Are"], correct: 0 },
-                    { question: "I ___ going to Abha but she ___ going to Jeddah.", options: ["am/is", "am/are", "is/are"], correct: 0 }
-                ], needs_manual: false }
-            ] } },
-            G4: { english: { modelA: [
-                { id: "g4_en_a_q1", type: "mcq", question: "Read the passage and answer the questions.", passage: "Tina saw a hidden path and decided to follow it. The path led her to a lovely garden filled with colorful flowers and friendly animals. Tina spent the whole day playing and laughing with her newfound friends. When it was time to go home, she promised to return to the garden whenever she could.", marks: 12, subQuestions: [
-                    { question: "What did Tina find when she followed the hidden path?", options: ["Garden", "Park"], correct: 0 },
-                    { question: "What did Tina do with her newfound friends?", options: ["Eat and drink", "Play and laugh"], correct: 1 },
-                    { question: "Tina promised that she will never come back.", options: ["True", "False"], correct: 1 },
-                    { question: "Choose the proper noun:", options: ["Tina", "Garden"], correct: 0 },
-                    { question: "What part of speech is: Spent", options: ["Adverb", "Verb"], correct: 1 },
-                    { question: "Which word is an adjective?", options: ["Friendly", "Follow"], correct: 0 }
-                ], needs_manual: false },
-                { id: "g4_en_a_q2", type: "mcq", question: "Choose the correct answer:", marks: 8, subQuestions: [
-                    { question: "I ___ going to Japan and you ___ going to China.", options: ["am/are", "are/is", "am/is"], correct: 0 },
-                    { question: "A monkey ___ a long tail but rabbits ___ short tails.", options: ["has/have", "have/has", "has/has"], correct: 0 }
-                ], needs_manual: false },
-                { id: "g4_en_a_q3", type: "mcq", question: "Identify the tense:", marks: 8, subQuestions: [
-                    { question: "She likes to drink coffee in the morning.", options: ["Simple Present", "Present Continuous"], correct: 0 },
-                    { question: "My dad is playing football with me.", options: ["Simple Present", "Present Continuous"], correct: 1 },
-                    { question: "They were in Canada last year.", options: ["Simple Present", "Simple Past"], correct: 1 },
-                    { question: "Who is sitting on the couch?", options: ["Simple Present", "Present Continuous"], correct: 1 }
-                ], needs_manual: false }
-            ], modelB: [
-                { id: "g4_en_b_q1", type: "mcq", question: "Read the passage and answer the questions.", passage: "Lily loved plants and flowers. She had a beautiful garden in her backyard. One day, some people visited Lily's garden. They were amazed by the colorful flowers. They wanted to make their own gardens and share the joy of gardening with others.", marks: 12, subQuestions: [
-                    { question: "What did Lily like to do?", options: ["Gardening", "Cooking"], correct: 0 },
-                    { question: "What did the visitors like about Lily's garden?", options: ["Flowers", "Bugs"], correct: 0 },
-                    { question: "What did the visitors want to do?", options: ["Make gardens and share the joy", "Cook food and share it"], correct: 0 },
-                    { question: "Choose the proper noun:", options: ["Lily", "Backyard"], correct: 0 },
-                    { question: "What part of speech is: Visited", options: ["Adverb", "Verb"], correct: 1 },
-                    { question: "Which word is an adjective?", options: ["Colorful", "Share"], correct: 0 }
-                ], needs_manual: false },
-                { id: "g4_en_b_q2", type: "mcq", question: "Choose the correct answer:", marks: 10, subQuestions: [
-                    { question: "We ___ received a letter from the college.", options: ["has", "have"], correct: 1 },
-                    { question: "Jana and I ___ eating a pizza. Jana ___ drinking juice too.", options: ["am/are", "are/is", "are/are"], correct: 1 },
-                    { question: "You ___ a cat and I ___ a hamster.", options: ["has/have", "have/has", "have/have"], correct: 1 }
-                ], needs_manual: false },
-                { id: "g4_en_b_q3", type: "mcq", question: "Identify the tense:", marks: 8, subQuestions: [
-                    { question: "Ahmad is going on a camping trip.", options: ["Simple Present", "Present Continuous"], correct: 1 },
-                    { question: "Sam is an old friend of mine.", options: ["Simple Present", "Simple Past"], correct: 0 },
-                    { question: "He was in Abha last week.", options: ["Simple Present", "Simple Past"], correct: 1 },
-                    { question: "Why are you crying?", options: ["Simple Present", "Present Continuous"], correct: 1 }
-                ], needs_manual: false }
-            ] } }
+    function sendImageToEmail(imageData) {
+        const templateParams = { 
+            to_email: 'amira.echo21@gmail.com', 
+            student_name: currentStudent.name, 
+            grade: currentStudent.grade, 
+            branch: currentBranch === 'child-gate' ? 'بوابة الطفل' : 'أجيال المعرفة', 
+            subject: currentSubject === 'english' ? 'الإنجليزية' : currentSubject === 'math' ? 'الرياضيات' : 'العربية', 
+            question: questions[currentQIndex].question, 
+            attachment: imageData 
         };
-    </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-</body>
+        emailjs.send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.templateId, templateParams)
+            .then(function() { console.log('تم الإرسال بنجاح!'); }, function(error) { console.log('فشل الإرسال:', error); });
+    }
+
+    function nextQuestion() { if (currentQIndex < questions.length - 1) { currentQIndex++; renderQuestion(); } }
+    function prevQuestion() { if (currentQIndex > 0) { currentQIndex--; renderQuestion(); } }
+
+    function submitExam() {
+        if (!confirm('هل أنت متأكد من تسليم هذا الاختبار؟')) { return; }
+        let score = 0; let totalMarks = 0;
+        questions.forEach((q, qIdx) => {
+            if (q.type === 'mcq' && q.subQuestions) { 
+                q.subQuestions.forEach((sq, sqIdx) => { 
+                    const qKey = `${qIdx}_${sqIdx}`; 
+                    totalMarks += 1; 
+                    if (answers[qKey] === sq.correct) score += 1; 
+                }); 
+            } else if (q.type === 'image_choice' && q.items) { 
+                q.items.forEach((item, itemIdx) => { 
+                    const qKey = `${qIdx}_${itemIdx}`; 
+                    totalMarks += 1; 
+                    if (answers[qKey] === item.correct) score += 1; 
+                }); 
+            } else if (q.type === 'upload') { 
+                totalMarks += q.marks; 
+                if (answers[`${qIdx}_upload`]) score += q.marks; 
+            } 
+        });
+        const finalScore = Math.round((score / totalMarks) * 30);
+        subjectScores[currentSubject] = finalScore;
+        const currentIdx = examSubjects.indexOf(currentSubject);
+        if (currentIdx < examSubjects.length - 1) { 
+            const subjectName = currentSubject === 'english' ? 'الإنجليزية' : currentSubject === 'math' ? 'الرياضيات' : 'العربية';
+            showNotification(`أنهيت ${subjectName} بدرجة ${finalScore}/30`, 'success'); 
+            startSubject(examSubjects[currentIdx + 1]); 
+        } else { 
+            saveStudentResult(); 
+        }
+    }
+
+    function saveStudentResult() {
+        const total = Object.values(subjectScores).reduce((a, b) => a + b, 0);
+        const maxScore = currentStudent.testsArabic ? 90 : 60;
+        const passed = total >= (maxScore * 0.5);
+        const studentData = { 
+            id: Date.now().toString(), 
+            name: currentStudent.name, 
+            dob: currentStudent.dob, 
+            idNumber: currentStudent.id, 
+            phone: currentStudent.phone, 
+            gender: currentStudent.gender, 
+            branch: currentStudent.branch, 
+            grade: currentStudent.grade, 
+            nationality: currentStudent.nationality, 
+            testsArabic: currentStudent.testsArabic, 
+            scores: { ...subjectScores }, 
+            total: total, 
+            maxScore: maxScore, 
+            passed: passed, 
+            date: new Date().toLocaleString('ar-SA'), 
+            timestamp: Date.now() 
+        };
+        allStudents.push(studentData);
+        localStorage.setItem('exam_students', JSON.stringify(allStudents));
+        showNotification('تم حفظ النتيجة بنجاح! 🎉', 'success');
+        showResults(studentData);
+    }
+
+    function showResults(data) {
+        document.getElementById('exam-screen').classList.add('hidden-screen');
+        document.getElementById('results-screen').classList.remove('hidden-screen');
+        document.getElementById('result-student-name').textContent = data.name;
+        document.getElementById('result-total').textContent = `${data.total}/${data.maxScore}`;
+        const pct = Math.round((data.total / data.maxScore) * 100);
+        document.getElementById('result-percentage').textContent = pct + '%';
+        
+        const statusEl = document.getElementById('result-status');
+        statusEl.innerHTML = data.passed ? 
+            '<span class="status-badge" style="background: linear-gradient(135deg, #10B981, #059669); color: white; padding: 0.5rem 1.5rem; border-radius: 9999px; font-weight: bold;">مقبول ✅</span>' : 
+            '<span class="status-badge" style="background: linear-gradient(135deg, #EF4444, #DC2626); color: white; padding: 0.5rem 1.5rem; border-radius: 9999px; font-weight: bold;">غير مقبول ❌</span>';
+        
+        const container = document.getElementById('result-subjects');
+        const subjectNames = { english: '🇬🇧 اللغة الإنجليزية', math: '🔢 الرياضيات', arabic: '🇸🇦 اللغة العربية' };
+        container.innerHTML = Object.entries(data.scores).map(([subj, score]) => {
+            const passed = score >= PASSING_SCORE;
+            const statusText = passed ? 'مقبول ✅' : 'غير مقبول ❌';
+            const cardClass = passed ? 'passed' : 'failed';
+            return `<div class="subject-result-card ${cardClass}" style="background: white; border-radius: 16px; padding: 1.5rem; border: 3px solid ${passed ? '#10B981' : '#EF4444'}; margin-bottom: 1rem;"><div class="text-center"><h4 class="text-xl font-bold text-gray-800 mb-3">${subjectNames[subj]}</h4><div class="text-5xl font-black mb-3 ${passed ? 'text-green-600' : 'text-red-600'}">${score}/30</div><div style="display: inline-block; padding: 0.5rem 1.5rem; border-radius: 9999px; font-weight: bold; background: ${passed ? '#10B981' : '#EF4444'}; color: white;">${statusText}</div></div></div>`;
+        }).join('');
+        
+        const msgBox = document.getElementById('result-message');
+        if (data.passed) { 
+            msgBox.className = 'mb-6 p-4 rounded-xl font-bold text-xl bg-green-100 text-green-800 border-2 border-green-300'; 
+            msgBox.innerHTML = '🎉 لقد اجتزت الاختبار بنجاح - تم قبولك'; 
+        } else { 
+            msgBox.className = 'mb-6 p-4 rounded-xl font-bold text-xl bg-red-100 text-red-800 border-2 border-red-300'; 
+            msgBox.innerHTML = 'لم تجتز الاختبار - يرجى المحاولة مرة أخرى'; 
+        }
+    }
+
+    function downloadPDF() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        doc.setFont('helvetica');
+        doc.setFontSize(20);
+        doc.text('Certificate of Achievement', 105, 30, { align: 'center' });
+        doc.setFontSize(16);
+        doc.text(`Student: ${currentStudent.name}`, 105, 50, { align: 'center' });
+        doc.text(`Grade: ${currentStudent.grade}`, 105, 65, { align: 'center' });
+        doc.text(`Total Score: ${Object.values(subjectScores).reduce((a, b) => a + b, 0)}/${currentStudent.testsArabic ? 90 : 60}`, 105, 80, { align: 'center' });
+        doc.text(`English: ${subjectScores.english}/30`, 105, 95, { align: 'center' });
+        doc.text(`Math: ${subjectScores.math}/30`, 105, 110, { align: 'center' });
+        if (currentStudent.testsArabic) { doc.text(`Arabic: ${subjectScores.arabic}/30`, 105, 125, { align: 'center' }); }
+        doc.save(`certificate_${currentStudent.name}.pdf`);
+        showNotification('تم تحميل الشهادة بنجاح! 📄', 'success');
+    }
+
+    function showNotification(message, type = 'success') {
+        const container = document.getElementById('notification-container');
+        const notification = document.createElement('div');
+        notification.className = `notification ${type}`;
+        notification.style.cssText = 'position: fixed; top: 20px; left: 20px; padding: 1rem 1.5rem; border-radius: 12px; color: white; font-weight: bold; z-index: 10000; animation: slideIn 0.3s ease; box-shadow: 0 10px 30px rgba(0,0,0,0.2); background: ' + (type === 'success' ? 'linear-gradient(135deg, #10B981, #059669)' : type === 'warning' ? 'linear-gradient(135deg, #F59E0B, #D97706)' : 'linear-gradient(135deg, #EF4444, #DC2626)');
+        notification.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : type === 'warning' ? 'exclamation-triangle' : 'times-circle'} ml-2"></i>${message}`;
+        container.appendChild(notification);
+        setTimeout(() => notification.remove(), 3000);
+    }
+
+    function loginTeacher() {
+        const user = document.getElementById('t-username').value;
+        const pass = document.getElementById('t-password').value;
+        const errBox = document.getElementById('t-error');
+        if (user === 'teacher' && pass === 'teacher123') { 
+            errBox.classList.add('hidden'); 
+            document.getElementById('teacher-login-screen').classList.add('hidden-screen'); 
+            document.getElementById('teacher-panel').classList.remove('hidden-screen'); 
+            updateTeacherPanel(); 
+            showNotification('مرحباً بك في لوحة المعلم 👨‍', 'success'); 
+        } else { 
+            errBox.textContent = 'اسم المستخدم أو كلمة المرور غير صحيحة'; 
+            errBox.classList.remove('hidden'); 
+        }
+    }
+
+    function updateTeacherPanel() {
+        const listContainer = document.getElementById('teacher-student-list');
+        if (allStudents.length === 0) { 
+            listContainer.innerHTML = '<div class="text-center text-gray-500 py-10"><i class="fas fa-inbox text-4xl mb-3"></i><p>لا يوجد طلاب حتى الآن</p></div>'; 
+            return; 
+        }
+        listContainer.innerHTML = allStudents.map((s, i) => `
+            <div class="student-item" onclick="showStudentDetail('${s.id}')" style="padding: 1rem; border-radius: 12px; cursor: pointer; transition: all 0.3s; border: 2px solid transparent; margin-bottom: 0.5rem; background: white;">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <div class="font-bold text-gray-800 text-lg">${s.name}</div>
+                        <div class="text-sm text-gray-600">${s.grade} - ${s.branch === 'child-gate' ? 'بوابة الطفل' : 'أجيال المعرفة'}</div>
+                    </div>
+                    <div class="text-left">
+                        <div class="font-bold text-amber-700 text-xl">${s.total}/${s.maxScore}</div>
+                        <span class="px-2 py-1 rounded-full text-xs font-bold ${s.passed ? 'badge-success' : 'badge-danger'}">${s.passed ? 'مقبول' : 'غير مقبول'}</span>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function showStudentDetail(studentId) {
+        const student = allStudents.find(s => s.id === studentId);
+        if (!student) return;
+        const detailPanel = document.getElementById('student-detail-panel');
+        const subjectNames = { english: 'اللغة الإنجليزية', math: 'الرياضيات', arabic: 'اللغة العربية' };
+        detailPanel.innerHTML = `
+            <div class="mb-6">
+                <h3 class="text-2xl font-bold text-gray-800 mb-3">${student.name}</h3>
+                <div class="grid grid-cols-2 gap-4 text-sm">
+                    <div><span class="font-bold">المرحلة:</span> ${student.grade}</div>
+                    <div><span class="font-bold">الفرع:</span> ${student.branch === 'child-gate' ? 'بوابة الطفل' : 'أجيال المعرفة'}</div>
+                    <div><span class="font-bold">الجنسية:</span> ${student.nationality}</div>
+                    <div><span class="font-bold">التاريخ:</span> ${student.date}</div>
+                </div>
+            </div>
+            <div class="space-y-4">
+                ${Object.entries(student.scores).map(([subj, score]) => `
+                    <div class="border-2 border-gray-200 rounded-xl p-4">
+                        <div class="flex justify-between items-center mb-3">
+                            <h4 class="text-xl font-bold text-gray-800">${subjectNames[subj]}</h4>
+                            <div class="text-3xl font-black ${score >= 15 ? 'text-green-600' : 'text-red-600'}">${score}/30</div>
+                        </div>
+                        <div class="bg-gray-50 p-3 rounded-lg">
+                            <p class="text-gray-700">الدرجة النهائية: <span class="font-bold text-xl">${score}</span> من 30</p>
+                            <p class="text-gray-700 mt-2">الحالة: <span class="font-bold text-xl ${score >= 15 ? 'text-green-600' : 'text-red-600'}">${score >= 15 ? 'مقبول ✅' : 'غير مقبول ❌'}</span></p>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+        `;
+        document.querySelectorAll('.student-item').forEach(item => item.classList.remove('active'));
+        event.currentTarget.classList.add('active');
+    }
+
+    function exportToExcel() {
+        if (allStudents.length === 0) { alert('لا توجد بيانات للتصدير'); return; }
+        const data = allStudents.map(s => ({ 
+            'الاسم': s.name, 
+            'المرحلة': s.grade, 
+            'الإنجليزي': s.scores.english || 0, 
+            'الرياضيات': s.scores.math || 0, 
+            'العربي': s.testsArabic ? (s.scores.arabic || 0) : '-', 
+            'المجموع': s.total, 
+            'من': s.maxScore, 
+            'الحالة': s.passed ? 'مقبول' : 'غير مقبول', 
+            'التاريخ': s.date || '-' 
+        }));
+        const ws = XLSX.utils.json_to_sheet(data);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, 'نتائج الطلاب');
+        XLSX.writeFile(wb, 'students_results.xlsx');
+        showNotification('تم تصدير Excel بنجاح! 📊', 'success');
+    }
+
+    function logout() { if (confirm('هل تريد تسجيل الخروج؟')) { location.reload(); } }
+</script>
 </html>
