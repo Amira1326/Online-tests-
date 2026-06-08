@@ -20,13 +20,12 @@
         
         body.en { direction: ltr; font-family: 'Poppins', 'Cairo', sans-serif; }
         
-        /* الخلفية الموحدة */
         body::before {
             content: '';
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
-            background-image: url('Ajyal.png');
+            background-image: url('Background.png');
             background-size: 400px 400px;
             background-repeat: repeat;
             opacity: 0.12;
@@ -71,10 +70,6 @@
             border-radius: 14px;
             font-size: 1.1rem;
         }
-        .btn-secondary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 30px rgba(210, 105, 30, 0.35);
-        }
         
         .btn-danger {
             background: linear-gradient(135deg, #DC2626 0%, #EF4444 100%);
@@ -85,7 +80,6 @@
             font-weight: bold;
             padding: 1rem 2rem;
             border-radius: 14px;
-            font-size: 1.1rem;
         }
         
         .btn-gold {
@@ -97,10 +91,8 @@
             font-weight: bold;
             padding: 1rem 2rem;
             border-radius: 14px;
-            font-size: 1.1rem;
             box-shadow: 0 5px 20px rgba(255, 215, 0, 0.4);
         }
-        .btn-gold:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(255, 215, 0, 0.6); }
         
         .branch-card, .role-card {
             transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
@@ -110,8 +102,6 @@
             border-radius: 24px;
             padding: 2rem;
             box-shadow: 0 8px 25px rgba(0,0,0,0.08);
-            position: relative;
-            overflow: hidden;
         }
         .branch-card:hover, .role-card:hover {
             transform: translateY(-8px) scale(1.02);
@@ -120,8 +110,7 @@
         .branch-card.selected, .role-card.selected {
             border-color: #FFD700;
             background: linear-gradient(135deg, #FFF8F0 0%, #FFEED5 100%);
-            box-shadow: 0 0 0 4px rgba(255, 215, 0, 0.2), 0 15px 40px rgba(139, 69, 19, 0.2);
-            transform: scale(1.03);
+            box-shadow: 0 0 0 4px rgba(255, 215, 0, 0.2);
         }
         
         .input-field {
@@ -131,7 +120,6 @@
             border-radius: 14px;
             padding: 1rem;
             width: 100%;
-            font-size: 1rem;
         }
         .input-field:focus {
             border-color: #8B4513;
@@ -153,6 +141,11 @@
             100% { transform: scale(1); opacity: 1; }
         }
         
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
         .option-btn {
             border: 3px solid #E5E7EB;
             transition: all 0.3s;
@@ -162,9 +155,8 @@
             padding: 1rem;
             width: 100%;
             font-weight: bold;
-            font-size: 1rem;
         }
-        .option-btn:hover { border-color: #8B4513; background: #FFF8F0; transform: translateX(-5px); }
+        .option-btn:hover { border-color: #8B4513; background: #FFF8F0; }
         .option-btn.selected {
             border-color: #8B4513;
             background: linear-gradient(135deg, #FFF8F0, #FFEED5);
@@ -180,14 +172,13 @@
             padding: 2.5rem;
             text-align: center;
         }
-        .upload-zone:hover { background: #FFEED5; border-style: solid; transform: scale(1.02); }
+        .upload-zone:hover { background: #FFEED5; border-style: solid; }
         
         .progress-container {
             background: #E5E7EB;
             border-radius: 9999px;
             overflow: hidden;
             height: 14px;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
         }
         .progress-bar {
             background: linear-gradient(90deg, #8B4513, #D2691E, #CD853F, #FFD700);
@@ -207,7 +198,6 @@
             border-radius: 9999px;
             font-weight: bold;
             transition: all 0.3s;
-            cursor: pointer;
             font-size: 1rem;
         }
         .subject-tab.active {
@@ -225,25 +215,10 @@
             padding: 2rem;
             margin-bottom: 1.5rem;
             position: relative;
-            transition: all 0.3s;
         }
-        .question-block:hover { box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
         
-        .score-badge {
-            position: absolute;
-            top: 1rem;
-            left: 1rem;
-            padding: 0.5rem 1rem;
-            border-radius: 9999px;
-            font-weight: bold;
-            font-size: 0.95rem;
-            animation: bounceIn 0.5s;
-        }
-        .score-correct { background: #D1FAE5; color: #065F46; border: 2px solid #10B981; }
-        .score-wrong { background: #FEE2E2; color: #991B1B; border: 2px solid #EF4444; }
-        
-        .badge-success { background: linear-gradient(135deg, #10B981, #059669); color: white; padding: 0.4rem 1.2rem; border-radius: 9999px; font-weight: bold; }
-        .badge-danger { background: linear-gradient(135deg, #EF4444, #DC2626); color: white; padding: 0.4rem 1.2rem; border-radius: 9999px; font-weight: bold; }
+        .badge-success { background: linear-gradient(135deg, #10B981, #059669); color: white; padding: 0.5rem 1.5rem; border-radius: 9999px; font-weight: bold; }
+        .badge-danger { background: linear-gradient(135deg, #EF4444, #DC2626); color: white; padding: 0.5rem 1.5rem; border-radius: 9999px; font-weight: bold; }
         
         .notification {
             position: fixed;
@@ -259,7 +234,6 @@
             display: flex;
             align-items: center;
             gap: 0.75rem;
-            max-width: 400px;
         }
         body.en .notification { left: auto; right: 20px; }
         @keyframes slideIn {
@@ -278,7 +252,6 @@
             border-radius: 20px;
             padding: 2rem;
             border: 2px solid #E5E7EB;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
         }
         .student-item {
             padding: 1.25rem;
@@ -292,20 +265,16 @@
         .student-item:hover {
             background: #FFF8F0;
             border-color: #8B4513;
-            transform: translateX(-5px);
         }
-        body.en .student-item:hover { transform: translateX(5px); }
         .student-item.active {
             background: linear-gradient(135deg, #FFF8F0, #FFEED5);
             border-color: #FFD700;
-            box-shadow: 0 5px 20px rgba(255, 215, 0, 0.3);
         }
         
         .chart-container {
             background: white;
             border-radius: 20px;
             padding: 2rem;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
         }
         
         .review-item {
@@ -314,9 +283,7 @@
             border-radius: 16px;
             padding: 1.5rem;
             margin-bottom: 1rem;
-            transition: all 0.3s;
         }
-        .review-item:hover { border-color: #8B4513; box-shadow: 0 5px 20px rgba(139, 69, 19, 0.1); }
         .review-item.correct { border-color: #10B981; background: #F0FDF4; }
         .review-item.wrong { border-color: #EF4444; background: #FEF2F2; }
         .review-item.pending { border-color: #F59E0B; background: #FFFBEB; }
@@ -341,15 +308,12 @@
             border-radius: 10px;
             cursor: pointer;
             font-weight: bold;
-            transition: all 0.3s;
             background: #E5E7EB;
-            font-size: 0.9rem;
         }
         .lang-btn.active {
             background: linear-gradient(135deg, #8B4513, #D2691E);
             color: white;
         }
-        .lang-btn:hover:not(.active) { background: #FFD700; }
         
         .stat-card {
             transition: all 0.3s;
@@ -357,31 +321,39 @@
             overflow: hidden;
             position: relative;
         }
-        .stat-card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, transparent 100%);
+        .stat-card:hover { transform: translateY(-5px); }
+        
+        /* شاشة نتيجة المادة */
+        .subject-result-card {
+            background: white;
+            border-radius: 24px;
+            padding: 3rem;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+            animation: bounceIn 0.6s ease;
         }
-        .stat-card:hover { transform: translateY(-5px) scale(1.02); }
+        
+        .big-score {
+            font-size: 7rem;
+            font-weight: 900;
+            line-height: 1;
+            margin: 1rem 0;
+        }
         
         @media (max-width: 1024px) {
             .teacher-split-screen { grid-template-columns: 1fr; }
         }
         @media (max-width: 640px) {
             .glass-card { padding: 1.5rem; border-radius: 18px; }
-            .welcome-title { font-size: 2rem !important; }
+            .big-score { font-size: 5rem; }
         }
     </style>
 </head>
 <body>
-    <!-- Language Toggle -->
     <div class="lang-toggle">
         <button class="lang-btn active" onclick="switchLang('ar')" id="lang-ar">العربية</button>
         <button class="lang-btn" onclick="switchLang('en')" id="lang-en">English</button>
     </div>
 
-    <!-- Notification Container -->
     <div id="notification-container"></div>
 
     <!-- ========== Welcome Screen ========== -->
@@ -393,13 +365,8 @@
                     <path d="M6 12v5c3 3 9 3 12 0v-5"/>
                 </svg>
             </div>
-            <h1 class="text-6xl font-black text-gray-800 mb-4" data-ar="منصة الاختبارات الإلكترونية" data-en="Electronic Exams Platform">منصة الاختبارات الإلكترونية</h1>
+            <h1 class="text-5xl md:text-6xl font-black text-gray-800 mb-4" data-ar="منصة الاختبارات الإلكترونية" data-en="Electronic Exams Platform">منصة الاختبارات الإلكترونية</h1>
             <p class="text-2xl text-gray-600" data-ar="بوابة الطفل | أجيال المعرفة" data-en="Kids Gate | Knowledge Generations">بوابة الطفل | أجيال المعرفة</p>
-            <div class="flex justify-center gap-3 mt-8">
-                <div class="w-4 h-4 bg-amber-600 rounded-full" style="animation: bounce 1s infinite 0s;"></div>
-                <div class="w-4 h-4 bg-amber-600 rounded-full" style="animation: bounce 1s infinite 0.2s;"></div>
-                <div class="w-4 h-4 bg-amber-600 rounded-full" style="animation: bounce 1s infinite 0.4s;"></div>
-            </div>
         </div>
     </div>
 
@@ -407,8 +374,8 @@
     <div id="branch-screen" class="hidden-screen min-h-screen flex items-center justify-center p-4">
         <div class="glass-card max-w-5xl w-full fade-in">
             <div class="text-center mb-10">
-                <div class="inline-block bg-gradient-to-r from-amber-600 to-amber-700 text-white px-8 py-3 rounded-full text-sm font-bold mb-6 shadow-lg" data-ar="الخطوة الأولى" data-en="Step 1">الخطوة الأولى</div>
-                <h1 class="text-5xl font-black text-gray-800 mb-4" data-ar="اختر الفرع" data-en="Select Branch">اختر الفرع</h1>
+                <div class="inline-block bg-gradient-to-r from-amber-600 to-amber-700 text-white px-8 py-3 rounded-full text-sm font-bold mb-6" data-ar="الخطوة الأولى" data-en="Step 1">الخطوة الأولى</div>
+                <h1 class="text-4xl md:text-5xl font-black text-gray-800 mb-4" data-ar="اختر الفرع" data-en="Select Branch">اختر الفرع</h1>
                 <p class="text-gray-600 text-xl" data-ar="حدد مدرستك للمتابعة" data-en="Choose your school to continue">حدد مدرستك للمتابعة</p>
             </div>
             <div class="grid md:grid-cols-2 gap-8 mb-8">
@@ -417,9 +384,9 @@
                         <img src="KidsGate.png" alt="Kids Gate" onerror="this.parentElement.innerHTML='<div class=\'w-full h-full flex items-center justify-center text-7xl bg-orange-50\'></div>'">
                     </div>
                     <h2 class="text-3xl font-bold text-gray-800 mb-3" data-ar="بوابة الطفل" data-en="Kids Gate">بوابة الطفل</h2>
-                    <p class="text-gray-600 mb-4 text-lg" data-ar="للتعليم المبكر المتميز" data-en="Excellence in Early Education">للتعليم المبكر المتميز</p>
+                    <p class="text-gray-600 mb-4" data-ar="للتعليم المبكر المتميز" data-en="Excellence in Early Education">للتعليم المبكر المتميز</p>
                     <div class="bg-gradient-to-r from-orange-50 to-amber-50 border-2 border-orange-200 rounded-xl p-4">
-                        <p class="text-orange-800 font-bold text-base"><i class="fas fa-graduation-cap ml-2"></i><span data-ar="من KG2 إلى الصف السادس (VI)" data-en="From KG2 to Grade 6 (VI)">من KG2 إلى الصف السادس (VI)</span></p>
+                        <p class="text-orange-800 font-bold"><span data-ar="من KG2 إلى الصف السادس (VI)" data-en="From KG2 to Grade 6 (VI)">من KG2 إلى الصف السادس (VI)</span></p>
                     </div>
                 </div>
                 <div onclick="selectBranch('knowledge-gen')" id="branch-knowledge-gen" class="branch-card text-center">
@@ -427,9 +394,9 @@
                         <img src="Ajyal.png" alt="Ajyal" onerror="this.parentElement.innerHTML='<div class=\'w-full h-full flex items-center justify-center text-7xl bg-amber-50\'>✨</div>'">
                     </div>
                     <h2 class="text-3xl font-bold text-gray-800 mb-3" data-ar="أجيال المعرفة" data-en="Knowledge Generations">أجيال المعرفة</h2>
-                    <p class="text-gray-600 mb-4 text-lg" data-ar="نبني مستقبل أفضل" data-en="Building a Better Future">نبني مستقبل أفضل</p>
+                    <p class="text-gray-600 mb-4" data-ar="نبني مستقبل أفضل" data-en="Building a Better Future">نبني مستقبل أفضل</p>
                     <div class="bg-gradient-to-r from-amber-50 to-yellow-50 border-2 border-amber-200 rounded-xl p-4">
-                        <p class="text-amber-800 font-bold text-base"><i class="fas fa-graduation-cap ml-2"></i><span data-ar="من KG2 إلى الصف الثاني عشر (XII)" data-en="From KG2 to Grade 12 (XII)">من KG2 إلى الصف الثاني عشر (XII)</span></p>
+                        <p class="text-amber-800 font-bold"><span data-ar="من KG2 إلى الصف الثاني عشر (XII)" data-en="From KG2 to Grade 12 (XII)">من KG2 إلى الصف الثاني عشر (XII)</span></p>
                     </div>
                 </div>
             </div>
@@ -443,16 +410,14 @@
     <div id="role-screen" class="hidden-screen min-h-screen flex items-center justify-center p-4">
         <div class="glass-card max-w-6xl w-full fade-in">
             <div class="text-center mb-10">
-                <div class="inline-block bg-gradient-to-r from-amber-600 to-amber-700 text-white px-8 py-3 rounded-full text-sm font-bold mb-6 shadow-lg" data-ar="الخطوة الثانية" data-en="Step 2">الخطوة الثانية</div>
-                <h1 class="text-5xl font-black text-gray-800 mb-4" data-ar="اختر نوع الدخول" data-en="Select Role">اختر نوع الدخول</h1>
-                <p class="text-gray-600 text-xl" data-ar="حدد دورك للمتابعة" data-en="Choose your role to continue">حدد دورك للمتابعة</p>
+                <div class="inline-block bg-gradient-to-r from-amber-600 to-amber-700 text-white px-8 py-3 rounded-full text-sm font-bold mb-6" data-ar="الخطوة الثانية" data-en="Step 2">الخطوة الثانية</div>
+                <h1 class="text-4xl md:text-5xl font-black text-gray-800 mb-4" data-ar="اختر نوع الدخول" data-en="Select Role">اختر نوع الدخول</h1>
                 <p class="text-sm text-amber-700 font-bold mt-4 bg-amber-50 inline-block px-6 py-2 rounded-full">
                     <span data-ar="الفرع المختار: " data-en="Selected Branch: ">الفرع المختار: </span>
                     <span id="selected-branch-name"></span>
                 </p>
             </div>
             <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                <!-- طالب -->
                 <div onclick="selectRole('student')" id="role-student" class="role-card text-center">
                     <div class="w-28 h-28 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg" style="background: linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%);">
                         <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -463,21 +428,17 @@
                     <h3 class="text-2xl font-bold text-gray-800 mb-2" data-ar="طالب" data-en="Student">طالب</h3>
                     <p class="text-gray-600 text-sm" data-ar="أداء الاختبارات" data-en="Take Exams">أداء الاختبارات</p>
                 </div>
-                <!-- معلم -->
                 <div onclick="selectRole('teacher')" id="role-teacher" class="role-card text-center">
                     <div class="w-28 h-28 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg" style="background: linear-gradient(135deg, #10B981 0%, #059669 100%);">
                         <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
                             <circle cx="9" cy="7" r="4"/>
-                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-                            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
                             <path d="M9 14l2 2 4-4"/>
                         </svg>
                     </div>
                     <h3 class="text-2xl font-bold text-gray-800 mb-2" data-ar="معلم" data-en="Teacher">معلم</h3>
                     <p class="text-gray-600 text-sm" data-ar="تصحيح النتائج" data-en="Grade Results">تصحيح النتائج</p>
                 </div>
-                <!-- مسؤول القبول -->
                 <div onclick="selectRole('registrar')" id="role-registrar" class="role-card text-center">
                     <div class="w-28 h-28 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg" style="background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);">
                         <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -485,18 +446,16 @@
                             <polyline points="14 2 14 8 20 8"/>
                             <line x1="16" y1="13" x2="8" y2="13"/>
                             <line x1="16" y1="17" x2="8" y2="17"/>
-                            <polyline points="10 9 9 9 8 9"/>
                         </svg>
                     </div>
                     <h3 class="text-2xl font-bold text-gray-800 mb-2" data-ar="مسؤول القبول" data-en="Admissions">مسؤول القبول</h3>
                     <p class="text-gray-600 text-sm" data-ar="التسجيل والقبول" data-en="Registration">التسجيل والقبول</p>
                 </div>
-                <!-- مدير النظام -->
                 <div onclick="selectRole('admin')" id="role-admin" class="role-card text-center">
                     <div class="w-28 h-28 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg" style="background: linear-gradient(135deg, #8B5CF6 0%, #6D28D9 100%);">
                         <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                             <circle cx="12" cy="12" r="3"/>
-                            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
                         </svg>
                     </div>
                     <h3 class="text-2xl font-bold text-gray-800 mb-2" data-ar="مدير النظام" data-en="Admin">مدير النظام</h3>
@@ -504,7 +463,7 @@
                 </div>
             </div>
             <div class="flex gap-4">
-                <button onclick="backToBranch()" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-5 rounded-xl text-lg transition-all">
+                <button onclick="backToBranch()" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-5 rounded-xl text-lg">
                     <i class="fas fa-arrow-right ml-2"></i><span data-ar="رجوع" data-en="Back">رجوع</span>
                 </button>
                 <button onclick="proceedRole()" id="role-btn" disabled class="btn-primary text-white font-bold py-5 rounded-xl text-lg" style="flex: 2;">
@@ -518,7 +477,7 @@
     <div id="student-form-screen" class="hidden-screen min-h-screen flex items-center justify-center p-4">
         <div class="glass-card max-w-4xl w-full fade-in">
             <div class="text-center mb-8">
-                <div class="inline-block bg-gradient-to-r from-amber-600 to-amber-700 text-white px-8 py-3 rounded-full text-sm font-bold mb-6 shadow-lg">
+                <div class="inline-block bg-gradient-to-r from-amber-600 to-amber-700 text-white px-8 py-3 rounded-full text-sm font-bold mb-6">
                     <i class="fas fa-user-graduate ml-2"></i><span data-ar="بيانات الطالب" data-en="Student Information">بيانات الطالب</span>
                 </div>
                 <h2 class="text-4xl font-black text-gray-800 mb-3" data-ar="أدخل معلوماتك" data-en="Enter Your Information">أدخل معلوماتك</h2>
@@ -561,16 +520,16 @@
                         <div class="grid grid-cols-2 gap-3">
                             <label class="cursor-pointer">
                                 <input type="radio" name="gender" value="male" class="hidden peer">
-                                <div class="peer-checked:bg-blue-100 peer-checked:border-blue-500 border-2 border-gray-200 rounded-xl p-4 text-center transition-all">
+                                <div class="peer-checked:bg-blue-100 peer-checked:border-blue-500 border-2 border-gray-200 rounded-xl p-4 text-center">
                                     <i class="fas fa-male text-3xl text-blue-600 mb-1"></i>
-                                    <div class="font-bold text-base" data-ar="ذكر" data-en="Male">ذكر</div>
+                                    <div class="font-bold" data-ar="ذكر" data-en="Male">ذكر</div>
                                 </div>
                             </label>
                             <label class="cursor-pointer">
                                 <input type="radio" name="gender" value="female" class="hidden peer">
-                                <div class="peer-checked:bg-pink-100 peer-checked:border-pink-500 border-2 border-gray-200 rounded-xl p-4 text-center transition-all">
+                                <div class="peer-checked:bg-pink-100 peer-checked:border-pink-500 border-2 border-gray-200 rounded-xl p-4 text-center">
                                     <i class="fas fa-female text-3xl text-pink-600 mb-1"></i>
-                                    <div class="font-bold text-base" data-ar="أنثى" data-en="Female">أنثى</div>
+                                    <div class="font-bold" data-ar="أنثى" data-en="Female">أنثى</div>
                                 </div>
                             </label>
                         </div>
@@ -608,7 +567,7 @@
                     <select id="s-grade" class="input-field"></select>
                 </div>
                 <div class="flex gap-4 pt-6">
-                    <button onclick="backToRole()" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-5 rounded-xl text-lg transition-all">
+                    <button onclick="backToRole()" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-5 rounded-xl text-lg">
                         <i class="fas fa-arrow-right ml-2"></i><span data-ar="رجوع" data-en="Back">رجوع</span>
                     </button>
                     <button onclick="startStudentExam()" class="btn-primary text-white font-bold py-5 rounded-xl text-lg" style="flex: 2;">
@@ -624,28 +583,19 @@
         <div class="glass-card max-w-md w-full fade-in">
             <div class="text-center mb-8">
                 <div class="w-28 h-28 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg" style="background: linear-gradient(135deg, #10B981 0%, #059669 100%);">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="90" height="90" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-                        <circle cx="9" cy="7" r="4"/>
-                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-                        <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-                        <path d="M9 14l2 2 4-4"/>
-                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="90" height="90" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M9 14l2 2 4-4"/></svg>
                 </div>
                 <h2 class="text-3xl font-black text-gray-800 mb-2" data-ar="دخول المعلم" data-en="Teacher Login">دخول المعلم</h2>
-                <p class="text-gray-600" data-ar="تصحيح إجابات الطلاب" data-en="Grade Student Answers">تصحيح إجابات الطلاب</p>
             </div>
             <div class="space-y-4">
                 <input type="text" id="t-username" class="input-field" data-placeholder-ar="اسم المستخدم" data-placeholder-en="Username">
                 <input type="password" id="t-password" class="input-field" data-placeholder-ar="كلمة المرور" data-placeholder-en="Password">
                 <div id="t-error" class="hidden bg-red-50 border-2 border-red-300 text-red-700 p-4 rounded-xl text-sm font-bold"></div>
                 <div class="flex gap-3">
-                    <button onclick="backToRole()" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-4 rounded-xl" data-ar="رجوع" data-en="Back">رجوع</button>
+                    <button onclick="backToRole()" class="flex-1 bg-gray-200 text-gray-800 font-bold py-4 rounded-xl" data-ar="رجوع" data-en="Back">رجوع</button>
                     <button onclick="loginTeacher()" class="flex-1 btn-secondary text-white font-bold py-4 rounded-xl" data-ar="دخول" data-en="Login">دخول</button>
                 </div>
-                <div class="text-center text-xs text-gray-500 bg-gray-50 p-3 rounded-lg">
-                    <i class="fas fa-info-circle ml-2"></i><span data-ar="تجريبي: teacher / teacher123" data-en="Demo: teacher / teacher123">تجريبي: teacher / teacher123</span>
-                </div>
+                <div class="text-center text-xs text-gray-500 bg-gray-50 p-3 rounded-lg">teacher / teacher123</div>
             </div>
         </div>
     </div>
@@ -656,21 +606,11 @@
             <div class="glass-card p-6 mb-6">
                 <div class="flex justify-between items-center flex-wrap gap-4">
                     <div>
-                        <h2 class="text-3xl font-black text-gray-800">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: middle; margin-left: 8px;">
-                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-                                <circle cx="9" cy="7" r="4"/>
-                                <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-                                <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-                                <path d="M9 14l2 2 4-4"/>
-                            </svg>
-                            <span data-ar="لوحة المعلم - تصحيح الإجابات" data-en="Teacher Panel - Grading">لوحة المعلم - تصحيح الإجابات</span>
-                        </h2>
-                        <p class="text-gray-600 mt-1" data-ar="راجع إجابات الطلاب وأضف الدرجات" data-en="Review student answers and add grades">راجع إجابات الطلاب وأضف الدرجات</p>
+                        <h2 class="text-3xl font-black text-gray-800">👨‍🏫 <span data-ar="لوحة المعلم" data-en="Teacher Panel">لوحة المعلم</span></h2>
                     </div>
                     <div class="flex gap-3">
-                        <button onclick="exportToExcel()" class="btn-secondary px-6 py-3 rounded-xl font-bold"><i class="fas fa-file-excel ml-2"></i>Excel</button>
-                        <button onclick="logout()" class="btn-danger px-6 py-3 rounded-xl font-bold"><i class="fas fa-sign-out-alt ml-2"></i><span data-ar="خروج" data-en="Logout">خروج</span></button>
+                        <button onclick="exportToExcel()" class="btn-secondary px-6 py-3 rounded-xl font-bold">Excel</button>
+                        <button onclick="logout()" class="btn-danger px-6 py-3 rounded-xl font-bold"><span data-ar="خروج" data-en="Logout">خروج</span></button>
                     </div>
                 </div>
             </div>
@@ -678,18 +618,14 @@
                 <div class="student-list-panel">
                     <div class="mb-4 relative">
                         <i class="fas fa-search absolute right-4 top-1/2 -translate-y-1/2 text-amber-700"></i>
-                        <input type="text" id="teacher-search" class="input-field w-full p-4 rounded-xl pr-12" data-placeholder-ar="ابحث بالاسم..." data-placeholder-en="Search by name..." oninput="filterStudents()">
+                        <input type="text" id="teacher-search" class="input-field w-full p-4 rounded-xl pr-12" data-placeholder-ar="ابحث بالاسم..." data-placeholder-en="Search..." oninput="filterStudents()">
                     </div>
-                    <h3 class="text-xl font-bold text-gray-800 mb-4">📋 <span data-ar="قائمة الطلاب" data-en="Student List">قائمة الطلاب</span></h3>
                     <div id="teacher-student-list"></div>
                 </div>
                 <div class="student-detail-panel" id="student-detail-panel">
                     <div class="text-center text-gray-500 py-20">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" style="margin: 0 auto 1rem; opacity: 0.3;">
-                            <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
-                            <path d="M6 12v5c3 3 9 3 12 0v-5"/>
-                        </svg>
-                        <p class="text-xl" data-ar="اختر طالباً من القائمة لعرض إجاباته" data-en="Select a student to view answers">اختر طالباً من القائمة لعرض إجاباته</p>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" stroke-width="1" style="margin: 0 auto 1rem; opacity: 0.3;"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+                        <p class="text-xl" data-ar="اختر طالباً لعرض نتائجه" data-en="Select a student">اختر طالباً لعرض نتائجه</p>
                     </div>
                 </div>
             </div>
@@ -701,28 +637,19 @@
         <div class="glass-card max-w-md w-full fade-in">
             <div class="text-center mb-8">
                 <div class="w-28 h-28 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg" style="background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="90" height="90" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                        <polyline points="14 2 14 8 20 8"/>
-                        <line x1="16" y1="13" x2="8" y2="13"/>
-                        <line x1="16" y1="17" x2="8" y2="17"/>
-                        <polyline points="10 9 9 9 8 9"/>
-                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="90" height="90" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
                 </div>
-                <h2 class="text-3xl font-black text-gray-800 mb-2" data-ar="مسؤول القبول والتسجيل" data-en="Admissions Officer">مسؤول القبول والتسجيل</h2>
-                <p class="text-gray-600" data-ar="عرض جميع الطلاب" data-en="View All Students">عرض جميع الطلاب</p>
+                <h2 class="text-3xl font-black text-gray-800 mb-2" data-ar="مسؤول القبول" data-en="Admissions">مسؤول القبول</h2>
             </div>
             <div class="space-y-4">
                 <input type="text" id="r-username" class="input-field" data-placeholder-ar="اسم المستخدم" data-placeholder-en="Username">
                 <input type="password" id="r-password" class="input-field" data-placeholder-ar="كلمة المرور" data-placeholder-en="Password">
                 <div id="r-error" class="hidden bg-red-50 border-2 border-red-300 text-red-700 p-4 rounded-xl text-sm font-bold"></div>
                 <div class="flex gap-3">
-                    <button onclick="backToRole()" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-4 rounded-xl" data-ar="رجوع" data-en="Back">رجوع</button>
+                    <button onclick="backToRole()" class="flex-1 bg-gray-200 text-gray-800 font-bold py-4 rounded-xl" data-ar="رجوع" data-en="Back">رجوع</button>
                     <button onclick="loginRegistrar()" class="flex-1 btn-primary text-white font-bold py-4 rounded-xl" data-ar="دخول" data-en="Login">دخول</button>
                 </div>
-                <div class="text-center text-xs text-gray-500 bg-gray-50 p-3 rounded-lg">
-                    <i class="fas fa-info-circle ml-2"></i><span data-ar="تجريبي: registrar / registrar123" data-en="Demo: registrar / registrar123">تجريبي: registrar / registrar123</span>
-                </div>
+                <div class="text-center text-xs text-gray-500 bg-gray-50 p-3 rounded-lg">registrar / registrar123</div>
             </div>
         </div>
     </div>
@@ -732,35 +659,31 @@
         <div class="max-w-7xl mx-auto">
             <div class="glass-card p-6 mb-6">
                 <div class="flex justify-between items-center flex-wrap gap-4">
-                    <div>
-                        <h2 class="text-3xl font-black text-gray-800">📋 <span data-ar="لوحة مسؤول القبول والتسجيل" data-en="Admissions Panel">لوحة مسؤول القبول والتسجيل</span></h2>
-                        <p class="text-gray-600 mt-1" data-ar="عرض جميع الطلاب المسجلين" data-en="View All Registered Students">عرض جميع الطلاب المسجلين</p>
-                    </div>
+                    <h2 class="text-3xl font-black text-gray-800">📋 <span data-ar="لوحة مسؤول القبول" data-en="Admissions Panel">لوحة مسؤول القبول</span></h2>
                     <div class="flex gap-3">
-                        <button onclick="exportToExcel()" class="btn-secondary px-6 py-3 rounded-xl font-bold"><i class="fas fa-file-excel ml-2"></i><span data-ar="تصدير Excel" data-en="Export Excel">تصدير Excel</span></button>
-                        <button onclick="logout()" class="btn-danger px-6 py-3 rounded-xl font-bold"><i class="fas fa-sign-out-alt ml-2"></i><span data-ar="خروج" data-en="Logout">خروج</span></button>
+                        <button onclick="exportToExcel()" class="btn-secondary px-6 py-3 rounded-xl font-bold">Excel</button>
+                        <button onclick="logout()" class="btn-danger px-6 py-3 rounded-xl font-bold"><span data-ar="خروج" data-en="Logout">خروج</span></button>
                     </div>
                 </div>
             </div>
             <div class="grid md:grid-cols-4 gap-4 mb-6">
-                <div class="stat-card bg-gradient-to-br from-blue-500 to-blue-700 text-white p-6 shadow-lg rounded-2xl"><div class="text-4xl font-black" id="r-total">0</div><p class="text-blue-100 text-sm" data-ar="إجمالي الطلاب" data-en="Total Students">إجمالي الطلاب</p></div>
-                <div class="stat-card bg-gradient-to-br from-green-500 to-green-700 text-white p-6 shadow-lg rounded-2xl"><div class="text-4xl font-black" id="r-passed">0</div><p class="text-green-100 text-sm" data-ar="مقبول" data-en="Passed">مقبول</p></div>
-                <div class="stat-card bg-gradient-to-br from-red-500 to-red-700 text-white p-6 shadow-lg rounded-2xl"><div class="text-4xl font-black" id="r-failed">0</div><p class="text-red-100 text-sm" data-ar="غير مقبول" data-en="Failed">غير مقبول</p></div>
-                <div class="stat-card bg-gradient-to-br from-amber-500 to-amber-700 text-white p-6 shadow-lg rounded-2xl"><div class="text-4xl font-black" id="r-pending">0</div><p class="text-amber-100 text-sm" data-ar="بانتظار التصحيح" data-en="Pending">بانتظار التصحيح</p></div>
+                <div class="stat-card bg-gradient-to-br from-blue-500 to-blue-700 text-white p-6 rounded-2xl"><div class="text-4xl font-black" id="r-total">0</div><p class="text-blue-100 text-sm" data-ar="إجمالي الطلاب" data-en="Total">إجمالي الطلاب</p></div>
+                <div class="stat-card bg-gradient-to-br from-green-500 to-green-700 text-white p-6 rounded-2xl"><div class="text-4xl font-black" id="r-passed">0</div><p class="text-green-100 text-sm" data-ar="مقبول" data-en="Passed">مقبول</p></div>
+                <div class="stat-card bg-gradient-to-br from-red-500 to-red-700 text-white p-6 rounded-2xl"><div class="text-4xl font-black" id="r-failed">0</div><p class="text-red-100 text-sm" data-ar="غير مقبول" data-en="Failed">غير مقبول</p></div>
+                <div class="stat-card bg-gradient-to-br from-amber-500 to-amber-700 text-white p-6 rounded-2xl"><div class="text-4xl font-black" id="r-pending">0</div><p class="text-amber-100 text-sm" data-ar="بانتظار التصحيح" data-en="Pending">بانتظار التصحيح</p></div>
             </div>
             <div class="glass-card p-6 overflow-x-auto">
-                <h3 class="text-2xl font-bold text-gray-800 mb-4">📋 <span data-ar="جميع الطلاب المسجلين" data-en="All Registered Students">جميع الطلاب المسجلين</span></h3>
                 <table class="w-full">
                     <thead class="bg-amber-50 border-b-2 border-amber-200">
                         <tr>
-                            <th class="p-3 text-right font-bold text-gray-700">#</th>
-                            <th class="p-3 text-right font-bold text-gray-700" data-ar="الاسم" data-en="Name">الاسم</th>
-                            <th class="p-3 text-right font-bold text-gray-700" data-ar="المرحلة" data-en="Grade">المرحلة</th>
-                            <th class="p-3 text-right font-bold text-gray-700" data-ar="الإنجليزي" data-en="English">الإنجليزي</th>
-                            <th class="p-3 text-right font-bold text-gray-700" data-ar="الرياضيات" data-en="Math">الرياضيات</th>
-                            <th class="p-3 text-right font-bold text-gray-700" data-ar="العربي" data-en="Arabic">العربي</th>
-                            <th class="p-3 text-right font-bold text-gray-700" data-ar="المجموع" data-en="Total">المجموع</th>
-                            <th class="p-3 text-right font-bold text-gray-700" data-ar="الحالة" data-en="Status">الحالة</th>
+                            <th class="p-3 text-right font-bold">#</th>
+                            <th class="p-3 text-right font-bold" data-ar="الاسم" data-en="Name">الاسم</th>
+                            <th class="p-3 text-right font-bold" data-ar="المرحلة" data-en="Grade">المرحلة</th>
+                            <th class="p-3 text-right font-bold" data-ar="الإنجليزي" data-en="English">الإنجليزي</th>
+                            <th class="p-3 text-right font-bold" data-ar="الرياضيات" data-en="Math">الرياضيات</th>
+                            <th class="p-3 text-right font-bold" data-ar="العربي" data-en="Arabic">العربي</th>
+                            <th class="p-3 text-right font-bold" data-ar="المجموع" data-en="Total">المجموع</th>
+                            <th class="p-3 text-right font-bold" data-ar="الحالة" data-en="Status">الحالة</th>
                         </tr>
                     </thead>
                     <tbody id="r-students-table" class="divide-y divide-gray-200"></tbody>
@@ -774,25 +697,19 @@
         <div class="glass-card max-w-md w-full fade-in">
             <div class="text-center mb-8">
                 <div class="w-28 h-28 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg" style="background: linear-gradient(135deg, #8B5CF6 0%, #6D28D9 100%);">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="90" height="90" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="3"/>
-                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
-                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="90" height="90" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9"/></svg>
                 </div>
-                <h2 class="text-3xl font-black text-gray-800 mb-2" data-ar="مدير النظام" data-en="System Admin">مدير النظام</h2>
-                <p class="text-gray-600" data-ar="منطقة إدارية محمية" data-en="Protected Admin Area">منطقة إدارية محمية</p>
+                <h2 class="text-3xl font-black text-gray-800 mb-2" data-ar="مدير النظام" data-en="Admin">مدير النظام</h2>
             </div>
             <div class="space-y-4">
                 <input type="text" id="a-username" class="input-field" data-placeholder-ar="اسم المستخدم" data-placeholder-en="Username">
                 <input type="password" id="a-password" class="input-field" data-placeholder-ar="كلمة المرور" data-placeholder-en="Password">
                 <div id="a-error" class="hidden bg-red-50 border-2 border-red-300 text-red-700 p-4 rounded-xl text-sm font-bold"></div>
                 <div class="flex gap-3">
-                    <button onclick="backToRole()" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-4 rounded-xl" data-ar="رجوع" data-en="Back">رجوع</button>
+                    <button onclick="backToRole()" class="flex-1 bg-gray-200 text-gray-800 font-bold py-4 rounded-xl" data-ar="رجوع" data-en="Back">رجوع</button>
                     <button onclick="loginAdmin()" class="flex-1 btn-primary text-white font-bold py-4 rounded-xl" data-ar="دخول" data-en="Login">دخول</button>
                 </div>
-                <div class="text-center text-xs text-gray-500 bg-gray-50 p-3 rounded-lg">
-                    <i class="fas fa-info-circle ml-2"></i><span data-ar="تجريبي: admin / admin123" data-en="Demo: admin / admin123">تجريبي: admin / admin123</span>
-                </div>
+                <div class="text-center text-xs text-gray-500 bg-gray-50 p-3 rounded-lg">admin / admin123</div>
             </div>
         </div>
     </div>
@@ -802,21 +719,18 @@
         <div class="max-w-7xl mx-auto">
             <div class="glass-card p-6 mb-6">
                 <div class="flex justify-between items-center flex-wrap gap-4">
-                    <div>
-                        <h2 class="text-3xl font-black text-gray-800">📊 <span data-ar="داشبورد مدير النظام" data-en="Admin Dashboard">داشبورد مدير النظام</span></h2>
-                        <p class="text-gray-600 mt-1" data-ar="نظرة شاملة على أداء المنصة" data-en="Comprehensive Platform Overview">نظرة شاملة على أداء المنصة</p>
-                    </div>
+                    <h2 class="text-3xl font-black text-gray-800">📊 <span data-ar="داشبورد المدير" data-en="Admin Dashboard">داشبورد المدير</span></h2>
                     <div class="flex gap-3">
-                        <button onclick="exportToExcel()" class="btn-secondary px-6 py-3 rounded-xl font-bold"><i class="fas fa-file-excel ml-2"></i>Excel</button>
-                        <button onclick="logout()" class="btn-danger px-6 py-3 rounded-xl font-bold"><i class="fas fa-sign-out-alt ml-2"></i><span data-ar="خروج" data-en="Logout">خروج</span></button>
+                        <button onclick="exportToExcel()" class="btn-secondary px-6 py-3 rounded-xl font-bold">Excel</button>
+                        <button onclick="logout()" class="btn-danger px-6 py-3 rounded-xl font-bold"><span data-ar="خروج" data-en="Logout">خروج</span></button>
                     </div>
                 </div>
             </div>
             <div class="grid md:grid-cols-4 gap-4 mb-6">
-                <div class="stat-card bg-gradient-to-br from-blue-500 to-blue-700 text-white p-6 shadow-lg rounded-2xl"><div class="text-4xl font-black" id="a-total">0</div><p class="text-blue-100 text-sm" data-ar="إجمالي الطلاب" data-en="Total Students">إجمالي الطلاب</p></div>
-                <div class="stat-card bg-gradient-to-br from-green-500 to-green-700 text-white p-6 shadow-lg rounded-2xl"><div class="text-4xl font-black" id="a-passed">0</div><p class="text-green-100 text-sm" data-ar="مقبول" data-en="Passed">مقبول</p></div>
-                <div class="stat-card bg-gradient-to-br from-red-500 to-red-700 text-white p-6 shadow-lg rounded-2xl"><div class="text-4xl font-black" id="a-failed">0</div><p class="text-red-100 text-sm" data-ar="غير مقبول" data-en="Failed">غير مقبول</p></div>
-                <div class="stat-card bg-gradient-to-br from-amber-500 to-amber-700 text-white p-6 shadow-lg rounded-2xl"><div class="text-4xl font-black" id="a-rate">0%</div><p class="text-amber-100 text-sm" data-ar="نسبة القبول" data-en="Pass Rate">نسبة القبول</p></div>
+                <div class="stat-card bg-gradient-to-br from-blue-500 to-blue-700 text-white p-6 rounded-2xl"><div class="text-4xl font-black" id="a-total">0</div><p class="text-blue-100 text-sm" data-ar="إجمالي الطلاب" data-en="Total">إجمالي الطلاب</p></div>
+                <div class="stat-card bg-gradient-to-br from-green-500 to-green-700 text-white p-6 rounded-2xl"><div class="text-4xl font-black" id="a-passed">0</div><p class="text-green-100 text-sm" data-ar="مقبول" data-en="Passed">مقبول</p></div>
+                <div class="stat-card bg-gradient-to-br from-red-500 to-red-700 text-white p-6 rounded-2xl"><div class="text-4xl font-black" id="a-failed">0</div><p class="text-red-100 text-sm" data-ar="غير مقبول" data-en="Failed">غير مقبول</p></div>
+                <div class="stat-card bg-gradient-to-br from-amber-500 to-amber-700 text-white p-6 rounded-2xl"><div class="text-4xl font-black" id="a-rate">0%</div><p class="text-amber-100 text-sm" data-ar="نسبة القبول" data-en="Pass Rate">نسبة القبول</p></div>
             </div>
             <div class="grid md:grid-cols-2 gap-6 mb-6">
                 <div class="chart-container">
@@ -829,18 +743,17 @@
                 </div>
             </div>
             <div class="glass-card p-6 overflow-x-auto">
-                <h3 class="text-xl font-bold text-gray-800 mb-4">📋 <span data-ar="جميع الطلاب" data-en="All Students">جميع الطلاب</span></h3>
                 <table class="w-full">
                     <thead class="bg-amber-50 border-b-2 border-amber-200">
                         <tr>
-                            <th class="p-3 text-right font-bold text-gray-700">#</th>
-                            <th class="p-3 text-right font-bold text-gray-700" data-ar="الاسم" data-en="Name">الاسم</th>
-                            <th class="p-3 text-right font-bold text-gray-700" data-ar="المرحلة" data-en="Grade">المرحلة</th>
-                            <th class="p-3 text-right font-bold text-gray-700" data-ar="الإنجليزي" data-en="English">الإنجليزي</th>
-                            <th class="p-3 text-right font-bold text-gray-700" data-ar="الرياضيات" data-en="Math">الرياضيات</th>
-                            <th class="p-3 text-right font-bold text-gray-700" data-ar="العربي" data-en="Arabic">العربي</th>
-                            <th class="p-3 text-right font-bold text-gray-700" data-ar="المجموع" data-en="Total">المجموع</th>
-                            <th class="p-3 text-right font-bold text-gray-700" data-ar="الحالة" data-en="Status">الحالة</th>
+                            <th class="p-3 text-right font-bold">#</th>
+                            <th class="p-3 text-right font-bold" data-ar="الاسم" data-en="Name">الاسم</th>
+                            <th class="p-3 text-right font-bold" data-ar="المرحلة" data-en="Grade">المرحلة</th>
+                            <th class="p-3 text-right font-bold" data-ar="الإنجليزي" data-en="English">الإنجليزي</th>
+                            <th class="p-3 text-right font-bold" data-ar="الرياضيات" data-en="Math">الرياضيات</th>
+                            <th class="p-3 text-right font-bold" data-ar="العربي" data-en="Arabic">العربي</th>
+                            <th class="p-3 text-right font-bold" data-ar="المجموع" data-en="Total">المجموع</th>
+                            <th class="p-3 text-right font-bold" data-ar="الحالة" data-en="Status">الحالة</th>
                         </tr>
                     </thead>
                     <tbody id="a-students-table" class="divide-y divide-gray-200"></tbody>
@@ -856,12 +769,7 @@
                 <div class="flex justify-between items-center flex-wrap gap-6">
                     <div class="flex items-center gap-6">
                         <div class="w-20 h-20 bg-gradient-to-br from-amber-600 to-amber-700 rounded-full flex items-center justify-center text-white shadow-2xl">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                                <polyline points="14 2 14 8 20 8"/>
-                                <line x1="16" y1="13" x2="8" y2="13"/>
-                                <line x1="16" y1="17" x2="8" y2="17"/>
-                            </svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
                         </div>
                         <div>
                             <h2 id="exam-subject" class="text-3xl font-bold text-gray-800"></h2>
@@ -884,7 +792,7 @@
             </div>
             <div id="question-area" class="glass-card p-8 mb-6"></div>
             <div class="glass-card p-6 flex justify-between gap-4 flex-wrap">
-                <button onclick="prevQuestion()" id="btn-prev" class="bg-gray-200 hover:bg-gray-300 disabled:opacity-40 px-8 py-4 rounded-xl font-bold text-lg transition-all" disabled>
+                <button onclick="prevQuestion()" id="btn-prev" class="bg-gray-200 hover:bg-gray-300 disabled:opacity-40 px-8 py-4 rounded-xl font-bold text-lg" disabled>
                     <i class="fas fa-arrow-right ml-2"></i><span data-ar="السابق" data-en="Previous">السابق</span>
                 </button>
                 <button onclick="nextQuestion()" id="btn-next" class="btn-primary text-white px-8 py-4 rounded-xl font-bold text-lg shadow-xl">
@@ -907,11 +815,11 @@
                 <div class="flex justify-between items-center flex-wrap gap-4">
                     <div>
                         <h2 class="text-3xl font-black text-gray-800">📋 <span data-ar="مراجعة الإجابات" data-en="Review Answers">مراجعة الإجابات</span></h2>
-                        <p class="text-gray-600 mt-1" data-ar="راجع إجاباتك قبل التسليم النهائي" data-en="Review your answers before final submission">راجع إجاباتك قبل التسليم النهائي</p>
+                        <p class="text-gray-600 mt-1" data-ar="راجع إجاباتك قبل التسليم النهائي" data-en="Review before final submission">راجع إجاباتك قبل التسليم النهائي</p>
                     </div>
                     <div class="flex gap-3">
-                        <button onclick="backToExam()" class="btn-secondary px-6 py-3 rounded-xl font-bold"><i class="fas fa-arrow-right ml-2"></i><span data-ar="العودة للاختبار" data-en="Back to Exam">العودة للاختبار</span></button>
-                        <button onclick="submitExam()" class="btn-primary px-6 py-3 rounded-xl font-bold"><i class="fas fa-check-circle ml-2"></i><span data-ar="تسليم الاختبار" data-en="Submit Exam">تسليم الاختبار</span></button>
+                        <button onclick="backToExam()" class="btn-secondary px-6 py-3 rounded-xl font-bold"><i class="fas fa-arrow-right ml-2"></i><span data-ar="العودة" data-en="Back">العودة</span></button>
+                        <button onclick="submitExam()" class="btn-primary px-6 py-3 rounded-xl font-bold"><i class="fas fa-check-circle ml-2"></i><span data-ar="تسليم" data-en="Submit">تسليم</span></button>
                     </div>
                 </div>
             </div>
@@ -919,15 +827,15 @@
                 <div class="grid md:grid-cols-3 gap-4 mb-6">
                     <div class="bg-green-50 border-2 border-green-200 rounded-xl p-4 text-center">
                         <div class="text-3xl font-black text-green-600" id="review-correct">0</div>
-                        <p class="text-green-800 font-bold" data-ar="إجابات صحيحة" data-en="Correct Answers">إجابات صحيحة</p>
+                        <p class="text-green-800 font-bold" data-ar="صحيحة" data-en="Correct">صحيحة</p>
                     </div>
                     <div class="bg-red-50 border-2 border-red-200 rounded-xl p-4 text-center">
                         <div class="text-3xl font-black text-red-600" id="review-wrong">0</div>
-                        <p class="text-red-800 font-bold" data-ar="إجابات خاطئة" data-en="Wrong Answers">إجابات خاطئة</p>
+                        <p class="text-red-800 font-bold" data-ar="خاطئة" data-en="Wrong">خاطئة</p>
                     </div>
                     <div class="bg-amber-50 border-2 border-amber-200 rounded-xl p-4 text-center">
                         <div class="text-3xl font-black text-amber-600" id="review-pending">0</div>
-                        <p class="text-amber-800 font-bold" data-ar="بانتظار التصحيح" data-en="Pending Grading">بانتظار التصحيح</p>
+                        <p class="text-amber-800 font-bold" data-ar="لم تُجب" data-en="Unanswered">لم تُجب</p>
                     </div>
                 </div>
                 <div id="review-list"></div>
@@ -935,36 +843,67 @@
         </div>
     </div>
 
-    <!-- ========== Results Screen ========== -->
+    <!-- ========== Subject Result Screen (NEW!) ========== -->
+    <div id="subject-result-screen" class="hidden-screen min-h-screen p-4 flex items-center justify-center">
+        <div class="max-w-3xl w-full">
+            <div class="subject-result-card text-center">
+                <div id="subject-result-icon" class="mb-4" style="animation: bounceIn 0.8s ease;"></div>
+                <h2 id="subject-result-title" class="text-4xl font-black text-gray-800 mb-2"></h2>
+                <p class="text-xl text-gray-600 mb-6" data-ar="نتيجة المادة" data-en="Subject Result">نتيجة المادة</p>
+                
+                <div id="subject-result-score" class="big-score mb-4"></div>
+                <p class="text-2xl text-gray-600 mb-6" data-ar="من 30 درجة" data-en="out of 30">من 30 درجة</p>
+                
+                <div id="subject-result-status" class="mb-8"></div>
+                
+                <div class="bg-gradient-to-r from-gray-50 to-gray-100 rounded-2xl p-6 mb-8">
+                    <div class="grid grid-cols-3 gap-4">
+                        <div>
+                            <div class="text-3xl font-black text-green-600" id="subject-correct-count">0</div>
+                            <p class="text-gray-600 text-sm" data-ar="صحيحة" data-en="Correct">صحيحة</p>
+                        </div>
+                        <div>
+                            <div class="text-3xl font-black text-red-600" id="subject-wrong-count">0</div>
+                            <p class="text-gray-600 text-sm" data-ar="خاطئة" data-en="Wrong">خاطئة</p>
+                        </div>
+                        <div>
+                            <div class="text-3xl font-black text-amber-600" id="subject-pending-count">0</div>
+                            <p class="text-gray-600 text-sm" data-ar="بانتظار التصحيح" data-en="Pending">بانتظار التصحيح</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <button onclick="proceedToNextSubject()" id="btn-next-subject" class="btn-primary text-white px-8 py-5 rounded-xl text-xl font-bold w-full shadow-xl">
+                    <span id="next-subject-text" data-ar="الانتقال للمادة التالية" data-en="Continue to Next Subject">الانتقال للمادة التالية</span>
+                    <i class="fas fa-arrow-left ml-2"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== Final Results Screen ========== -->
     <div id="results-screen" class="hidden-screen min-h-screen p-4">
         <div class="max-w-6xl mx-auto">
             <div class="glass-card p-12 text-center fade-in">
                 <div class="w-40 h-40 rounded-full flex items-center justify-center mx-auto mb-6 shadow-2xl" style="background: linear-gradient(135deg, #D97706 0%, #B45309 100%); animation: bounceIn 1s ease;">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="110" height="110" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/>
-                        <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/>
-                        <path d="M4 22h16"/>
-                        <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/>
-                        <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/>
-                        <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/>
-                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="110" height="110" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
                 </div>
-                <h2 class="text-5xl font-black text-gray-800 mb-3" data-ar="نتيجة الاختبار" data-en="Exam Result">نتيجة الاختبار</h2>
+                <h2 class="text-5xl font-black text-gray-800 mb-3" data-ar="النتيجة النهائية" data-en="Final Result">النتيجة النهائية</h2>
                 <p id="result-student-name" class="text-2xl text-amber-700 font-bold mb-8"></p>
                 <div id="result-subjects" class="grid md:grid-cols-3 gap-6 mb-8"></div>
-                <div class="bg-gradient-to-r from-amber-50 to-orange-50 rounded-3xl p-8 mb-8 border-3 border-amber-200">
+                <div class="bg-gradient-to-r from-amber-50 to-orange-50 rounded-3xl p-8 mb-8 border-2 border-amber-200">
                     <h3 class="text-2xl font-bold text-gray-800 mb-6" data-ar="النتيجة الإجمالية" data-en="Overall Result">النتيجة الإجمالية</h3>
                     <div class="grid grid-cols-3 gap-6">
-                        <div><div class="text-5xl font-black text-amber-700" id="result-total">0</div><p class="text-gray-600 text-base mt-2" data-ar="المجموع" data-en="Total">المجموع</p></div>
-                        <div><div class="text-5xl font-black text-amber-700" id="result-percentage">0%</div><p class="text-gray-600 text-base mt-2" data-ar="النسبة" data-en="Percentage">النسبة</p></div>
-                        <div><div id="result-status" class="text-3xl font-black"></div><p class="text-gray-600 text-base mt-2" data-ar="الحالة النهائية" data-en="Final Status">الحالة النهائية</p></div>
+                        <div><div class="text-5xl font-black text-amber-700" id="result-total">0</div><p class="text-gray-600 mt-2" data-ar="المجموع" data-en="Total">المجموع</p></div>
+                        <div><div class="text-5xl font-black text-amber-700" id="result-percentage">0%</div><p class="text-gray-600 mt-2" data-ar="النسبة" data-en="Percentage">النسبة</p></div>
+                        <div><div id="result-status" class="text-3xl font-black"></div><p class="text-gray-600 mt-2" data-ar="الحالة" data-en="Status">الحالة</p></div>
                     </div>
                 </div>
                 <div id="result-badges" class="mb-8"></div>
                 <div id="result-message" class="mb-8 p-6 rounded-2xl font-bold text-2xl"></div>
                 <div class="flex gap-4">
                     <button onclick="downloadPDF()" class="btn-gold text-white px-8 py-5 rounded-xl text-xl font-bold flex-1 shadow-2xl">
-                        <i class="fas fa-file-pdf ml-2"></i><span data-ar="تحميل الشهادة PDF" data-en="Download Certificate PDF">تحميل الشهادة PDF</span>
+                        <i class="fas fa-file-pdf ml-2"></i><span data-ar="تحميل الشهادة" data-en="Download PDF">تحميل الشهادة</span>
                     </button>
                     <button onclick="location.reload()" class="btn-primary text-white px-8 py-5 rounded-xl text-xl font-bold flex-1 shadow-2xl">
                         <i class="fas fa-redo ml-2"></i><span data-ar="اختبار جديد" data-en="New Exam">اختبار جديد</span>
@@ -980,67 +919,37 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
-    // ============ EmailJS Configuration ============
     const EMAILJS_CONFIG = { publicKey: '30UlzYidCO1myETH9', serviceId: 'service_y5ryjca', templateId: 'template_9apg4bw' };
     emailjs.init(EMAILJS_CONFIG.publicKey);
 
-    // ============ Translations ============
     const translations = {
         ar: {
             subjectsNoticeArabic: '📚 سيختبر: الإنجليزي + الرياضيات + العربي',
             subjectsNoticeNonArabic: '📚 سيختبر: الإنجليزي + الرياضيات فقط',
-            english: 'اللغة الإنجليزية 🇬🇧',
-            math: 'الرياضيات 🔢',
-            arabic: 'اللغة العربية 🇸🇦',
-            englishTab: '🇬🇧 الإنجليزي',
-            mathTab: '🔢 الرياضيات',
-            arabicTab: '🇸🇦 العربي',
-            englishResult: '🇬🇧 اللغة الإنجليزية',
-            mathResult: '🔢 الرياضيات',
-            arabicResult: '🇸🇦 اللغة العربية',
-            passed: 'مقبول ✅',
-            failed: 'غير مقبول ❌',
-            student: 'الطالب:',
-            previous: 'السابق',
-            next: 'التالي',
-            submit: 'تسليم الاختبار',
-            review: 'مراجعة الإجابات',
-            backToExam: 'العودة للاختبار',
-            total: 'المجموع',
-            percentage: 'النسبة',
-            finalStatus: 'الحالة النهائية',
-            downloadPDF: 'تحميل الشهادة PDF',
-            newExam: 'اختبار جديد',
-            correctAnswers: 'إجابات صحيحة',
-            wrongAnswers: 'إجابات خاطئة',
-            pendingGrading: 'بانتظار التصحيح',
+            english: 'اللغة الإنجليزية 🇬🇧', math: 'الرياضيات 🔢', arabic: 'اللغة العربية 🇸🇦',
+            englishTab: '🇬🇧 الإنجليزي', mathTab: '🔢 الرياضيات', arabicTab: '🇸🇦 العربي',
+            englishResult: '🇬🇧 اللغة الإنجليزية', mathResult: '🔢 الرياضيات', arabicResult: '🇸🇦 اللغة العربية',
+            passed: 'مقبول ✅', failed: 'غير مقبول ❌',
             passedMsg: '🎉 لقد اجتزت الاختبار بنجاح - تم قبولك',
             failedMsg: 'لم تجتز الاختبار - يرجى المحاولة مرة أخرى',
             fillAllFields: 'الرجاء تعبئة جميع الحقول المطلوبة',
             examStarted: 'بدأ الاختبار بنجاح! بالتوفيق 🍀',
-            imageUploaded: 'تم رفع الصورة وإرسالها للمعلمة ✅',
+            imageUploaded: 'تم رفع الصورة بنجاح ✅',
             resultSaved: 'تم حفظ النتيجة بنجاح! 🎉',
             pdfDownloaded: 'تم تحميل الشهادة بنجاح! 📄',
             excelExported: 'تم تصدير Excel بنجاح! 📊',
-            welcomeTeacher: 'مرحباً بك في لوحة المعلم 👨‍🏫',
-            welcomeRegistrar: 'مرحباً بك في لوحة مسؤول القبول 📋',
-            welcomeAdmin: 'مرحباً بك في داشبورد المدير 📊',
-            invalidCredentials: 'اسم المستخدم أو كلمة المرور غير صحيحة',
+            welcomeTeacher: 'مرحباً بك 👨‍🏫',
+            welcomeRegistrar: 'مرحباً بك 📋',
+            welcomeAdmin: 'مرحباً بك 📊',
+            invalidCredentials: 'بيانات الدخول غير صحيحة',
             noStudents: 'لا يوجد طلاب حتى الآن',
-            confirmSubmit: 'هل أنت متأكد من تسليم هذا الاختبار؟',
+            confirmSubmit: 'هل أنت متأكد من تسليم الاختبار؟',
             confirmLogout: 'هل تريد تسجيل الخروج؟',
             noData: 'لا توجد بيانات للتصدير',
-            grade: 'المرحلة',
-            branch: 'الفرع',
-            nationality: 'الجنسية',
-            date: 'التاريخ',
-            finalScore: 'الدرجة النهائية',
-            status: 'الحالة',
-            from: 'من',
-            kidsGate: 'بوابة الطفل',
-            knowledgeGen: 'أجيال المعرفة',
-            passage: '📖 النص:',
-            questions: '✏️ الأسئلة:',
+            grade: 'المرحلة', branch: 'الفرع', nationality: 'الجنسية', date: 'التاريخ',
+            finalScore: 'الدرجة النهائية', status: 'الحالة', from: 'من',
+            kidsGate: 'بوابة الطفل', knowledgeGen: 'أجيال المعرفة',
+            passage: '📖 النص:', questions: '✏️ الأسئلة:',
             uploadImage: 'اضغط هنا لرفع صورة الحل',
             uploadHint: 'حل الأسئلة في ورقة ثم صورها وارفعها هنا',
             uploadNote: 'سيتم إرسال الصورة تلقائياً للمعلمة',
@@ -1048,71 +957,53 @@
             uploadSent: 'سيتم إرسالها للمعلمة للمراجعة',
             completedSubject: (name, score) => `أنهيت ${name} بدرجة ${score}/30`,
             selectGradePlaceholder: '-- اختر المرحلة --',
-            selectNationalityPlaceholder: '-- اختر الجنسية --',
+            nextSubject: 'الانتقال للمادة التالية',
+            viewFinalResult: 'عرض النتيجة النهائية',
+            subjectResult: 'نتيجة المادة',
+            outOf30: 'من 30 درجة',
+            correct: 'صحيحة', wrong: 'خاطئة', pending: 'بانتظار التصحيح',
+            excellentStudent: 'طالب متميز', goodPerformance: 'أداء جيد', effort: 'اجتهاد'
         },
         en: {
             subjectsNoticeArabic: '📚 Will take: English + Math + Arabic',
             subjectsNoticeNonArabic: '📚 Will take: English + Math only',
-            english: 'English 🇬🇧',
-            math: 'Mathematics 🔢',
-            arabic: 'Arabic 🇸🇦',
-            englishTab: '🇬🇧 English',
-            mathTab: '🔢 Math',
-            arabicTab: '🇸🇦 Arabic',
-            englishResult: '🇬🇧 English Language',
-            mathResult: '🔢 Mathematics',
-            arabicResult: '🇸🇦 Arabic Language',
-            passed: 'Passed ✅',
-            failed: 'Failed ❌',
-            student: 'Student:',
-            previous: 'Previous',
-            next: 'Next',
-            submit: 'Submit Exam',
-            review: 'Review Answers',
-            backToExam: 'Back to Exam',
-            total: 'Total',
-            percentage: 'Percentage',
-            finalStatus: 'Final Status',
-            downloadPDF: 'Download Certificate PDF',
-            newExam: 'New Exam',
-            correctAnswers: 'Correct Answers',
-            wrongAnswers: 'Wrong Answers',
-            pendingGrading: 'Pending Grading',
+            english: 'English 🇬🇧', math: 'Mathematics 🔢', arabic: 'Arabic 🇸🇦',
+            englishTab: '🇬🇧 English', mathTab: '🔢 Math', arabicTab: '🇸🇦 Arabic',
+            englishResult: '🇬🇧 English Language', mathResult: '🔢 Mathematics', arabicResult: '🇸🇦 Arabic Language',
+            passed: 'Passed ✅', failed: 'Failed ❌',
             passedMsg: '🎉 You passed the exam successfully!',
             failedMsg: 'You did not pass - Please try again',
             fillAllFields: 'Please fill in all required fields',
-            examStarted: 'Exam started successfully! Good luck 🍀',
-            imageUploaded: 'Image uploaded and sent to teacher ✅',
-            resultSaved: 'Result saved successfully! 🎉',
+            examStarted: 'Exam started! Good luck 🍀',
+            imageUploaded: 'Image uploaded successfully ✅',
+            resultSaved: 'Result saved! 🎉',
             pdfDownloaded: 'Certificate downloaded! 📄',
             excelExported: 'Excel exported! 📊',
-            welcomeTeacher: 'Welcome to Teacher Panel 👨‍🏫',
-            welcomeRegistrar: 'Welcome to Admissions Panel 📋',
-            welcomeAdmin: 'Welcome to Admin Dashboard 📊',
-            invalidCredentials: 'Invalid username or password',
+            welcomeTeacher: 'Welcome 👨‍🏫',
+            welcomeRegistrar: 'Welcome 📋',
+            welcomeAdmin: 'Welcome 📊',
+            invalidCredentials: 'Invalid credentials',
             noStudents: 'No students yet',
             confirmSubmit: 'Are you sure you want to submit?',
             confirmLogout: 'Do you want to logout?',
             noData: 'No data to export',
-            grade: 'Grade',
-            branch: 'Branch',
-            nationality: 'Nationality',
-            date: 'Date',
-            finalScore: 'Final Score',
-            status: 'Status',
-            from: 'out of',
-            kidsGate: 'Kids Gate',
-            knowledgeGen: 'Knowledge Generations',
-            passage: '📖 Passage:',
-            questions: '✏️ Questions:',
+            grade: 'Grade', branch: 'Branch', nationality: 'Nationality', date: 'Date',
+            finalScore: 'Final Score', status: 'Status', from: 'out of',
+            kidsGate: 'Kids Gate', knowledgeGen: 'Knowledge Generations',
+            passage: '📖 Passage:', questions: '✏️ Questions:',
             uploadImage: 'Click here to upload answer image',
-            uploadHint: 'Solve questions on paper, take a photo and upload it here',
-            uploadNote: 'Image will be sent automatically to the teacher',
-            uploadSuccess: 'Image uploaded successfully',
-            uploadSent: 'Will be sent to teacher for review',
-            completedSubject: (name, score) => `Completed ${name} with score ${score}/30`,
+            uploadHint: 'Solve on paper, take a photo and upload',
+            uploadNote: 'Image will be sent to teacher',
+            uploadSuccess: 'Image uploaded',
+            uploadSent: 'Will be sent to teacher',
+            completedSubject: (name, score) => `Completed ${name} with ${score}/30`,
             selectGradePlaceholder: '-- Select Grade --',
-            selectNationalityPlaceholder: '-- Select Nationality --',
+            nextSubject: 'Continue to Next Subject',
+            viewFinalResult: 'View Final Result',
+            subjectResult: 'Subject Result',
+            outOf30: 'out of 30',
+            correct: 'Correct', wrong: 'Wrong', pending: 'Pending',
+            excellentStudent: 'Excellent Student', goodPerformance: 'Good Performance', effort: 'Effort'
         }
     };
 
@@ -1152,30 +1043,21 @@
     const arabicNationalities = ['saudi', 'yemeni', 'egyptian', 'jordanian', 'other-arab'];
     const PASSING_SCORE = 15;
 
-    // ============ Language Switcher ============
     function switchLang(lang) {
         currentLang = lang;
         document.body.classList.toggle('en', lang === 'en');
         document.getElementById('lang-ar').classList.toggle('active', lang === 'ar');
         document.getElementById('lang-en').classList.toggle('active', lang === 'en');
-        
         document.querySelectorAll('[data-ar]').forEach(el => {
             const key = el.getAttribute('data-' + lang);
             if (key) el.textContent = key;
         });
-        
         document.querySelectorAll('[data-placeholder-ar]').forEach(el => {
             const key = el.getAttribute('data-placeholder-' + lang);
             if (key) el.placeholder = key;
         });
-        
-        document.querySelectorAll('option[data-ar]').forEach(el => {
-            const key = el.getAttribute('data-' + lang);
-            if (key) el.textContent = key;
-        });
     }
 
-    // ============ Notification System ============
     function showNotification(message, type = 'success') {
         const container = document.getElementById('notification-container');
         const notification = document.createElement('div');
@@ -1187,8 +1069,7 @@
             info: 'linear-gradient(135deg, #3B82F6, #1D4ED8)'
         };
         notification.style.background = bgColors[type] || bgColors.success;
-        const icons = { success: 'check-circle', warning: 'exclamation-triangle', error: 'times-circle', info: 'info-circle' };
-        notification.innerHTML = `<i class="fas fa-${icons[type] || 'check-circle'} text-xl"></i><span>${message}</span>`;
+        notification.innerHTML = `<span>${message}</span>`;
         container.appendChild(notification);
         setTimeout(() => {
             notification.style.opacity = '0';
@@ -1197,7 +1078,6 @@
         }, 3000);
     }
 
-    // ============ Welcome Screen ============
     window.addEventListener('load', () => {
         setTimeout(() => {
             document.getElementById('welcome-screen').style.opacity = '0';
@@ -1209,7 +1089,6 @@
         }, 2000);
     });
 
-    // ============ Branch Selection ============
     function selectBranch(branch) {
         currentBranch = branch;
         document.querySelectorAll('.branch-card').forEach(c => c.classList.remove('selected'));
@@ -1230,7 +1109,6 @@
         document.getElementById('branch-screen').classList.remove('hidden-screen');
     }
 
-    // ============ Role Selection ============
     function selectRole(role) {
         currentRole = role;
         document.querySelectorAll('.role-card').forEach(c => c.classList.remove('selected'));
@@ -1242,7 +1120,6 @@
         if (!currentRole) return;
         document.getElementById('role-screen').classList.add('hidden-screen');
         const t = translations[currentLang];
-        
         if (currentRole === 'student') {
             document.getElementById('student-form-screen').classList.remove('hidden-screen');
             document.getElementById('form-branch-name').textContent = currentBranch === 'child-gate' ? t.kidsGate : t.knowledgeGen;
@@ -1273,7 +1150,6 @@
         document.getElementById('role-btn').disabled = true;
     }
 
-    // ============ Nationality Handler ============
     function handleNationalityChange() {
         const nationality = document.getElementById('s-nationality').value;
         const testsArabic = arabicNationalities.includes(nationality);
@@ -1289,7 +1165,6 @@
         }
     }
 
-    // ============ Start Student Exam ============
     function startStudentExam() {
         const name = document.getElementById('s-name').value.trim();
         const dob = document.getElementById('s-dob').value;
@@ -1317,7 +1192,6 @@
         startSubject('english');
     }
 
-    // ============ Subject Management ============
     function startSubject(subject) {
         currentSubject = subject;
         currentQIndex = 0;
@@ -1364,26 +1238,25 @@
                     { question: "10 ÷ 2 = ?", options: ["4", "5", "6"], correct: 1 },
                     { question: "9 - 4 = ?", options: ["4", "5", "6"], correct: 1 }
                 ], needs_manual: false },
-                { id: "math_3", type: "upload", question: currentLang === 'ar' ? "حل المسائل التالية في ورقة ثم ارفع الصورة:" : "Solve the following problems on paper and upload the image:", marks: 10, subQuestions: ["15 + 27 = ?", "45 - 18 = ?", "6 × 7 = ?"], needs_manual: true }
+                { id: "math_3", type: "upload", question: currentLang === 'ar' ? "حل المسائل التالية في ورقة ثم ارفع الصورة:" : "Solve and upload image:", marks: 10, subQuestions: ["15 + 27 = ?", "45 - 18 = ?", "6 × 7 = ?"], needs_manual: true }
             ];
         } else if (subject === 'arabic') {
             questions = [
-                { id: "arabic_1", type: "mcq", question: currentLang === 'ar' ? "اختر الإجابة الصحيحة:" : "Choose the correct answer:", marks: 10, subQuestions: [
+                { id: "arabic_1", type: "mcq", question: currentLang === 'ar' ? "اختر الإجابة الصحيحة:" : "Choose:", marks: 10, subQuestions: [
                     { question: currentLang === 'ar' ? "الحرف الأول من 'تفاحة':" : "First letter of 'Apple':", options: ["ت", "ف", "ا"], correct: 0 },
                     { question: currentLang === 'ar' ? "الحرف الأول من 'عنب':" : "First letter of 'Grapes':", options: ["ن", "ب", "ع"], correct: 2 },
-                    { question: currentLang === 'ar' ? "اختر الحرف المشابه لـ 'م':" : "Choose similar letter to 'م':", options: ["ن", "م", "هـ"], correct: 1 }
+                    { question: currentLang === 'ar' ? "اختر الحرف المشابه لـ 'م':" : "Similar to 'م':", options: ["ن", "م", "هـ"], correct: 1 }
                 ], needs_manual: false },
-                { id: "arabic_2", type: "mcq", question: currentLang === 'ar' ? "اختر الإجابة الصحيحة:" : "Choose the correct answer:", marks: 10, subQuestions: [
+                { id: "arabic_2", type: "mcq", question: currentLang === 'ar' ? "اختر الإجابة الصحيحة:" : "Choose:", marks: 10, subQuestions: [
                     { question: currentLang === 'ar' ? "الحرف الأول من 'قلم':" : "First letter of 'Pen':", options: ["ل", "م", "ق"], correct: 2 },
                     { question: currentLang === 'ar' ? "الحرف الأول من 'كتاب':" : "First letter of 'Book':", options: ["ك", "ت", "ا"], correct: 0 },
-                    { question: currentLang === 'ar' ? "اختر الحرف المشابه لـ 'ب':" : "Choose similar letter to 'ب':", options: ["ت", "ب", "ث"], correct: 1 }
+                    { question: currentLang === 'ar' ? "اختر الحرف المشابه لـ 'ب':" : "Similar to 'ب':", options: ["ت", "ب", "ث"], correct: 1 }
                 ], needs_manual: false },
-                { id: "arabic_3", type: "upload", question: currentLang === 'ar' ? "اكتب الحروف العربية في ورقة ثم ارفع الصورة:" : "Write Arabic letters on paper and upload the image:", marks: 10, subQuestions: [currentLang === 'ar' ? "ا ب ت ث ج ح خ" : "A B T TH J H KH", currentLang === 'ar' ? "د ذ ر ز س ش ص" : "D DH R Z S SH S"], needs_manual: true }
+                { id: "arabic_3", type: "upload", question: currentLang === 'ar' ? "اكتب الحروف العربية في ورقة ثم ارفع الصورة:" : "Write Arabic letters and upload:", marks: 10, subQuestions: [currentLang === 'ar' ? "ا ب ت ث ج ح خ" : "A B T TH J H KH", currentLang === 'ar' ? "د ذ ر ز س ش ص" : "D DH R Z S SH S"], needs_manual: true }
             ];
         } else { questions = []; }
     }
 
-    // ============ Render Question ============
     function renderQuestion() {
         const q = questions[currentQIndex];
         const area = document.getElementById('question-area');
@@ -1410,6 +1283,7 @@
         }
     }
 
+    // ✅ تم حذف score-badge من الأسئلة - لا تظهر الدرجة أثناء الحل
     function renderMCQQuestion(q, t) {
         let html = `<div class="space-y-4">`;
         html += `<div class="bg-gradient-to-r from-amber-50 to-orange-50 p-5 rounded-xl border-2 border-amber-200"><p class="text-2xl font-bold text-gray-800">${q.question}</p></div>`;
@@ -1421,12 +1295,10 @@
         }
         q.subQuestions.forEach((sq, sqIdx) => {
             const qKey = `${currentQIndex}_${sqIdx}`;
-            const score = questionScores[qKey];
-            const scoreBadge = score !== undefined ? `<div class="score-badge ${score > 0 ? 'score-correct' : 'score-wrong'}">${score}/1</div>` : '';
-            html += `<div class="question-block">${scoreBadge}<p class="font-bold text-gray-800 mb-4 text-xl">${sqIdx + 1}. ${sq.question}</p><div class="grid grid-cols-2 gap-3">`;
+            html += `<div class="question-block"><p class="font-bold text-gray-800 mb-4 text-xl">${sqIdx + 1}. ${sq.question}</p><div class="grid grid-cols-2 gap-3">`;
             sq.options.forEach((opt, optIdx) => {
                 const selected = answers[qKey] === optIdx ? 'selected' : '';
-                html += `<button onclick="selectMCQ('${qKey}', ${optIdx}, ${sq.correct})" class="option-btn ${selected}">${opt}</button>`;
+                html += `<button onclick="selectMCQ('${qKey}', ${optIdx})" class="option-btn ${selected}">${opt}</button>`;
             });
             html += `</div></div>`;
         });
@@ -1440,12 +1312,10 @@
         html += `<div class="grid grid-cols-2 md:grid-cols-4 gap-4">`;
         q.items.forEach((item, itemIdx) => {
             const qKey = `${currentQIndex}_${itemIdx}`;
-            const score = questionScores[qKey];
-            const scoreBadge = score !== undefined ? `<div class="score-badge ${score > 0 ? 'score-correct' : 'score-wrong'}">${score}/1</div>` : '';
-            html += `<div class="bg-white p-5 rounded-xl border-2 border-gray-100 relative shadow-sm">${scoreBadge}<img src="${item.image}" alt="Question" class="w-full h-36 object-contain mb-4"><div class="space-y-2">`;
+            html += `<div class="bg-white p-5 rounded-xl border-2 border-gray-100 shadow-sm"><img src="${item.image}" alt="Question" class="w-full h-36 object-contain mb-4"><div class="space-y-2">`;
             item.options.forEach((opt, optIdx) => {
                 const selected = answers[qKey] === optIdx ? 'selected' : '';
-                html += `<button onclick="selectMCQ('${qKey}', ${optIdx}, ${item.correct})" class="option-btn ${selected}">${opt}</button>`;
+                html += `<button onclick="selectMCQ('${qKey}', ${optIdx})" class="option-btn ${selected}">${opt}</button>`;
             });
             html += `</div></div>`;
         });
@@ -1479,16 +1349,13 @@
         return html;
     }
 
-    function selectMCQ(qKey, optIdx, correctIdx) {
+    function selectMCQ(qKey, optIdx) {
         answers[qKey] = optIdx;
-        const isCorrect = optIdx === correctIdx;
-        questionScores[qKey] = isCorrect ? 1 : 0;
         const buttons = document.querySelectorAll(`button[onclick^="selectMCQ('${qKey}'"]`);
         buttons.forEach((btn, idx) => { 
             btn.classList.remove('selected'); 
             if (idx === optIdx) { btn.classList.add('selected'); } 
         });
-        setTimeout(() => renderQuestion(), 300);
     }
 
     function handleFile(input) {
@@ -1498,7 +1365,7 @@
                 const imageData = e.target.result;
                 answers[`${currentQIndex}_upload`] = imageData;
                 const t = translations[currentLang];
-                document.getElementById('preview').innerHTML = `<div class="mt-6 border-4 border-amber-300 rounded-2xl overflow-hidden shadow-lg"><img src="${imageData}" class="w-full max-h-96 object-contain"><div class="bg-gradient-to-r from-amber-100 to-orange-100 p-5 text-center"><i class="fas fa-check-circle text-amber-600 text-4xl mb-3"></i><p class="text-amber-800 font-bold text-xl">${t.uploadSuccess}</p><p class="text-amber-700 text-base mt-2">${t.uploadSent}</p></div></div>`;
+                document.getElementById('preview').innerHTML = `<div class="mt-6 border-4 border-amber-300 rounded-2xl overflow-hidden shadow-lg"><img src="${imageData}" class="w-full max-h-96 object-contain"><div class="bg-gradient-to-r from-amber-100 to-orange-100 p-5 text-center"><i class="fas fa-check-circle text-amber-600 text-4xl mb-3"></i><p class="text-amber-800 font-bold text-xl">${t.uploadSuccess}</p></div></div>`;
                 sendImageToEmail(imageData);
                 showNotification(t.imageUploaded, 'success');
             };
@@ -1518,13 +1385,12 @@
             attachment: imageData 
         };
         emailjs.send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.templateId, templateParams)
-            .then(function() { console.log('Sent successfully!'); }, function(error) { console.log('Failed:', error); });
+            .then(() => console.log('Sent!'), (error) => console.log('Failed:', error));
     }
 
     function nextQuestion() { if (currentQIndex < questions.length - 1) { currentQIndex++; renderQuestion(); } }
     function prevQuestion() { if (currentQIndex > 0) { currentQIndex--; renderQuestion(); } }
 
-    // ============ Review Screen ============
     function goToReview() {
         document.getElementById('exam-screen').classList.add('hidden-screen');
         document.getElementById('review-screen').classList.remove('hidden-screen');
@@ -1549,16 +1415,11 @@
                     const isCorrect = userAnswer === sq.correct;
                     const isAnswered = userAnswer !== undefined;
                     
-                    if (isAnswered) {
-                        if (isCorrect) correct++;
-                        else wrong++;
-                    } else {
-                        pending++;
-                    }
+                    if (isAnswered) { if (isCorrect) correct++; else wrong++; } else { pending++; }
                     
                     const statusClass = !isAnswered ? 'pending' : (isCorrect ? 'correct' : 'wrong');
                     const statusIcon = !isAnswered ? '⏳' : (isCorrect ? '✅' : '❌');
-                    const statusText = !isAnswered ? (currentLang === 'ar' ? 'لم تُجب' : 'Not answered') : (isCorrect ? (currentLang === 'ar' ? 'صحيحة' : 'Correct') : (currentLang === 'ar' ? 'خاطئة' : 'Wrong'));
+                    const statusText = !isAnswered ? (currentLang === 'ar' ? 'لم تُجب' : 'Unanswered') : (isCorrect ? (currentLang === 'ar' ? 'صحيحة' : 'Correct') : (currentLang === 'ar' ? 'خاطئة' : 'Wrong'));
                     
                     html += `<div class="review-item ${statusClass}">
                         <div class="flex justify-between items-start mb-3">
@@ -1566,8 +1427,8 @@
                                 <span class="text-2xl">${statusIcon}</span>
                                 <div>
                                     <p class="font-bold text-gray-800 text-lg">${qIdx + 1}.${sqIdx + 1}. ${sq.question}</p>
-                                    <p class="text-sm text-gray-600 mt-1">${currentLang === 'ar' ? 'إجابتك:' : 'Your answer:'} <span class="font-bold">${isAnswered ? sq.options[userAnswer] : (currentLang === 'ar' ? 'لم تُجب' : 'Not answered')}</span></p>
-                                    ${!isCorrect && isAnswered ? `<p class="text-sm text-green-700 mt-1">${currentLang === 'ar' ? 'الإجابة الصحيحة:' : 'Correct answer:'} <span class="font-bold">${sq.options[sq.correct]}</span></p>` : ''}
+                                    <p class="text-sm text-gray-600 mt-1">${currentLang === 'ar' ? 'إجابتك:' : 'Your answer:'} <span class="font-bold">${isAnswered ? sq.options[userAnswer] : (currentLang === 'ar' ? 'لم تُجب' : 'Unanswered')}</span></p>
+                                    ${!isCorrect && isAnswered ? `<p class="text-sm text-green-700 mt-1">${currentLang === 'ar' ? 'الإجابة الصحيحة:' : 'Correct:'} <span class="font-bold">${sq.options[sq.correct]}</span></p>` : ''}
                                 </div>
                             </div>
                             <span class="text-sm font-bold px-3 py-1 rounded-full ${statusClass === 'correct' ? 'bg-green-100 text-green-700' : statusClass === 'wrong' ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700'}">${statusText}</span>
@@ -1576,21 +1437,16 @@
                 });
             } else if (q.type === 'image_choice' && q.items) {
                 q.items.forEach((item, itemIdx) => {
-                    const qKey = `${qIdx}_${itemIdx}`;
+                    const qKey = `${currentQIndex}_${itemIdx}`;
                     const userAnswer = answers[qKey];
                     const isCorrect = userAnswer === item.correct;
                     const isAnswered = userAnswer !== undefined;
                     
-                    if (isAnswered) {
-                        if (isCorrect) correct++;
-                        else wrong++;
-                    } else {
-                        pending++;
-                    }
+                    if (isAnswered) { if (isCorrect) correct++; else wrong++; } else { pending++; }
                     
                     const statusClass = !isAnswered ? 'pending' : (isCorrect ? 'correct' : 'wrong');
                     const statusIcon = !isAnswered ? '⏳' : (isCorrect ? '✅' : '❌');
-                    const statusText = !isAnswered ? (currentLang === 'ar' ? 'لم تُجب' : 'Not answered') : (isCorrect ? (currentLang === 'ar' ? 'صحيحة' : 'Correct') : (currentLang === 'ar' ? 'خاطئة' : 'Wrong'));
+                    const statusText = !isAnswered ? (currentLang === 'ar' ? 'لم تُجب' : 'Unanswered') : (isCorrect ? (currentLang === 'ar' ? 'صحيحة' : 'Correct') : (currentLang === 'ar' ? 'خاطئة' : 'Wrong'));
                     
                     html += `<div class="review-item ${statusClass}">
                         <div class="flex justify-between items-start mb-3">
@@ -1598,8 +1454,7 @@
                                 <span class="text-2xl">${statusIcon}</span>
                                 <div>
                                     <p class="font-bold text-gray-800 text-lg">${qIdx + 1}.${itemIdx + 1}. ${q.question}</p>
-                                    <p class="text-sm text-gray-600 mt-1">${currentLang === 'ar' ? 'إجابتك:' : 'Your answer:'} <span class="font-bold">${isAnswered ? item.options[userAnswer] : (currentLang === 'ar' ? 'لم تُجب' : 'Not answered')}</span></p>
-                                    ${!isCorrect && isAnswered ? `<p class="text-sm text-green-700 mt-1">${currentLang === 'ar' ? 'الإجابة الصحيحة:' : 'Correct answer:'} <span class="font-bold">${item.options[item.correct]}</span></p>` : ''}
+                                    <p class="text-sm text-gray-600 mt-1">${currentLang === 'ar' ? 'إجابتك:' : 'Your answer:'} <span class="font-bold">${isAnswered ? item.options[userAnswer] : (currentLang === 'ar' ? 'لم تُجب' : 'Unanswered')}</span></p>
                                 </div>
                             </div>
                             <span class="text-sm font-bold px-3 py-1 rounded-full ${statusClass === 'correct' ? 'bg-green-100 text-green-700' : statusClass === 'wrong' ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700'}">${statusText}</span>
@@ -1614,7 +1469,7 @@
                             <span class="text-2xl">📝</span>
                             <div>
                                 <p class="font-bold text-gray-800 text-lg">${qIdx + 1}. ${q.question}</p>
-                                <p class="text-sm text-gray-600 mt-1">${currentLang === 'ar' ? 'يحتاج تصحيح يدوي من المعلم' : 'Requires manual grading by teacher'}</p>
+                                <p class="text-sm text-gray-600 mt-1">${currentLang === 'ar' ? 'يحتاج تصحيح يدوي' : 'Requires manual grading'}</p>
                             </div>
                         </div>
                         <span class="text-sm font-bold px-3 py-1 rounded-full bg-amber-100 text-amber-700">${currentLang === 'ar' ? 'بانتظار التصحيح' : 'Pending'}</span>
@@ -1629,38 +1484,125 @@
         document.getElementById('review-list').innerHTML = html;
     }
 
-    // ============ Submit Exam ============
     function submitExam() {
         const t = translations[currentLang];
         if (!confirm(t.confirmSubmit)) { return; }
-        let score = 0; let totalMarks = 0;
+        
+        // حساب نتيجة المادة الحالية
+        let score = 0, totalMarks = 0, correctCount = 0, wrongCount = 0, pendingCount = 0;
+        
         questions.forEach((q, qIdx) => {
             if (q.type === 'mcq' && q.subQuestions) { 
                 q.subQuestions.forEach((sq, sqIdx) => { 
                     const qKey = `${qIdx}_${sqIdx}`; 
-                    totalMarks += 1; 
-                    if (answers[qKey] === sq.correct) score += 1; 
+                    totalMarks += 1;
+                    const userAnswer = answers[qKey];
+                    if (userAnswer === undefined) { pendingCount++; }
+                    else if (userAnswer === sq.correct) { score += 1; correctCount++; }
+                    else { wrongCount++; }
                 }); 
             } else if (q.type === 'image_choice' && q.items) { 
                 q.items.forEach((item, itemIdx) => { 
                     const qKey = `${qIdx}_${itemIdx}`; 
-                    totalMarks += 1; 
-                    if (answers[qKey] === item.correct) score += 1; 
+                    totalMarks += 1;
+                    const userAnswer = answers[qKey];
+                    if (userAnswer === undefined) { pendingCount++; }
+                    else if (userAnswer === item.correct) { score += 1; correctCount++; }
+                    else { wrongCount++; }
                 }); 
             } else if (q.type === 'upload') { 
-                totalMarks += q.marks; 
-                if (answers[`${qIdx}_upload`]) score += q.marks; 
+                totalMarks += q.marks;
+                if (answers[`${qIdx}_upload`]) { score += q.marks; pendingCount++; }
+                else { pendingCount++; }
             } 
         });
-        const finalScore = Math.round((score / totalMarks) * 30);
+        
+        const finalScore = totalMarks > 0 ? Math.round((score / totalMarks) * 30) : 0;
         subjectScores[currentSubject] = finalScore;
+        
+        // عرض نتيجة المادة الحالية
+        showSubjectResult(finalScore, correctCount, wrongCount, pendingCount);
+    }
+
+    // ✅ الدالة الجديدة: عرض نتيجة المادة الحالية
+    function showSubjectResult(score, correct, wrong, pending) {
+        const t = translations[currentLang];
+        const subjectNames = { english: t.englishResult, math: t.mathResult, arabic: t.arabicResult };
+        const subjectColors = { 
+            english: { bg: 'from-blue-500 to-blue-700', light: 'bg-blue-50' },
+            math: { bg: 'from-purple-500 to-purple-700', light: 'bg-purple-50' },
+            arabic: { bg: 'from-green-500 to-green-700', light: 'bg-green-50' }
+        };
+        
+        const passed = score >= PASSING_SCORE;
         const currentIdx = examSubjects.indexOf(currentSubject);
-        if (currentIdx < examSubjects.length - 1) { 
-            const subjectName = currentSubject === 'english' ? t.english : currentSubject === 'math' ? t.math : t.arabic;
-            showNotification(t.completedSubject(subjectName, finalScore), 'success'); 
-            startSubject(examSubjects[currentIdx + 1]); 
-        } else { 
-            saveStudentResult(); 
+        const isLastSubject = currentIdx === examSubjects.length - 1;
+        
+        document.getElementById('exam-screen').classList.add('hidden-screen');
+        document.getElementById('review-screen').classList.add('hidden-screen');
+        document.getElementById('subject-result-screen').classList.remove('hidden-screen');
+        
+        // الأيقونة
+        const iconDiv = document.getElementById('subject-result-icon');
+        if (passed) {
+            iconDiv.innerHTML = `<div class="w-32 h-32 rounded-full flex items-center justify-center mx-auto shadow-2xl" style="background: linear-gradient(135deg, #10B981 0%, #059669 100%);">
+                <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>`;
+        } else {
+            iconDiv.innerHTML = `<div class="w-32 h-32 rounded-full flex items-center justify-center mx-auto shadow-2xl" style="background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);">
+                <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            </div>`;
+        }
+        
+        // العنوان
+        document.getElementById('subject-result-title').textContent = subjectNames[currentSubject];
+        
+        // الدرجة
+        const scoreDiv = document.getElementById('subject-result-score');
+        scoreDiv.textContent = score;
+        scoreDiv.className = `big-score mb-4 ${passed ? 'text-green-600' : 'text-amber-600'}`;
+        
+        // الحالة
+        const statusDiv = document.getElementById('subject-result-status');
+        if (passed) {
+            statusDiv.innerHTML = `<span class="badge-success text-xl px-8 py-3">${t.passed}</span>`;
+        } else {
+            statusDiv.innerHTML = `<span class="badge-danger text-xl px-8 py-3">${t.failed}</span>`;
+        }
+        
+        // الإحصائيات
+        document.getElementById('subject-correct-count').textContent = correct;
+        document.getElementById('subject-wrong-count').textContent = wrong;
+        document.getElementById('subject-pending-count').textContent = pending;
+        
+        // زر الانتقال
+        const nextBtn = document.getElementById('btn-next-subject');
+        const nextText = document.getElementById('next-subject-text');
+        if (isLastSubject) {
+            nextText.textContent = t.viewFinalResult;
+            nextText.setAttribute('data-ar', t.viewFinalResult);
+            nextText.setAttribute('data-en', t.viewFinalResult);
+            nextBtn.className = 'btn-gold text-white px-8 py-5 rounded-xl text-xl font-bold w-full shadow-xl';
+        } else {
+            nextText.textContent = t.nextSubject;
+            nextText.setAttribute('data-ar', t.nextSubject);
+            nextText.setAttribute('data-en', t.nextSubject);
+            nextBtn.className = 'btn-primary text-white px-8 py-5 rounded-xl text-xl font-bold w-full shadow-xl';
+        }
+    }
+
+    // ✅ الانتقال للمادة التالية أو النتيجة النهائية
+    function proceedToNextSubject() {
+        const currentIdx = examSubjects.indexOf(currentSubject);
+        
+        if (currentIdx < examSubjects.length - 1) {
+            // الانتقال للمادة التالية
+            document.getElementById('subject-result-screen').classList.add('hidden-screen');
+            document.getElementById('exam-screen').classList.remove('hidden-screen');
+            startSubject(examSubjects[currentIdx + 1]);
+        } else {
+            // عرض النتيجة النهائية
+            saveStudentResult();
         }
     }
 
@@ -1693,11 +1635,9 @@
         showResults(studentData);
     }
 
-    // ============ Show Results ============
     function showResults(data) {
         const t = translations[currentLang];
-        document.getElementById('exam-screen').classList.add('hidden-screen');
-        document.getElementById('review-screen').classList.add('hidden-screen');
+        document.getElementById('subject-result-screen').classList.add('hidden-screen');
         document.getElementById('results-screen').classList.remove('hidden-screen');
         document.getElementById('result-student-name').textContent = data.name;
         document.getElementById('result-total').textContent = `${data.total}/${data.maxScore}`;
@@ -1706,28 +1646,27 @@
         
         const statusEl = document.getElementById('result-status');
         statusEl.innerHTML = data.passed ? 
-            `<span class="badge-success" style="font-size: 1.2rem; padding: 0.5rem 2rem;">${t.passed}</span>` : 
-            `<span class="badge-danger" style="font-size: 1.2rem; padding: 0.5rem 2rem;">${t.failed}</span>`;
+            `<span class="badge-success text-xl px-6 py-3">${t.passed}</span>` : 
+            `<span class="badge-danger text-xl px-6 py-3">${t.failed}</span>`;
         
         const container = document.getElementById('result-subjects');
         const subjectNames = { english: t.englishResult, math: t.mathResult, arabic: t.arabicResult };
         container.innerHTML = Object.entries(data.scores).map(([subj, score]) => {
             const passed = score >= PASSING_SCORE;
             const statusText = passed ? t.passed : t.failed;
-            return `<div style="background: white; border-radius: 20px; padding: 2rem; border: 4px solid ${passed ? '#10B981' : '#EF4444'}; box-shadow: 0 10px 30px rgba(0,0,0,0.1);"><div class="text-center"><h4 class="text-2xl font-bold text-gray-800 mb-4">${subjectNames[subj]}</h4><div class="text-6xl font-black mb-4 ${passed ? 'text-green-600' : 'text-red-600'}">${score}/30</div><div style="display: inline-block; padding: 0.5rem 2rem; border-radius: 9999px; font-weight: bold; font-size: 1.1rem; background: ${passed ? 'linear-gradient(135deg, #10B981, #059669)' : 'linear-gradient(135deg, #EF4444, #DC2626)'}; color: white;">${statusText}</div></div></div>`;
+            return `<div style="background: white; border-radius: 20px; padding: 2rem; border: 4px solid ${passed ? '#10B981' : '#EF4444'}; box-shadow: 0 10px 30px rgba(0,0,0,0.1);"><div class="text-center"><h4 class="text-2xl font-bold text-gray-800 mb-4">${subjectNames[subj]}</h4><div class="text-6xl font-black mb-4 ${passed ? 'text-green-600' : 'text-red-600'}">${score}/30</div><div style="display: inline-block; padding: 0.5rem 2rem; border-radius: 9999px; font-weight: bold; background: ${passed ? 'linear-gradient(135deg, #10B981, #059669)' : 'linear-gradient(135deg, #EF4444, #DC2626)'}; color: white;">${statusText}</div></div></div>`;
         }).join('');
         
-        // Badges
         const badgesContainer = document.getElementById('result-badges');
         let badges = '';
         if (data.total >= 75) { 
-            badges += '<span class="inline-flex items-center gap-2 px-6 py-3 rounded-full font-bold text-lg" style="background: linear-gradient(135deg, #FFD700, #FFA500); color: white; box-shadow: 0 5px 20px rgba(255, 215, 0, 0.4);">🏆 ' + (currentLang === 'ar' ? 'طالب متميز' : 'Excellent Student') + '</span>'; 
+            badges += `<span class="inline-flex items-center gap-2 px-6 py-3 rounded-full font-bold text-lg" style="background: linear-gradient(135deg, #FFD700, #FFA500); color: white;">🏆 ${t.excellentStudent}</span>`; 
         }
         if (data.total >= 60 && data.total < 75) { 
-            badges += '<span class="inline-flex items-center gap-2 px-6 py-3 rounded-full font-bold text-lg" style="background: linear-gradient(135deg, #10B981, #059669); color: white; box-shadow: 0 5px 20px rgba(16, 185, 129, 0.4);">⭐ ' + (currentLang === 'ar' ? 'أداء جيد' : 'Good Performance') + '</span>'; 
+            badges += `<span class="inline-flex items-center gap-2 px-6 py-3 rounded-full font-bold text-lg" style="background: linear-gradient(135deg, #10B981, #059669); color: white;">⭐ ${t.goodPerformance}</span>`; 
         }
         if (data.total >= 45 && data.total < 60) { 
-            badges += '<span class="inline-flex items-center gap-2 px-6 py-3 rounded-full font-bold text-lg" style="background: linear-gradient(135deg, #3B82F6, #1D4ED8); color: white; box-shadow: 0 5px 20px rgba(59, 130, 246, 0.4);">💪 ' + (currentLang === 'ar' ? 'اجتهاد' : 'Effort') + '</span>'; 
+            badges += `<span class="inline-flex items-center gap-2 px-6 py-3 rounded-full font-bold text-lg" style="background: linear-gradient(135deg, #3B82F6, #1D4ED8); color: white;">💪 ${t.effort}</span>`; 
         }
         badgesContainer.innerHTML = badges ? `<div class="flex justify-center gap-3 flex-wrap">${badges}</div>` : '';
         
@@ -1759,7 +1698,6 @@
         showNotification(t.pdfDownloaded, 'success');
     }
 
-    // ============ Teacher Functions ============
     function loginTeacher() {
         const t = translations[currentLang];
         const user = document.getElementById('t-username').value;
@@ -1781,7 +1719,7 @@
         const t = translations[currentLang];
         const listContainer = document.getElementById('teacher-student-list');
         if (allStudents.length === 0) { 
-            listContainer.innerHTML = `<div class="text-center text-gray-500 py-10"><i class="fas fa-inbox text-5xl mb-3 opacity-30"></i><p class="text-lg">${t.noStudents}</p></div>`; 
+            listContainer.innerHTML = `<div class="text-center text-gray-500 py-10"><p class="text-lg">${t.noStudents}</p></div>`; 
             return; 
         }
         listContainer.innerHTML = allStudents.map((s, i) => `
@@ -1844,7 +1782,6 @@
         event.currentTarget.classList.add('active');
     }
 
-    // ============ Registrar Functions ============
     function loginRegistrar() {
         const t = translations[currentLang];
         const user = document.getElementById('r-username').value;
@@ -1880,11 +1817,10 @@
             const arabicScore = s.testsArabic ? (s.scores.arabic || '-') : '-';
             const statusClass = s.passed ? 'badge-success' : 'badge-danger';
             const statusText = s.passed ? t.passed : t.failed;
-            return `<tr class="hover:bg-gray-50 transition-all"><td class="p-3">${i + 1}</td><td class="p-3 font-bold">${s.name}</td><td class="p-3">${s.grade}</td><td class="p-3 font-bold text-amber-700">${s.scores.english || 0}/30</td><td class="p-3 font-bold text-blue-600">${s.scores.math || 0}/30</td><td class="p-3 font-bold text-green-600">${arabicScore}</td><td class="p-3 font-bold">${s.total}/${s.maxScore}</td><td class="p-3"><span class="${statusClass}">${statusText}</span></td></tr>`;
+            return `<tr class="hover:bg-gray-50"><td class="p-3">${i + 1}</td><td class="p-3 font-bold">${s.name}</td><td class="p-3">${s.grade}</td><td class="p-3 font-bold text-amber-700">${s.scores.english || 0}/30</td><td class="p-3 font-bold text-blue-600">${s.scores.math || 0}/30</td><td class="p-3 font-bold text-green-600">${arabicScore}</td><td class="p-3 font-bold">${s.total}/${s.maxScore}</td><td class="p-3"><span class="${statusClass}">${statusText}</span></td></tr>`;
         }).join('');
     }
 
-    // ============ Admin Functions ============
     function loginAdmin() {
         const t = translations[currentLang];
         const user = document.getElementById('a-username').value;
@@ -1918,10 +1854,9 @@
             const arabicScore = s.testsArabic ? (s.scores.arabic || '-') : '-';
             const statusClass = s.passed ? 'badge-success' : 'badge-danger';
             const statusText = s.passed ? t.passed : t.failed;
-            return `<tr class="hover:bg-gray-50 transition-all"><td class="p-3">${i + 1}</td><td class="p-3 font-bold">${s.name}</td><td class="p-3">${s.grade}</td><td class="p-3 font-bold text-amber-700">${s.scores.english || 0}</td><td class="p-3 font-bold text-blue-600">${s.scores.math || 0}</td><td class="p-3 font-bold text-green-600">${arabicScore}</td><td class="p-3 font-bold">${s.total}</td><td class="p-3"><span class="${statusClass}">${statusText}</span></td></tr>`;
+            return `<tr class="hover:bg-gray-50"><td class="p-3">${i + 1}</td><td class="p-3 font-bold">${s.name}</td><td class="p-3">${s.grade}</td><td class="p-3 font-bold text-amber-700">${s.scores.english || 0}</td><td class="p-3 font-bold text-blue-600">${s.scores.math || 0}</td><td class="p-3 font-bold text-green-600">${arabicScore}</td><td class="p-3 font-bold">${s.total}</td><td class="p-3"><span class="${statusClass}">${statusText}</span></td></tr>`;
         }).join('');
         
-        // Charts
         setTimeout(() => {
             if (charts.results) charts.results.destroy();
             if (charts.subjects) charts.subjects.destroy();
@@ -1933,10 +1868,7 @@
                     labels: [t.passed, t.failed], 
                     datasets: [{ data: [passed, failed], backgroundColor: ['#10B981', '#EF4444'] }] 
                 },
-                options: { 
-                    responsive: true, 
-                    plugins: { legend: { position: 'bottom' } }
-                }
+                options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
             });
             
             const ctx2 = document.getElementById('subjectsChart').getContext('2d');
@@ -1953,32 +1885,29 @@
                         backgroundColor: ['#FF6B9D', '#00BBF9', '#10B981'] 
                     }] 
                 },
-                options: { 
-                    responsive: true, 
-                    scales: { y: { beginAtZero: true, max: 30 } }
-                }
+                options: { responsive: true, scales: { y: { beginAtZero: true, max: 30 } } }
             });
         }, 100);
     }
 
-    // ============ Export to Excel ============
     function exportToExcel() {
         const t = translations[currentLang];
         if (allStudents.length === 0) { alert(t.noData); return; }
+        const isAr = currentLang === 'ar';
         const data = allStudents.map(s => ({ 
-            [t.grade === 'المرحلة' ? 'Name' : 'الاسم']: s.name, 
-            [t.grade === 'المرحلة' ? 'Grade' : 'المرحلة']: s.grade, 
-            [t.grade === 'المرحلة' ? 'English' : 'الإنجليزي']: s.scores.english || 0, 
-            [t.grade === 'المرحلة' ? 'Math' : 'الرياضيات']: s.scores.math || 0, 
-            [t.grade === 'المرحلة' ? 'Arabic' : 'العربي']: s.testsArabic ? (s.scores.arabic || 0) : '-', 
-            [t.grade === 'المرحلة' ? 'Total' : 'المجموع']: s.total, 
-            [t.grade === 'المرحلة' ? 'Max' : 'من']: s.maxScore, 
-            [t.grade === 'المرحلة' ? 'Status' : 'الحالة']: s.passed ? t.passed : t.failed, 
-            [t.grade === 'المرحلة' ? 'Date' : 'التاريخ']: s.date || '-' 
+            [isAr ? 'الاسم' : 'Name']: s.name, 
+            [isAr ? 'المرحلة' : 'Grade']: s.grade, 
+            [isAr ? 'الإنجليزي' : 'English']: s.scores.english || 0, 
+            [isAr ? 'الرياضيات' : 'Math']: s.scores.math || 0, 
+            [isAr ? 'العربي' : 'Arabic']: s.testsArabic ? (s.scores.arabic || 0) : '-', 
+            [isAr ? 'المجموع' : 'Total']: s.total, 
+            [isAr ? 'من' : 'Max']: s.maxScore, 
+            [isAr ? 'الحالة' : 'Status']: s.passed ? (isAr ? 'مقبول' : 'Passed') : (isAr ? 'غير مقبول' : 'Failed'), 
+            [isAr ? 'التاريخ' : 'Date']: s.date || '-' 
         }));
         const ws = XLSX.utils.json_to_sheet(data);
         const wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, currentLang === 'ar' ? 'نتائج الطلاب' : 'Student Results');
+        XLSX.utils.book_append_sheet(wb, ws, isAr ? 'نتائج الطلاب' : 'Student Results');
         XLSX.writeFile(wb, 'students_results.xlsx');
         showNotification(t.excelExported, 'success');
     }
