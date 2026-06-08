@@ -18,7 +18,7 @@
             position: relative;
         }
         
-        /* الخلفية الموحدة */
+        /* الخلفية الموحدة - تظهر في كل الشاشات */
         body::before {
             content: '';
             position: fixed;
@@ -258,6 +258,11 @@
             margin-bottom: 2rem;
         }
         
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
         @media (max-width: 1024px) {
             .teacher-split-screen { grid-template-columns: 1fr; }
         }
@@ -270,11 +275,13 @@
     <!-- Notification Container -->
     <div id="notification-container"></div>
 
-    <!-- ========== Welcome Screen ========== -->
-    <div id="welcome-screen" class="fixed inset-0 bg-gradient-to-br from-amber-700 via-amber-600 to-amber-800 z-50 flex flex-col items-center justify-center">
-        <div class="text-8xl mb-6">🎓</div>
-        <h1 class="text-5xl font-black text-white mb-4 text-center px-4">منصة الاختبارات الإلكترونية</h1>
-        <p class="text-2xl text-white/95">بوابة الطفل | أجيال المعرفة</p>
+    <!-- ========== Welcome Screen - شفافة بدون لون بني ========== -->
+    <div id="welcome-screen" class="fixed inset-0 z-50 flex flex-col items-center justify-center">
+        <div class="glass-card p-12 text-center" style="animation: fadeIn 0.5s ease;">
+            <div class="text-8xl mb-6">🎓</div>
+            <h1 class="text-5xl font-black text-gray-800 mb-4">منصة الاختبارات الإلكترونية</h1>
+            <p class="text-2xl text-gray-600">بوابة الطفل | أجيال المعرفة</p>
+        </div>
     </div>
 
     <!-- ========== Branch Selection ========== -->
@@ -331,7 +338,7 @@
                     <p class="text-gray-600 text-sm">أداء الاختبارات</p>
                 </div>
                 <div onclick="selectRole('teacher')" id="role-teacher" class="role-card text-center">
-                    <div class="w-20 h-20 bg-gradient-to-br from-green-500 to-green-700 rounded-full flex items-center justify-center mx-auto mb-3 text-4xl">‍🏫</div>
+                    <div class="w-20 h-20 bg-gradient-to-br from-green-500 to-green-700 rounded-full flex items-center justify-center mx-auto mb-3 text-4xl">👨‍🏫</div>
                     <h3 class="text-xl font-bold text-gray-800 mb-2">معلم</h3>
                     <p class="text-gray-600 text-sm">تصحيح النتائج</p>
                 </div>
@@ -426,14 +433,14 @@
                         <optgroup label="🌍 الجنسيات العربية">
                             <option value="saudi">🇸🇦 سعودي</option>
                             <option value="yemeni">🇾🇪 يمني</option>
-                            <option value="egyptian">🇬 مصري</option>
+                            <option value="egyptian">🇪🇬 مصري</option>
                             <option value="jordanian">🇯🇴 أردني</option>
                             <option value="other-arab">عربي آخر</option>
                         </optgroup>
                         <optgroup label="🌏 الجنسيات غير العربية">
-                            <option value="indian">🇮🇳 هندي</option>
-                            <option value="pakistani">🇵 باكستاني</option>
-                            <option value="filipino">🇵 فلبيني</option>
+                            <option value="indian">🇮 هندي</option>
+                            <option value="pakistani">🇵🇰 باكستاني</option>
+                            <option value="filipino">🇵🇭 فلبيني</option>
                             <option value="other-non-arab">أخرى</option>
                         </optgroup>
                     </select>
@@ -655,7 +662,7 @@
                 </div>
             </div>
             <div class="glass-card p-6 overflow-x-auto">
-                <h3 class="text-xl font-bold text-gray-800 mb-4"> جميع الطلاب</h3>
+                <h3 class="text-xl font-bold text-gray-800 mb-4">📋 جميع الطلاب</h3>
                 <table class="w-full">
                     <thead class="bg-amber-50 border-b-2 border-amber-200">
                         <tr>
@@ -794,7 +801,7 @@
     const arabicNationalities = ['saudi', 'yemeni', 'egyptian', 'jordanian', 'other-arab'];
     const PASSING_SCORE = 15;
 
-    // Welcome Screen
+    // Welcome Screen - تختفي بعد ثانيتين
     window.addEventListener('load', () => {
         setTimeout(() => {
             document.getElementById('welcome-screen').style.opacity = '0';
@@ -923,7 +930,7 @@
         answers = {};
         questionScores = {};
         
-        const subjectNames = { english: 'اللغة الإنجليزية 🇬', math: 'الرياضيات 🔢', arabic: 'اللغة العربية 🇸' };
+        const subjectNames = { english: 'اللغة الإنجليزية 🇬🇧', math: 'الرياضيات 🔢', arabic: 'اللغة العربية 🇸🇦' };
         document.getElementById('exam-subject').textContent = subjectNames[subject];
         updateSubjectTabs();
         loadQuestions(subject);
@@ -933,7 +940,7 @@
 
     function updateSubjectTabs() {
         const tabsContainer = document.getElementById('subject-tabs');
-        const subjectNames = { english: '🇬🇧 الإنجليزي', math: ' الرياضيات', arabic: '🇸🇦 العربي' };
+        const subjectNames = { english: '🇬🇧 الإنجليزي', math: '🔢 الرياضيات', arabic: '🇸🇦 العربي' };
         tabsContainer.innerHTML = examSubjects.map(subj => {
             let className = 'subject-tab ';
             if (subj === currentSubject) { className += 'active'; } 
@@ -1190,7 +1197,7 @@
             '<span class="badge-danger" style="font-size: 1.2rem; padding: 0.5rem 2rem;">غير مقبول ❌</span>';
         
         const container = document.getElementById('result-subjects');
-        const subjectNames = { english: '🇬🇧 اللغة الإنجليزية', math: '🔢 الرياضيات', arabic: '🇦 اللغة العربية' };
+        const subjectNames = { english: '🇬🇧 اللغة الإنجليزية', math: '🔢 الرياضيات', arabic: '🇸🇦 اللغة العربية' };
         container.innerHTML = Object.entries(data.scores).map(([subj, score]) => {
             const passed = score >= PASSING_SCORE;
             const statusText = passed ? 'مقبول ✅' : 'غير مقبول ❌';
@@ -1200,7 +1207,7 @@
         const msgBox = document.getElementById('result-message');
         if (data.passed) { 
             msgBox.className = 'mb-6 p-4 rounded-xl font-bold text-xl bg-green-100 text-green-800 border-2 border-green-300'; 
-            msgBox.innerHTML = ' لقد اجتزت الاختبار بنجاح - تم قبولك'; 
+            msgBox.innerHTML = '🎉 لقد اجتزت الاختبار بنجاح - تم قبولك'; 
         } else { 
             msgBox.className = 'mb-6 p-4 rounded-xl font-bold text-xl bg-red-100 text-red-800 border-2 border-red-300'; 
             msgBox.innerHTML = 'لم تجتز الاختبار - يرجى المحاولة مرة أخرى'; 
