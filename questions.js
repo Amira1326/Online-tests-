@@ -1,5 +1,6 @@
-// بنك الأسئلة - Grade 1-8
+// بنك الأسئلة الشامل - جميع المراحل (G1-G8) - النموذجين A و B
 const questionBank = {
+    // ============ Grade 1 ============
     G1: {
         english: {
             modelA: [
@@ -13,8 +14,7 @@ const questionBank = {
                         { image: "https://cdn-icons-png.flaticon.com/512/2917/2917995.png", options: ["Pan", "Pen"], correct: 0 },
                         { image: "https://cdn-icons-png.flaticon.com/512/616/616430.png", options: ["Dog", "Dug"], correct: 0 },
                         { image: "https://cdn-icons-png.flaticon.com/512/616/616567.png", options: ["Big", "Bag"], correct: 0 }
-                    ],
-                    needs_manual: false
+                    ]
                 },
                 {
                     id: "g1_en_a_q2",
@@ -27,8 +27,7 @@ const questionBank = {
                         { question: "Rat - Tin - Hat - Put", options: ["Rat", "Tin", "Hat", "Put"], correct: 2 },
                         { question: "Cod - Cut - Fit - Rod", options: ["Cod", "Cut", "Fit", "Rod"], correct: 3 },
                         { question: "Pin - Sin - Lip - Tag", options: ["Pin", "Sin", "Lip", "Tag"], correct: 2 }
-                    ],
-                    needs_manual: false
+                    ]
                 },
                 {
                     id: "g1_en_a_q3",
@@ -38,8 +37,7 @@ const questionBank = {
                     subQuestions: [
                         { question: "___ is my rabbit.", options: ["This", "That"], correct: 0 },
                         { question: "___ tree is big.", options: ["This", "That"], correct: 1 }
-                    ],
-                    needs_manual: false
+                    ]
                 }
             ],
             modelB: [
@@ -53,8 +51,7 @@ const questionBank = {
                         { image: "https://cdn-icons-png.flaticon.com/512/888/888847.png", options: ["Sun", "Tan"], correct: 0 },
                         { image: "https://cdn-icons-png.flaticon.com/512/616/616430.png", options: ["Pit", "Hen"], correct: 1 },
                         { image: "https://cdn-icons-png.flaticon.com/512/2917/2917995.png", options: ["Rot", "Pot"], correct: 1 }
-                    ],
-                    needs_manual: false
+                    ]
                 },
                 {
                     id: "g1_en_b_q2",
@@ -67,8 +64,7 @@ const questionBank = {
                         { question: "Fin - Tin - Hat - Put", options: ["Fin", "Tin", "Hat", "Put"], correct: 1 },
                         { question: "Cut - Tap - Hut - Rod", options: ["Cut", "Tap", "Hut", "Rod"], correct: 2 },
                         { question: "Bag - Sin - Lip - Tag", options: ["Bag", "Sin", "Lip", "Tag"], correct: 3 }
-                    ],
-                    needs_manual: false
+                    ]
                 },
                 {
                     id: "g1_en_b_q3",
@@ -78,12 +74,13 @@ const questionBank = {
                     subQuestions: [
                         { question: "___ is a yellow duck.", options: ["This", "That"], correct: 0 },
                         { question: "___ is a big aero plane.", options: ["This", "That"], correct: 1 }
-                    ],
-                    needs_manual: false
+                    ]
                 }
             ]
         }
     },
+
+    // ============ Grade 2 ============
     G2: {
         english: {
             modelA: [
@@ -107,8 +104,7 @@ const questionBank = {
                         { question: "We ___ ready.", options: ["are", "am"], correct: 0 },
                         { question: "You ___ intelligent.", options: ["are", "is"], correct: 0 },
                         { question: "I ___ writing.", options: ["is", "am"], correct: 1 }
-                    ],
-                    needs_manual: false
+                    ]
                 },
                 {
                     id: "g2_en_a_q3",
@@ -121,8 +117,7 @@ const questionBank = {
                         { question: "She ___ one sister.", options: ["have", "has"], correct: 1 },
                         { question: "They ___ a test today.", options: ["have", "has"], correct: 0 },
                         { question: "The rainbow ___ seven colors.", options: ["have", "has"], correct: 1 }
-                    ],
-                    needs_manual: false
+                    ]
                 }
             ],
             modelB: [
@@ -146,8 +141,7 @@ const questionBank = {
                         { question: "We ___ happy.", options: ["are", "am"], correct: 0 },
                         { question: "She ___ tall.", options: ["am", "is"], correct: 1 },
                         { question: "They ___ learning.", options: ["is", "are"], correct: 1 }
-                    ],
-                    needs_manual: false
+                    ]
                 },
                 {
                     id: "g2_en_b_q3",
@@ -160,12 +154,13 @@ const questionBank = {
                         { question: "I ___ some cookies.", options: ["have", "has"], correct: 0 },
                         { question: "They ___ a ball.", options: ["have", "has"], correct: 0 },
                         { question: "You ___ a bicycle.", options: ["have", "has"], correct: 0 }
-                    ],
-                    needs_manual: false
+                    ]
                 }
             ]
         }
     },
+
+    // ============ Grade 3 ============
     G3: {
         english: {
             modelA: [
@@ -183,8 +178,7 @@ const questionBank = {
                         { question: "Bus:", options: ["Common Noun", "Proper Noun"], correct: 0 },
                         { question: "Taif:", options: ["Common Noun", "Proper Noun"], correct: 1 },
                         { question: "Backpack:", options: ["Common Noun", "Proper Noun"], correct: 0 }
-                    ],
-                    needs_manual: false
+                    ]
                 },
                 {
                     id: "g3_en_a_q2",
@@ -199,8 +193,7 @@ const questionBank = {
                         { question: "You ___ a tall boy.", options: ["is", "are"], correct: 1 },
                         { question: "___ she baking a cake?", options: ["Is", "Are"], correct: 0 },
                         { question: "I ___ eating apples but they ___ eating popcorns.", options: ["am/are", "is/are", "am/is"], correct: 0 }
-                    ],
-                    needs_manual: false
+                    ]
                 }
             ],
             modelB: [
@@ -218,8 +211,7 @@ const questionBank = {
                         { question: "Reem:", options: ["Common Noun", "Proper Noun"], correct: 1 },
                         { question: "Kitten:", options: ["Common Noun", "Proper Noun"], correct: 0 },
                         { question: "Hyde Park:", options: ["Common Noun", "Proper Noun"], correct: 1 }
-                    ],
-                    needs_manual: false
+                    ]
                 },
                 {
                     id: "g3_en_b_q2",
@@ -234,12 +226,13 @@ const questionBank = {
                         { question: "You ___ my best friend.", options: ["is", "are"], correct: 1 },
                         { question: "___ he sleeping in the room?", options: ["Is", "Are"], correct: 0 },
                         { question: "I ___ going to Abha but she ___ going to Jeddah.", options: ["am/is", "am/are", "is/are"], correct: 0 }
-                    ],
-                    needs_manual: false
+                    ]
                 }
             ]
         }
     },
+
+    // ============ Grade 4 ============
     G4: {
         english: {
             modelA: [
@@ -256,8 +249,7 @@ const questionBank = {
                         { question: "Choose the proper noun:", options: ["Tina", "Garden"], correct: 0 },
                         { question: "What part of speech is: Spent", options: ["Adverb", "Verb"], correct: 1 },
                         { question: "Which word is an adjective?", options: ["Friendly", "Follow"], correct: 0 }
-                    ],
-                    needs_manual: false
+                    ]
                 },
                 {
                     id: "g4_en_a_q2",
@@ -267,8 +259,7 @@ const questionBank = {
                     subQuestions: [
                         { question: "I ___ going to Japan and you ___ going to China.", options: ["am/are", "are/is", "am/is"], correct: 0 },
                         { question: "A monkey ___ a long tail but rabbits ___ short tails.", options: ["has/have", "have/has", "has/has"], correct: 0 }
-                    ],
-                    needs_manual: false
+                    ]
                 },
                 {
                     id: "g4_en_a_q3",
@@ -280,8 +271,7 @@ const questionBank = {
                         { question: "My dad is playing football with me.", options: ["Simple Present", "Present Continuous"], correct: 1 },
                         { question: "They were in Canada last year.", options: ["Simple Present", "Simple Past"], correct: 1 },
                         { question: "Who is sitting on the couch?", options: ["Simple Present", "Present Continuous"], correct: 1 }
-                    ],
-                    needs_manual: false
+                    ]
                 }
             ],
             modelB: [
@@ -298,8 +288,7 @@ const questionBank = {
                         { question: "Choose the proper noun:", options: ["Lily", "Backyard"], correct: 0 },
                         { question: "What part of speech is: Visited", options: ["Adverb", "Verb"], correct: 1 },
                         { question: "Which word is an adjective?", options: ["Colorful", "Share"], correct: 0 }
-                    ],
-                    needs_manual: false
+                    ]
                 },
                 {
                     id: "g4_en_b_q2",
@@ -310,8 +299,7 @@ const questionBank = {
                         { question: "We ___ received a letter from the college.", options: ["has", "have"], correct: 1 },
                         { question: "Jana and I ___ eating a pizza. Jana ___ drinking juice too.", options: ["am/are", "are/is", "are/are"], correct: 1 },
                         { question: "You ___ a cat and I ___ a hamster.", options: ["has/have", "have/has", "have/have"], correct: 1 }
-                    ],
-                    needs_manual: false
+                    ]
                 },
                 {
                     id: "g4_en_b_q3",
@@ -323,12 +311,13 @@ const questionBank = {
                         { question: "Sam is an old friend of mine.", options: ["Simple Present", "Simple Past"], correct: 0 },
                         { question: "He was in Abha last week.", options: ["Simple Present", "Simple Past"], correct: 1 },
                         { question: "Why are you crying?", options: ["Simple Present", "Present Continuous"], correct: 1 }
-                    ],
-                    needs_manual: false
+                    ]
                 }
             ]
         }
     },
+
+    // ============ Grade 5 ============
     G5: {
         english: {
             modelA: [
@@ -345,8 +334,7 @@ const questionBank = {
                         { question: "What part of speech is: Gathered", options: ["Verb", "Adjective"], correct: 0 },
                         { question: "Refreshing is used as an adjective.", options: ["True", "False"], correct: 0 },
                         { question: "Marshmallow is a proper noun.", options: ["True", "False"], correct: 1 }
-                    ],
-                    needs_manual: false
+                    ]
                 },
                 {
                     id: "g5_en_a_q2",
@@ -359,8 +347,7 @@ const questionBank = {
                         { question: "They are taking an exam.", options: ["Simple present", "Present Continuous"], correct: 1 },
                         { question: "Are you going to Paris?", options: ["Simple Past", "Present Continuous"], correct: 1 },
                         { question: "James bought a new phone.", options: ["Simple Past", "Simple Present"], correct: 0 }
-                    ],
-                    needs_manual: false
+                    ]
                 },
                 {
                     id: "g5_en_a_q3",
@@ -372,8 +359,7 @@ const questionBank = {
                         { question: "Ali ___ his breakfast in the kitchen.", options: ["is eats", "is eating"], correct: 1 },
                         { question: "Does your mom ___ her car to the hospital everyday?", options: ["drive", "drives"], correct: 0 },
                         { question: "Tina ___ her room yesterday.", options: ["cleans", "cleaned"], correct: 1 }
-                    ],
-                    needs_manual: false
+                    ]
                 }
             ],
             modelB: [
@@ -390,8 +376,7 @@ const questionBank = {
                         { question: "What part of speech is Pink?", options: ["Noun", "Adjective"], correct: 1 },
                         { question: "Excited is used a verb.", options: ["True", "False"], correct: 1 },
                         { question: "Glitter is a noun.", options: ["True", "False"], correct: 0 }
-                    ],
-                    needs_manual: false
+                    ]
                 },
                 {
                     id: "g5_en_b_q2",
@@ -403,8 +388,7 @@ const questionBank = {
                         { question: "We are watching a movie.", options: ["Present Continuous", "Past Continuous"], correct: 0 },
                         { question: "He played volleyball on the beach.", options: ["Simple Past", "Simple Present"], correct: 0 },
                         { question: "Is he cleaning the room?", options: ["Present Continuous", "Simple Present"], correct: 0 }
-                    ],
-                    needs_manual: false
+                    ]
                 },
                 {
                     id: "g5_en_b_q3",
@@ -417,12 +401,13 @@ const questionBank = {
                         { question: "He ___ movie with his friends.", options: ["is watching", "watch"], correct: 0 },
                         { question: "He ___ his grandma yesterday.", options: ["visits", "visited"], correct: 1 },
                         { question: "The rabbit ___ in the garden.", options: ["is hops", "is hopping"], correct: 1 }
-                    ],
-                    needs_manual: false
+                    ]
                 }
             ]
         }
     },
+
+    // ============ Grade 6 ============
     G6: {
         english: {
             modelA: [
@@ -438,8 +423,7 @@ const questionBank = {
                         { question: "Choose the correct part of speech for the word 'quiet'.", options: ["Noun", "Verb", "Adjective"], correct: 2 },
                         { question: "Why wasn't Sarah reading the book in her lap?", options: ["She was waiting for someone", "She was daydreaming", "She fell asleep"], correct: 1 },
                         { question: "What does the author suggest about silence?", options: ["It is boring", "It is dangerous", "It can bring peace"], correct: 2 }
-                    ],
-                    needs_manual: false
+                    ]
                 },
                 {
                     id: "g6_en_a_q2",
@@ -452,8 +436,7 @@ const questionBank = {
                         { question: "What tense: She travelled to Japan last month.", options: ["Past progressive", "Past simple", "Present perfect"], correct: 1 },
                         { question: "Part of speech of 'myself'?", options: ["noun", "pronoun", "adverb"], correct: 1 },
                         { question: "Which sentence is positive?", options: ["He didn't come to school today.", "They never eat vegetables.", "She always completes her homework."], correct: 2 }
-                    ],
-                    needs_manual: false
+                    ]
                 },
                 {
                     id: "g6_en_a_q3",
@@ -476,8 +459,7 @@ const questionBank = {
                         { question: "What do we know about Max?", options: ["He escaped from his cage", "He ate some of Maya's lunch", "He always stays in his cage"], correct: 0 },
                         { question: "What actions show Maya's problem-solving skills?", options: ["Asking her friends", "Following the crumbs", "Going home early"], correct: 1 },
                         { question: "What lessons can be learned?", options: ["Small clues can solve big mysteries", "Hamsters should not be kept in schools", "It's good to stay calm and think"], correct: 0 }
-                    ],
-                    needs_manual: false
+                    ]
                 },
                 {
                     id: "g6_en_b_q2",
@@ -490,8 +472,7 @@ const questionBank = {
                         { question: "Type of present tense: He is reading a novel.", options: ["Present simple", "Present perfect continuous", "Present continuous"], correct: 2 },
                         { question: "Which sentence is in past perfect tense?", options: ["They had left before the rain started.", "They left early in the morning.", "They were leaving when I arrived."], correct: 0 },
                         { question: "Part of speech: The blue butterfly landed.", options: ["Noun", "Verb", "Adjective"], correct: 2 }
-                    ],
-                    needs_manual: false
+                    ]
                 },
                 {
                     id: "g6_en_b_q3",
@@ -503,6 +484,8 @@ const questionBank = {
             ]
         }
     },
+
+    // ============ Grade 7 ============
     G7: {
         english: {
             modelA: [
@@ -518,8 +501,7 @@ const questionBank = {
                         { question: "Which best describes Thomas Edison's attitude toward failure?", options: ["He saw failure as a reason to quit.", "He believed that failure was part of the process of success.", "He didn't care about failure."], correct: 1 },
                         { question: "According to the passage, what is necessary to build resilience?", options: ["Giving up when things get difficult.", "Avoiding challenges altogether.", "Maintaining a positive attitude and being patient."], correct: 2 },
                         { question: "Which is a synonym for 'resilience'?", options: ["Weakness", "mental strength or Persistence", "Stubbornness"], correct: 1 }
-                    ],
-                    needs_manual: false
+                    ]
                 },
                 {
                     id: "g7_en_a_q2",
@@ -532,8 +514,7 @@ const questionBank = {
                         { question: "Part of speech: The dog barked at the stranger.", options: ["Verb", "Adverb", "Preposition"], correct: 0 },
                         { question: "Which is in present continuous tense?", options: ["He will be studying at 7 p.m.", "He studied all night for the test.", "He is studying for his exams right now."], correct: 2 },
                         { question: "Fill in blank: She divided the cake equally ___ her three children.", options: ["Among", "Between", "With"], correct: 0 }
-                    ],
-                    needs_manual: false
+                    ]
                 },
                 {
                     id: "g7_en_a_q3",
@@ -556,8 +537,7 @@ const questionBank = {
                         { question: "What is one essential component of effective teamwork?", options: ["Ignoring each other's ideas.", "Communication and respect.", "Keeping ideas to oneself."], correct: 1 },
                         { question: "What does the author mean by 'a diversity of ideas'?", options: ["Only one person's idea should be considered.", "Everyone has the same idea.", "Each person brings unique ideas that contribute to the success of the team."], correct: 2 },
                         { question: "What does 'cooperation' mean?", options: ["Working independently", "Working together with others", "Avoiding others' ideas"], correct: 1 }
-                    ],
-                    needs_manual: false
+                    ]
                 },
                 {
                     id: "g7_en_b_q2",
@@ -570,8 +550,7 @@ const questionBank = {
                         { question: "Which sentence is in present perfect tense?", options: ["I have seen that movie before.", "I will watch that movie tomorrow.", "I watched that movie last night."], correct: 0 },
                         { question: "Choose sentence with past perfect tense:", options: ["They were walking to school.", "They would have walked to school every day.", "They had walked to school."], correct: 2 },
                         { question: "Identify tense: By next summer, I will have visited five countries.", options: ["Present perfect", "Past continuous", "Future perfect"], correct: 2 }
-                    ],
-                    needs_manual: false
+                    ]
                 },
                 {
                     id: "g7_en_b_q3",
@@ -583,6 +562,8 @@ const questionBank = {
             ]
         }
     },
+
+    // ============ Grade 8 ============
     G8: {
         english: {
             modelA: [
@@ -598,8 +579,7 @@ const questionBank = {
                         { question: "What happens to the disposed material at the recycling center?", options: ["It is thrown away", "It is recycled for reuse", "It is sold to the rag pickers", "It is dumped into the ground."], correct: 1 },
                         { question: "Fallen leaves from trees are useful because they", options: ["solve the problem of fuel wood in village households", "enrich water quality", "enrich soil fertility", "beautify landscape."], correct: 2 },
                         { question: "Which is correct with reference to a composite pit?", options: ["The refuge is placed with layers of soil with an occasional sprinkling of water", "It contributes to the manufacture of useful fertilizer", "It prevents pollution", "All the above."], correct: 3 }
-                    ],
-                    needs_manual: false
+                    ]
                 },
                 {
                     id: "g8_en_a_q2",
@@ -622,8 +602,7 @@ const questionBank = {
                         { question: "Why were people unable to enter the cave for thousands of years?", options: ["Rock fall", "no art", "cave was damaged"], correct: 0 },
                         { question: "What material did the cave artists use to make their brushes?", options: ["Wood", "horsehair", "hair"], correct: 1 },
                         { question: "Who was sent to study about the cave?", options: ["Climbers", "local authorities", "experts"], correct: 2 }
-                    ],
-                    needs_manual: false
+                    ]
                 },
                 {
                     id: "g8_en_b_q2",
