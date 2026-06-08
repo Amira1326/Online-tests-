@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة الاختبارات الإلكترونية | Electronic Exams Platform</title>
+    <title>منصة الاختبارات الإلكترونية</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -387,7 +387,12 @@
     <!-- ========== Welcome Screen ========== -->
     <div id="welcome-screen" class="fixed inset-0 z-50 flex flex-col items-center justify-center">
         <div class="glass-card p-16 text-center fade-in max-w-3xl">
-            <div class="text-9xl mb-6" style="animation: bounceIn 1s ease;"></div>
+            <div class="mb-6" style="animation: bounceIn 1s ease;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="140" height="140" viewBox="0 0 24 24" fill="none" stroke="#8B4513" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+                    <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+                </svg>
+            </div>
             <h1 class="text-6xl font-black text-gray-800 mb-4" data-ar="منصة الاختبارات الإلكترونية" data-en="Electronic Exams Platform">منصة الاختبارات الإلكترونية</h1>
             <p class="text-2xl text-gray-600" data-ar="بوابة الطفل | أجيال المعرفة" data-en="Kids Gate | Knowledge Generations">بوابة الطفل | أجيال المعرفة</p>
             <div class="flex justify-center gap-3 mt-8">
@@ -447,23 +452,53 @@
                 </p>
             </div>
             <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <!-- طالب -->
                 <div onclick="selectRole('student')" id="role-student" class="role-card text-center">
-                    <div class="w-24 h-24 bg-gradient-to-br from-blue-500 to-blue-700 rounded-full flex items-center justify-center mx-auto mb-4 text-5xl shadow-lg"></div>
+                    <div class="w-28 h-28 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg" style="background: linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%);">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+                            <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+                        </svg>
+                    </div>
                     <h3 class="text-2xl font-bold text-gray-800 mb-2" data-ar="طالب" data-en="Student">طالب</h3>
                     <p class="text-gray-600 text-sm" data-ar="أداء الاختبارات" data-en="Take Exams">أداء الاختبارات</p>
                 </div>
+                <!-- معلم -->
                 <div onclick="selectRole('teacher')" id="role-teacher" class="role-card text-center">
-                    <div class="w-24 h-24 bg-gradient-to-br from-green-500 to-green-700 rounded-full flex items-center justify-center mx-auto mb-4 text-5xl shadow-lg">👨🏫</div>
+                    <div class="w-28 h-28 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg" style="background: linear-gradient(135deg, #10B981 0%, #059669 100%);">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                            <circle cx="9" cy="7" r="4"/>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                            <path d="M9 14l2 2 4-4"/>
+                        </svg>
+                    </div>
                     <h3 class="text-2xl font-bold text-gray-800 mb-2" data-ar="معلم" data-en="Teacher">معلم</h3>
                     <p class="text-gray-600 text-sm" data-ar="تصحيح النتائج" data-en="Grade Results">تصحيح النتائج</p>
                 </div>
+                <!-- مسؤول القبول -->
                 <div onclick="selectRole('registrar')" id="role-registrar" class="role-card text-center">
-                    <div class="w-24 h-24 bg-gradient-to-br from-orange-500 to-orange-700 rounded-full flex items-center justify-center mx-auto mb-4 text-5xl shadow-lg">📋</div>
+                    <div class="w-28 h-28 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg" style="background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                            <polyline points="14 2 14 8 20 8"/>
+                            <line x1="16" y1="13" x2="8" y2="13"/>
+                            <line x1="16" y1="17" x2="8" y2="17"/>
+                            <polyline points="10 9 9 9 8 9"/>
+                        </svg>
+                    </div>
                     <h3 class="text-2xl font-bold text-gray-800 mb-2" data-ar="مسؤول القبول" data-en="Admissions">مسؤول القبول</h3>
                     <p class="text-gray-600 text-sm" data-ar="التسجيل والقبول" data-en="Registration">التسجيل والقبول</p>
                 </div>
+                <!-- مدير النظام -->
                 <div onclick="selectRole('admin')" id="role-admin" class="role-card text-center">
-                    <div class="w-24 h-24 bg-gradient-to-br from-purple-500 to-purple-700 rounded-full flex items-center justify-center mx-auto mb-4 text-5xl shadow-lg">👔</div>
+                    <div class="w-28 h-28 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg" style="background: linear-gradient(135deg, #8B5CF6 0%, #6D28D9 100%);">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="3"/>
+                            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                        </svg>
+                    </div>
                     <h3 class="text-2xl font-bold text-gray-800 mb-2" data-ar="مدير النظام" data-en="Admin">مدير النظام</h3>
                     <p class="text-gray-600 text-sm" data-ar="الإحصائيات" data-en="Statistics">الإحصائيات</p>
                 </div>
@@ -547,18 +582,18 @@
                     </label>
                     <select id="s-nationality" class="input-field" onchange="handleNationalityChange()">
                         <option value="" data-ar="-- اختر الجنسية --" data-en="-- Select Nationality --">-- اختر الجنسية --</option>
-                        <optgroup label="🌍 الجنسيات العربية" data-label-en="🌍 Arabic Nationalities">
-                            <option value="saudi">🇦 <span data-ar="سعودي" data-en="Saudi">سعودي</span></option>
-                            <option value="yemeni">🇾🇪 <span data-ar="يمني" data-en="Yemeni">يمني</span></option>
-                            <option value="egyptian">🇪 <span data-ar="مصري" data-en="Egyptian">مصري</span></option>
-                            <option value="jordanian">🇯🇴 <span data-ar="أردني" data-en="Jordanian">أردني</span></option>
-                            <option value="other-arab"><span data-ar="عربي آخر" data-en="Other Arab">عربي آخر</span></option>
+                        <optgroup label="🌍 الجنسيات العربية">
+                            <option value="saudi">🇸🇦 سعودي</option>
+                            <option value="yemeni">🇾🇪 يمني</option>
+                            <option value="egyptian">🇪🇬 مصري</option>
+                            <option value="jordanian">🇯🇴 أردني</option>
+                            <option value="other-arab">عربي آخر</option>
                         </optgroup>
-                        <optgroup label=" الجنسيات غير العربية" data-label-en=" Non-Arabic Nationalities">
-                            <option value="indian">🇮🇳 <span data-ar="هندي" data-en="Indian">هندي</span></option>
-                            <option value="pakistani">🇵🇰 <span data-ar="باكستاني" data-en="Pakistani">باكستاني</span></option>
-                            <option value="filipino">🇵🇭 <span data-ar="فلبيني" data-en="Filipino">فلبيني</span></option>
-                            <option value="other-non-arab"><span data-ar="أخرى" data-en="Other">أخرى</span></option>
+                        <optgroup label="🌏 الجنسيات غير العربية">
+                            <option value="indian">🇮🇳 هندي</option>
+                            <option value="pakistani">🇵🇰 باكستاني</option>
+                            <option value="filipino">🇵🇭 فلبيني</option>
+                            <option value="other-non-arab">أخرى</option>
                         </optgroup>
                     </select>
                 </div>
@@ -588,7 +623,15 @@
     <div id="teacher-login-screen" class="hidden-screen min-h-screen flex items-center justify-center p-4">
         <div class="glass-card max-w-md w-full fade-in">
             <div class="text-center mb-8">
-                <div class="w-28 h-28 bg-gradient-to-br from-green-500 to-green-700 rounded-full flex items-center justify-center mx-auto mb-6 text-6xl shadow-lg">👨‍🏫</div>
+                <div class="w-28 h-28 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg" style="background: linear-gradient(135deg, #10B981 0%, #059669 100%);">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="90" height="90" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                        <circle cx="9" cy="7" r="4"/>
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                        <path d="M9 14l2 2 4-4"/>
+                    </svg>
+                </div>
                 <h2 class="text-3xl font-black text-gray-800 mb-2" data-ar="دخول المعلم" data-en="Teacher Login">دخول المعلم</h2>
                 <p class="text-gray-600" data-ar="تصحيح إجابات الطلاب" data-en="Grade Student Answers">تصحيح إجابات الطلاب</p>
             </div>
@@ -613,7 +656,16 @@
             <div class="glass-card p-6 mb-6">
                 <div class="flex justify-between items-center flex-wrap gap-4">
                     <div>
-                        <h2 class="text-3xl font-black text-gray-800">👨‍🏫 <span data-ar="لوحة المعلم - تصحيح الإجابات" data-en="Teacher Panel - Grading">لوحة المعلم - تصحيح الإجابات</span></h2>
+                        <h2 class="text-3xl font-black text-gray-800">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: middle; margin-left: 8px;">
+                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                                <circle cx="9" cy="7" r="4"/>
+                                <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                                <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                                <path d="M9 14l2 2 4-4"/>
+                            </svg>
+                            <span data-ar="لوحة المعلم - تصحيح الإجابات" data-en="Teacher Panel - Grading">لوحة المعلم - تصحيح الإجابات</span>
+                        </h2>
                         <p class="text-gray-600 mt-1" data-ar="راجع إجابات الطلاب وأضف الدرجات" data-en="Review student answers and add grades">راجع إجابات الطلاب وأضف الدرجات</p>
                     </div>
                     <div class="flex gap-3">
@@ -633,7 +685,10 @@
                 </div>
                 <div class="student-detail-panel" id="student-detail-panel">
                     <div class="text-center text-gray-500 py-20">
-                        <i class="fas fa-user-graduate text-7xl mb-4 opacity-30"></i>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" style="margin: 0 auto 1rem; opacity: 0.3;">
+                            <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+                            <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+                        </svg>
                         <p class="text-xl" data-ar="اختر طالباً من القائمة لعرض إجاباته" data-en="Select a student to view answers">اختر طالباً من القائمة لعرض إجاباته</p>
                     </div>
                 </div>
@@ -645,7 +700,15 @@
     <div id="registrar-login-screen" class="hidden-screen min-h-screen flex items-center justify-center p-4">
         <div class="glass-card max-w-md w-full fade-in">
             <div class="text-center mb-8">
-                <div class="w-28 h-28 bg-gradient-to-br from-orange-500 to-orange-700 rounded-full flex items-center justify-center mx-auto mb-6 text-6xl shadow-lg">📋</div>
+                <div class="w-28 h-28 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg" style="background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="90" height="90" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                        <polyline points="14 2 14 8 20 8"/>
+                        <line x1="16" y1="13" x2="8" y2="13"/>
+                        <line x1="16" y1="17" x2="8" y2="17"/>
+                        <polyline points="10 9 9 9 8 9"/>
+                    </svg>
+                </div>
                 <h2 class="text-3xl font-black text-gray-800 mb-2" data-ar="مسؤول القبول والتسجيل" data-en="Admissions Officer">مسؤول القبول والتسجيل</h2>
                 <p class="text-gray-600" data-ar="عرض جميع الطلاب" data-en="View All Students">عرض جميع الطلاب</p>
             </div>
@@ -710,7 +773,12 @@
     <div id="admin-login-screen" class="hidden-screen min-h-screen flex items-center justify-center p-4">
         <div class="glass-card max-w-md w-full fade-in">
             <div class="text-center mb-8">
-                <div class="w-28 h-28 bg-gradient-to-br from-purple-500 to-purple-700 rounded-full flex items-center justify-center mx-auto mb-6 text-6xl shadow-lg">👔</div>
+                <div class="w-28 h-28 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg" style="background: linear-gradient(135deg, #8B5CF6 0%, #6D28D9 100%);">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="90" height="90" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="3"/>
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                    </svg>
+                </div>
                 <h2 class="text-3xl font-black text-gray-800 mb-2" data-ar="مدير النظام" data-en="System Admin">مدير النظام</h2>
                 <p class="text-gray-600" data-ar="منطقة إدارية محمية" data-en="Protected Admin Area">منطقة إدارية محمية</p>
             </div>
@@ -756,12 +824,12 @@
                     <canvas id="resultsChart"></canvas>
                 </div>
                 <div class="chart-container">
-                    <h3 class="text-xl font-bold text-gray-800 mb-4"> <span data-ar="أداء المواد" data-en="Subject Performance">أداء المواد</span></h3>
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">📈 <span data-ar="أداء المواد" data-en="Subject Performance">أداء المواد</span></h3>
                     <canvas id="subjectsChart"></canvas>
                 </div>
             </div>
             <div class="glass-card p-6 overflow-x-auto">
-                <h3 class="text-xl font-bold text-gray-800 mb-4"> <span data-ar="جميع الطلاب" data-en="All Students">جميع الطلاب</span></h3>
+                <h3 class="text-xl font-bold text-gray-800 mb-4">📋 <span data-ar="جميع الطلاب" data-en="All Students">جميع الطلاب</span></h3>
                 <table class="w-full">
                     <thead class="bg-amber-50 border-b-2 border-amber-200">
                         <tr>
@@ -787,7 +855,14 @@
             <div class="glass-card p-6 mb-6">
                 <div class="flex justify-between items-center flex-wrap gap-6">
                     <div class="flex items-center gap-6">
-                        <div class="w-20 h-20 bg-gradient-to-br from-amber-600 to-amber-700 rounded-full flex items-center justify-center text-white text-4xl shadow-2xl"></div>
+                        <div class="w-20 h-20 bg-gradient-to-br from-amber-600 to-amber-700 rounded-full flex items-center justify-center text-white shadow-2xl">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                <polyline points="14 2 14 8 20 8"/>
+                                <line x1="16" y1="13" x2="8" y2="13"/>
+                                <line x1="16" y1="17" x2="8" y2="17"/>
+                            </svg>
+                        </div>
                         <div>
                             <h2 id="exam-subject" class="text-3xl font-bold text-gray-800"></h2>
                             <p class="text-gray-600 text-lg">
@@ -864,7 +939,16 @@
     <div id="results-screen" class="hidden-screen min-h-screen p-4">
         <div class="max-w-6xl mx-auto">
             <div class="glass-card p-12 text-center fade-in">
-                <div class="w-40 h-40 bg-gradient-to-br from-amber-600 to-amber-700 rounded-full flex items-center justify-center mx-auto mb-6 shadow-2xl text-8xl" style="animation: bounceIn 1s ease;">🏆</div>
+                <div class="w-40 h-40 rounded-full flex items-center justify-center mx-auto mb-6 shadow-2xl" style="background: linear-gradient(135deg, #D97706 0%, #B45309 100%); animation: bounceIn 1s ease;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="110" height="110" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/>
+                        <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/>
+                        <path d="M4 22h16"/>
+                        <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/>
+                        <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/>
+                        <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/>
+                    </svg>
+                </div>
                 <h2 class="text-5xl font-black text-gray-800 mb-3" data-ar="نتيجة الاختبار" data-en="Exam Result">نتيجة الاختبار</h2>
                 <p id="result-student-name" class="text-2xl text-amber-700 font-bold mb-8"></p>
                 <div id="result-subjects" class="grid md:grid-cols-3 gap-6 mb-8"></div>
@@ -904,20 +988,18 @@
     const translations = {
         ar: {
             subjectsNoticeArabic: '📚 سيختبر: الإنجليزي + الرياضيات + العربي',
-            subjectsNoticeNonArabic: ' سيختبر: الإنجليزي + الرياضيات فقط',
+            subjectsNoticeNonArabic: '📚 سيختبر: الإنجليزي + الرياضيات فقط',
             english: 'اللغة الإنجليزية 🇬🇧',
             math: 'الرياضيات 🔢',
             arabic: 'اللغة العربية 🇸🇦',
             englishTab: '🇬🇧 الإنجليزي',
             mathTab: '🔢 الرياضيات',
-            arabicTab: '🇦 العربي',
+            arabicTab: '🇸🇦 العربي',
             englishResult: '🇬🇧 اللغة الإنجليزية',
             mathResult: '🔢 الرياضيات',
             arabicResult: '🇸🇦 اللغة العربية',
             passed: 'مقبول ✅',
             failed: 'غير مقبول ❌',
-            question: 'السؤال',
-            of: 'من',
             student: 'الطالب:',
             previous: 'السابق',
             next: 'التالي',
@@ -932,10 +1014,6 @@
             correctAnswers: 'إجابات صحيحة',
             wrongAnswers: 'إجابات خاطئة',
             pendingGrading: 'بانتظار التصحيح',
-            reviewTitle: 'مراجعة الإجابات',
-            reviewSubtitle: 'راجع إجاباتك قبل التسليم النهائي',
-            examResult: 'نتيجة الاختبار',
-            overallResult: 'النتيجة الإجمالية',
             passedMsg: '🎉 لقد اجتزت الاختبار بنجاح - تم قبولك',
             failedMsg: 'لم تجتز الاختبار - يرجى المحاولة مرة أخرى',
             fillAllFields: 'الرجاء تعبئة جميع الحقول المطلوبة',
@@ -944,12 +1022,11 @@
             resultSaved: 'تم حفظ النتيجة بنجاح! 🎉',
             pdfDownloaded: 'تم تحميل الشهادة بنجاح! 📄',
             excelExported: 'تم تصدير Excel بنجاح! 📊',
-            welcomeTeacher: 'مرحباً بك في لوحة المعلم 👨‍',
+            welcomeTeacher: 'مرحباً بك في لوحة المعلم 👨‍🏫',
             welcomeRegistrar: 'مرحباً بك في لوحة مسؤول القبول 📋',
             welcomeAdmin: 'مرحباً بك في داشبورد المدير 📊',
             invalidCredentials: 'اسم المستخدم أو كلمة المرور غير صحيحة',
             noStudents: 'لا يوجد طلاب حتى الآن',
-            selectStudent: 'اختر طالباً من القائمة لعرض إجاباته',
             confirmSubmit: 'هل أنت متأكد من تسليم هذا الاختبار؟',
             confirmLogout: 'هل تريد تسجيل الخروج؟',
             noData: 'لا توجد بيانات للتصدير',
@@ -962,69 +1039,7 @@
             from: 'من',
             kidsGate: 'بوابة الطفل',
             knowledgeGen: 'أجيال المعرفة',
-            selectGrade: '-- اختر المرحلة --',
-            selectNationality: '-- اختر الجنسية --',
-            arabicNationalities: '🌍 الجنسيات العربية',
-            nonArabicNationalities: ' الجنسيات غير العربية',
-            step1: 'الخطوة الأولى',
-            step2: 'الخطوة الثانية',
-            selectBranch: 'اختر الفرع',
-            chooseSchool: 'حدد مدرستك للمتابعة',
-            selectRole: 'اختر نوع الدخول',
-            chooseRole: 'حدد دورك للمتابعة',
-            selectedBranch: 'الفرع المختار: ',
-            studentInfo: 'بيانات الطالب',
-            enterInfo: 'أدخل معلوماتك',
-            fullName: 'اسم الطالب الرباعي',
-            dob: 'تاريخ الميلاد',
-            idNumber: 'رقم الهوية',
-            phone: 'رقم الجوال',
-            gender: 'الجنس',
-            male: 'ذكر',
-            female: 'أنثى',
-            nationalityLabel: 'الجنسية',
-            gradeLevel: 'المرحلة الدراسية',
-            back: 'رجوع',
-            continue: 'متابعة',
-            startExam: 'بدء الاختبار',
-            teacherLogin: 'دخول المعلم',
-            gradeAnswers: 'تصحيح إجابات الطلاب',
-            login: 'دخول',
-            demo: 'تجريبي: teacher / teacher123',
-            teacherPanel: 'لوحة المعلم - تصحيح الإجابات',
-            reviewAddGrades: 'راجع إجابات الطلاب وأضف الدرجات',
-            studentList: 'قائمة الطلاب',
-            searchByName: 'ابحث بالاسم...',
-            registrarLogin: 'مسؤول القبول والتسجيل',
-            viewAllStudents: 'عرض جميع الطلاب',
-            demoRegistrar: 'تجريبي: registrar / registrar123',
-            registrarPanel: 'لوحة مسؤول القبول والتسجيل',
-            viewRegistered: 'عرض جميع الطلاب المسجلين',
-            exportExcel: 'تصدير Excel',
-            logout: 'خروج',
-            totalStudents: 'إجمالي الطلاب',
-            passed: 'مقبول',
-            failed: 'غير مقبول',
-            pending: 'بانتظار التصحيح',
-            allRegistered: 'جميع الطلاب المسجلين',
-            adminLogin: 'مدير النظام',
-            protectedArea: 'منطقة إدارية محمية',
-            demoAdmin: 'تجريبي: admin / admin123',
-            adminDashboard: 'داشبورد مدير النظام',
-            platformOverview: 'نظرة شاملة على أداء المنصة',
-            passRate: 'نسبة القبول',
-            resultsDistribution: 'توزيع النتائج',
-            subjectPerformance: 'أداء المواد',
-            allStudents: 'جميع الطلاب',
-            name: 'الاسم',
-            english: 'الإنجليزي',
-            math: 'الرياضيات',
-            arabic: 'العربي',
-            total: 'المجموع',
-            status: 'الحالة',
-            question: 'السؤال',
-            of: 'من',
-            passage: ' النص:',
+            passage: '📖 النص:',
             questions: '✏️ الأسئلة:',
             uploadImage: 'اضغط هنا لرفع صورة الحل',
             uploadHint: 'حل الأسئلة في ورقة ثم صورها وارفعها هنا',
@@ -1049,8 +1064,6 @@
             arabicResult: '🇸🇦 Arabic Language',
             passed: 'Passed ✅',
             failed: 'Failed ❌',
-            question: 'Question',
-            of: 'of',
             student: 'Student:',
             previous: 'Previous',
             next: 'Next',
@@ -1065,10 +1078,6 @@
             correctAnswers: 'Correct Answers',
             wrongAnswers: 'Wrong Answers',
             pendingGrading: 'Pending Grading',
-            reviewTitle: 'Review Answers',
-            reviewSubtitle: 'Review your answers before final submission',
-            examResult: 'Exam Result',
-            overallResult: 'Overall Result',
             passedMsg: '🎉 You passed the exam successfully!',
             failedMsg: 'You did not pass - Please try again',
             fillAllFields: 'Please fill in all required fields',
@@ -1077,12 +1086,11 @@
             resultSaved: 'Result saved successfully! 🎉',
             pdfDownloaded: 'Certificate downloaded! 📄',
             excelExported: 'Excel exported! 📊',
-            welcomeTeacher: 'Welcome to Teacher Panel ‍🏫',
+            welcomeTeacher: 'Welcome to Teacher Panel 👨‍🏫',
             welcomeRegistrar: 'Welcome to Admissions Panel 📋',
-            welcomeAdmin: 'Welcome to Admin Dashboard ',
+            welcomeAdmin: 'Welcome to Admin Dashboard 📊',
             invalidCredentials: 'Invalid username or password',
             noStudents: 'No students yet',
-            selectStudent: 'Select a student to view answers',
             confirmSubmit: 'Are you sure you want to submit?',
             confirmLogout: 'Do you want to logout?',
             noData: 'No data to export',
@@ -1095,68 +1103,6 @@
             from: 'out of',
             kidsGate: 'Kids Gate',
             knowledgeGen: 'Knowledge Generations',
-            selectGrade: '-- Select Grade --',
-            selectNationality: '-- Select Nationality --',
-            arabicNationalities: '🌍 Arabic Nationalities',
-            nonArabicNationalities: '🌏 Non-Arabic Nationalities',
-            step1: 'Step 1',
-            step2: 'Step 2',
-            selectBranch: 'Select Branch',
-            chooseSchool: 'Choose your school to continue',
-            selectRole: 'Select Role',
-            chooseRole: 'Choose your role to continue',
-            selectedBranch: 'Selected Branch: ',
-            studentInfo: 'Student Information',
-            enterInfo: 'Enter Your Information',
-            fullName: 'Full Name',
-            dob: 'Date of Birth',
-            idNumber: 'ID Number',
-            phone: 'Phone Number',
-            gender: 'Gender',
-            male: 'Male',
-            female: 'Female',
-            nationalityLabel: 'Nationality',
-            gradeLevel: 'Grade Level',
-            back: 'Back',
-            continue: 'Continue',
-            startExam: 'Start Exam',
-            teacherLogin: 'Teacher Login',
-            gradeAnswers: 'Grade Student Answers',
-            login: 'Login',
-            demo: 'Demo: teacher / teacher123',
-            teacherPanel: 'Teacher Panel - Grading',
-            reviewAddGrades: 'Review student answers and add grades',
-            studentList: 'Student List',
-            searchByName: 'Search by name...',
-            registrarLogin: 'Admissions Officer',
-            viewAllStudents: 'View All Students',
-            demoRegistrar: 'Demo: registrar / registrar123',
-            registrarPanel: 'Admissions Panel',
-            viewRegistered: 'View All Registered Students',
-            exportExcel: 'Export Excel',
-            logout: 'Logout',
-            totalStudents: 'Total Students',
-            passed: 'Passed',
-            failed: 'Failed',
-            pending: 'Pending',
-            allRegistered: 'All Registered Students',
-            adminLogin: 'System Admin',
-            protectedArea: 'Protected Admin Area',
-            demoAdmin: 'Demo: admin / admin123',
-            adminDashboard: 'Admin Dashboard',
-            platformOverview: 'Comprehensive Platform Overview',
-            passRate: 'Pass Rate',
-            resultsDistribution: 'Results Distribution',
-            subjectPerformance: 'Subject Performance',
-            allStudents: 'All Students',
-            name: 'Name',
-            english: 'English',
-            math: 'Math',
-            arabic: 'Arabic',
-            total: 'Total',
-            status: 'Status',
-            question: 'Question',
-            of: 'of',
             passage: '📖 Passage:',
             questions: '✏️ Questions:',
             uploadImage: 'Click here to upload answer image',
@@ -1227,19 +1173,6 @@
             const key = el.getAttribute('data-' + lang);
             if (key) el.textContent = key;
         });
-        
-        document.querySelectorAll('optgroup[data-label-en]').forEach(el => {
-            const key = el.getAttribute('data-label-' + lang);
-            if (key) el.label = key;
-        });
-        
-        // Re-render dynamic content
-        if (currentStudent.name) {
-            const notice = document.getElementById('subjects-notice');
-            if (!notice.classList.contains('hidden')) {
-                handleNationalityChange();
-            }
-        }
     }
 
     // ============ Notification System ============
@@ -1420,9 +1353,8 @@
             questions = [...questionBank[currentStudent.grade].english[randomModel]];
             questions = questions.sort(() => Math.random() - 0.5);
         } else if (subject === 'math') {
-            const t = translations[currentLang];
             questions = [
-                { id: "math_1", type: "mcq", question: t.selectGrade === '-- اختر المرحلة --' ? "اختر الإجابة الصحيحة:" : "Choose the correct answer:", marks: 10, subQuestions: [
+                { id: "math_1", type: "mcq", question: currentLang === 'ar' ? "اختر الإجابة الصحيحة:" : "Choose the correct answer:", marks: 10, subQuestions: [
                     { question: "2 + 3 = ?", options: ["4", "5", "6"], correct: 1 },
                     { question: "7 - 2 = ?", options: ["4", "5", "6"], correct: 1 },
                     { question: currentLang === 'ar' ? "أي عدد أكبر؟" : "Which number is larger?", options: ["5", "8", "3"], correct: 1 }
@@ -1795,7 +1727,7 @@
             badges += '<span class="inline-flex items-center gap-2 px-6 py-3 rounded-full font-bold text-lg" style="background: linear-gradient(135deg, #10B981, #059669); color: white; box-shadow: 0 5px 20px rgba(16, 185, 129, 0.4);">⭐ ' + (currentLang === 'ar' ? 'أداء جيد' : 'Good Performance') + '</span>'; 
         }
         if (data.total >= 45 && data.total < 60) { 
-            badges += '<span class="inline-flex items-center gap-2 px-6 py-3 rounded-full font-bold text-lg" style="background: linear-gradient(135deg, #3B82F6, #1D4ED8); color: white; box-shadow: 0 5px 20px rgba(59, 130, 246, 0.4);"> ' + (currentLang === 'ar' ? 'اجتهاد' : 'Effort') + '</span>'; 
+            badges += '<span class="inline-flex items-center gap-2 px-6 py-3 rounded-full font-bold text-lg" style="background: linear-gradient(135deg, #3B82F6, #1D4ED8); color: white; box-shadow: 0 5px 20px rgba(59, 130, 246, 0.4);">💪 ' + (currentLang === 'ar' ? 'اجتهاد' : 'Effort') + '</span>'; 
         }
         badgesContainer.innerHTML = badges ? `<div class="flex justify-center gap-3 flex-wrap">${badges}</div>` : '';
         
@@ -2034,15 +1966,15 @@
         const t = translations[currentLang];
         if (allStudents.length === 0) { alert(t.noData); return; }
         const data = allStudents.map(s => ({ 
-            [t.name]: s.name, 
-            [t.grade]: s.grade, 
-            [t.english]: s.scores.english || 0, 
-            [t.math]: s.scores.math || 0, 
-            [t.arabic]: s.testsArabic ? (s.scores.arabic || 0) : '-', 
-            [t.total]: s.total, 
-            [t.from]: s.maxScore, 
-            [t.status]: s.passed ? t.passed : t.failed, 
-            [t.date]: s.date || '-' 
+            [t.grade === 'المرحلة' ? 'Name' : 'الاسم']: s.name, 
+            [t.grade === 'المرحلة' ? 'Grade' : 'المرحلة']: s.grade, 
+            [t.grade === 'المرحلة' ? 'English' : 'الإنجليزي']: s.scores.english || 0, 
+            [t.grade === 'المرحلة' ? 'Math' : 'الرياضيات']: s.scores.math || 0, 
+            [t.grade === 'المرحلة' ? 'Arabic' : 'العربي']: s.testsArabic ? (s.scores.arabic || 0) : '-', 
+            [t.grade === 'المرحلة' ? 'Total' : 'المجموع']: s.total, 
+            [t.grade === 'المرحلة' ? 'Max' : 'من']: s.maxScore, 
+            [t.grade === 'المرحلة' ? 'Status' : 'الحالة']: s.passed ? t.passed : t.failed, 
+            [t.grade === 'المرحلة' ? 'Date' : 'التاريخ']: s.date || '-' 
         }));
         const ws = XLSX.utils.json_to_sheet(data);
         const wb = XLSX.utils.book_new();
